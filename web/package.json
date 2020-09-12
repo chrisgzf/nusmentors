@@ -19,10 +19,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "eject": "react-scripts eject",
+    "lint": "eslint  --fix './src/**/*.{js,jsx}'",
+    "lint-check": "eslint  --max-warnings 0 './src/**/*.{js,jsx}'",
+    "prettier": "prettier --write './src/**/*.{js,jsx}'",
+    "prettier-check": "prettier --check './src/**/*.{js,jsx}'",
+    "ci": "yarn lint-check && yarn prettier-check"
   },
   "browserslist": {
     "production": [
