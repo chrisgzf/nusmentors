@@ -15,7 +15,7 @@ const pool = require('./db');
 const app = express();
 
 // App Middleware
-const whitelist = ["http://localhost:3000", "https://nusmentors.vercel.app/"];
+const whitelist = ["http://localhost:3000", "https://nusmentors.vercel.app/"]; 
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -30,12 +30,12 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
-// Controllers - aka, the db queries
-const main = require('./controllers/main')
+// Test db queries
+const main = require('./testRoutes/main')
 
 // Test Routes
 app.get("/", (req, res) => res.json({ success: "true" }));
-app.get('/test', (req, res) => main.getData(req, res, pool));
+app.get('/test', (req, res) => main.getData(req, res));
 app.post("/", (req, res) => res.send("POST request received"));
 
 // App Server Connection

@@ -2,14 +2,12 @@ const { Pool } = require("pg");
 
 require("dotenv").config();
 
-// db connection with localhost
+const devConfig = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`;
+
+const prodConfig = process.env.DATABASE_URL; // heroku addon
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "nusmentors",
-  password: "password",
-  port: 5432,
+  connectionString: process.env.NODE_ENV === "production" ? prodConfig : devConfig,
 });
 
 module.exports = pool;
