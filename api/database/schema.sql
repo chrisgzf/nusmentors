@@ -4,16 +4,10 @@ DROP TABLE IF EXISTS CareerTypes CASCADE;
 DROP TABLE IF EXISTS Requests CASCADE;
 DROP TABLE IF EXISTS Mentorship CASCADE;
 
-CREATE TABLE Users (
-	user_id				TEXT PRIMARY KEY,
-	password_digest		VARCHAR(255) NOT NULL,
-	signin_method		TEXT NOT NULL 
-		CHECK (signin_method in ('nus','google','facebook','github','email2')),
-	signin_id			TEXT /* may remove depending on how we use fbauth*/
-);
-
 CREATE TABLE UsersInfo (
 	user_id				TEXT PRIMARY KEY,
+        name                            TEXT NOT NULL,
+        photo_url                       TEXT,
 	nus_email			TEXT UNIQUE,
 	matric_date			TIMESTAMP,
 	grad_date			TIMESTAMP,
@@ -30,11 +24,11 @@ CREATE TABLE CareerTypes (
 CREATE TABLE Requests (
 	req_id				TEXT PRIMARY KEY,
 	mentee_id			TEXT,
-	problem_type		TEXT 
+	problem_type		        TEXT[]
 		CHECK (problem_type in ('resume','interviews','general')),
 	title				TEXT,
 	description			TEXT,
-	career_type			TEXT,
+	career_type			TEXT[],
 	date_created		TIMESTAMP,
 	FOREIGN_KEY (mentee_id) REFERENCES Users(user_id),
 	FOREIGN KEY (career_type) REFERENCES CareerTypes ON DELETE SET DEFAULT
