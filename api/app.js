@@ -8,6 +8,9 @@ const bodyParser = require("body-parser"); // turns response into usable format
 const cors = require("cors"); // allows/disallows cross-site communication
 const morgan = require("morgan"); // logs requests
 
+// Database
+const pool = require("./db");
+
 // App
 const app = express();
 
@@ -27,11 +30,15 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
+// Test db queries
+const main = require("./testRoutes/main");
+
+// Test Routes
+app.get("/", (req, res) => res.json({ success: "true" }));
+app.get("/test", (req, res) => main.getData(req, res));
+app.post("/", (req, res) => res.send("POST request received"));
+
 // App Server Connection
 app.listen(process.env.PORT || 8080, () => {
   console.log(`app is running on port ${process.env.PORT || 8080}`);
 });
-
-// Test Routes
-app.get("/", (req, res) => res.json({ success: "true"}));
-app.post("/", (req, res) => res.send("POST request received"));
