@@ -9,13 +9,13 @@ const cors = require("cors"); // allows/disallows cross-site communication
 const morgan = require("morgan"); // logs requests
 
 // Database
-const pool = require('./db');
+const pool = require("./db");
 
 // App
 const app = express();
 
 // App Middleware
-const whitelist = ["http://localhost:3000", "https://nusmentors.vercel.app/"]; 
+const whitelist = ["http://localhost:3000", "https://nusmentors.vercel.app/"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -31,11 +31,11 @@ app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
 // Test db queries
-const main = require('./testRoutes/main')
+const main = require("./testRoutes/main");
 
 // Test Routes
 app.get("/", (req, res) => res.json({ success: "true" }));
-app.get('/test', (req, res) => main.getData(req, res));
+app.get("/test", (req, res) => main.getData(req, res));
 app.post("/", (req, res) => res.send("POST request received"));
 
 // App Server Connection
