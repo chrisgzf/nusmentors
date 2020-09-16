@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS UsersInfo CASCADE;
 DROP TABLE IF EXISTS CareerTypes CASCADE;
 DROP TABLE IF EXISTS Requests CASCADE;
@@ -13,8 +12,7 @@ CREATE TABLE UsersInfo (
 	grad_date			TIMESTAMP,
 	major				TEXT,
 	telegram			TEXT,
-	is_verified_email	BOOLEAN,
-	FOREIGN KEY (user_id) REFERENCES Users
+	is_verified_email	        BOOLEAN,
 );
 
 CREATE TABLE CareerTypes (
