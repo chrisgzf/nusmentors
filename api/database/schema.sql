@@ -12,7 +12,7 @@ CREATE TABLE UsersInfo (
 	grad_date			TIMESTAMP,
 	major				TEXT,
 	telegram			TEXT,
-	is_verified_email	        BOOLEAN,
+	is_verified_email	        BOOLEAN DEFAULT FALSE,
 );
 
 CREATE TABLE CareerTypes (
