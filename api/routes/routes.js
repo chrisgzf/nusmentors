@@ -8,50 +8,40 @@ router.route("/careers").get(getcareerfields);
 /*====== GENERAL =======*/
 
 /*------- AUTH ---------*/
-const createnewuser = require("./impl/auth/createnewuser");
-const updatenusemail = require("./impl/auth/updatenusemail");
-const verifyemail = require("./impl/auth/verifyemail");
-const updateinfo = require("./impl/auth/updateinfo");
-const authenticate = require("./impl/auth/authenticate");
+const auth = require("./impl/auth");
 
 router.route("/auth")
-    .post(createnewuser);
+    .post(auth.createnewuser);
 router.route("/auth/nusemail")
-    .put(updatenusemail);
+    .put(auth.updatenusemail);
 router.route("/auth/verify")
-    .put(verifyemail);
+    .put(auth.verifyemail);
 router.route("/auth/:uid")
-    .put(updateinfo)
-    .post(authenticate);
+    .put(auth.updateinfo)
+    .post(auth.authenticate);
 /*====== END AUTH ======*/
 
 /*-------- REQS --------*/
-const postnewhelp = require("./impl/reqs/postnewhelp");
-const getallrequests = require("./impl/reqs/getallrequests");
-const deleterequest = require("./impl/reqs/deleterequest");
-const updaterequest = require("./impl/reqs/updaterequest");
-const acceptrequest = require("./impl/reqs/acceptrequest");
+const reqs = require("./impl/reqs");
 
 router.route("/reqs")
-    .post(postnewhelp)
-    .get(getallrequests);
+    .post(reqs.postnewhelp)
+    .get(reqs.getallrequests);
 router.route("/reqs/:req_id")
-    .delete(deleterequest)
-    .put(updaterequest);
+    .delete(reqs.deleterequest)
+    .put(reqs.updaterequest);
 router.route("/reqs/:req_id/:mentor_uid")
-    .put(acceptrequest);
+    .put(reqs.acceptrequest);
 /*====== END REQS ======*/
 
 /*------ MATCHES -------*/
-const getcontact = require("./impl/matches/getcontact");
-const dropmentee = require("./impl/matches/dropmentee");
-const markascomplete = require("./impl/matches/markascomplete");
+const matches = require("./impl/matches");
 
 router.route("/matches/:req_id/:requester_uid")
-    .get(getcontact);
+    .get(matches.getcontact);
 router.route("/matches/:req_id")
-    .delete(dropmentee)
-    .put(markascomplete);
+    .delete(matches.dropmentee)
+    .put(matches.markascomplete);
 /*===== END MATCHES ====*/
 
 module.exports = router;
