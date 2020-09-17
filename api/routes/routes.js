@@ -12,13 +12,14 @@ const auth = require("./impl/auth");
 
 router.route("/auth")
     .post(auth.createnewuser);
-router.route("/auth/nusemail")
     .put(auth.updatenusemail);
-router.route("/auth/verify")
-    .put(auth.verifyemail);
 router.route("/auth/:uid")
+    .get(auth.getuserinfo)
     .put(auth.updateinfo)
     .post(auth.authenticate);
+router.route("/auth/:uid/verify")
+    .put(auth.verifyemail)
+    .get(auth.checkifverified);
 /*====== END AUTH ======*/
 
 /*-------- REQS --------*/
