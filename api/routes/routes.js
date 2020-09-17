@@ -53,3 +53,5 @@ router.route("/matches/:req_id")
     .delete(dropmentee)
     .put(markascomplete);
 /*===== END MATCHES ====*/
+
+module.exports = router;
