@@ -10,17 +10,19 @@ router.route("/careers").get(getcareerfields);
 /*------- AUTH ---------*/
 const createnewuser = require("./impl/auth/createnewuser");
 const updatenusemail = require("./impl/auth/updatenusemail");
-const changepassword = require("./impl/auth/changepassword");
 const verifyemail = require("./impl/auth/verifyemail");
 const updateinfo = require("./impl/auth/updateinfo");
 const authenticate = require("./impl/auth/authenticate");
 
-router.route("/auth/newuser").post(createnewuser);
-router.route("/auth/nusemail").put(updatenusemail);
-router.route("/auth/password").put(changepassword);
-router.route("/auth/verify").put(verifyemail);
-router.route("/auth/user/:uid").put(updateinfo);
-router.route("/auth/passport").post(authenticate);
+router.route("/auth")
+    .post(createnewuser);
+router.route("/auth/nusemail")
+    .put(updatenusemail);
+router.route("/auth/verify")
+    .put(verifyemail);
+router.route("/auth/:uid")
+    .put(updateinfo)
+    .post(authenticate);
 /*====== END AUTH ======*/
 
 /*-------- REQS --------*/
@@ -30,11 +32,14 @@ const deleterequest = require("./impl/reqs/deleterequest");
 const updaterequest = require("./impl/reqs/updaterequest");
 const acceptrequest = require("./impl/reqs/acceptrequest");
 
-router.route("/reqs/newhelp").post(postnewhelp);
-router.route("/reqs/all").get(getallrequests);
-router.route("/reqs/delete/:req_id").delete(deleterequest);
-router.route("/reqs/update/:req_id").put(updaterequest);
-router.route("/reqs/accept/:req_id").put(acceptrequest);
+router.route("/reqs")
+    .post(postnewhelp)
+    .get(getallrequests);
+router.route("/reqs/:req_id")
+    .delete(deleterequest)
+    .put(updaterequest);
+router.route("/reqs/:req_id/:mentor_uid")
+    .put(acceptrequest);
 /*====== END REQS ======*/
 
 /*------ MATCHES -------*/
@@ -42,7 +47,9 @@ const getcontact = require("./impl/matches/getcontact");
 const dropmentee = require("./impl/matches/dropmentee");
 const markascomplete = require("./impl/matches/markascomplete");
 
-router.route("/matches/contact/:req_id/:requester_uid").get(getcontact);
-router.route("/matches/delete/:req_id").delete(dropmentee);
-router.route("/matches/done/:req_id").put(markascomplete);
+router.route("/matches/:req_id/:requester_uid")
+    .get(getcontact);
+router.route("/matches/:req_id")
+    .delete(dropmentee)
+    .put(markascomplete);
 /*===== END MATCHES ====*/
