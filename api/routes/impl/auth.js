@@ -85,8 +85,10 @@ const getuserinfo = (req, res) => {
         (q_err, q_res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
+            } else if (q_res.rows.length == 0) {
+                res.status(500).send("request does not exist.");
             } else {
-                res.json(q_res);
+                res.json(q_res.rows[0]);
             }
         }
     );

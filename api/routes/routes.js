@@ -41,6 +41,7 @@ const matches = require("./impl/matches");
 router.route("/matches/:req_id/:requester_uid")
     .get(matches.getcontact);
 router.route("/matches/:req_id")
+    .get(matches.getmentorship)
     .delete(matches.dropmentee)
     .put(matches.markascomplete);
 /*===== END MATCHES ====*/
