@@ -27,7 +27,7 @@ CREATE TABLE Requests (
 	title				TEXT,
 	description			TEXT,
 	career_type			TEXT[],
-	date_created		TIMESTAMP,
+	date_created	        	TIMESTAMP,
 	FOREIGN_KEY (mentee_id) REFERENCES Users(user_id),
 	FOREIGN KEY (career_type) REFERENCES CareerTypes ON DELETE SET DEFAULT
 );
@@ -36,9 +36,9 @@ CREATE TABLE Mentorship (
 	req_id				TEXT PRIMARY KEY,
 	mentor_id			TEXT,
 	date_formed			TIMESTAMP NOT NULL,
-	date_completed		TIMESTAMP,
-	is_dropped			BOOLEAN DEFAULT FALSE,
+	date_completed  		TIMESTAMP,
+	date_dropped			TIMESTAMP,
 	FOREIGN_KEY (req_id) REFERENCES Requests,
 	FOREIGN_KEY (mentor_id) REFERENCES Users(user_id),
-	CHECK ((date_completed IS NOT NULL AND is_dropped IS FALSE) OR date_completed IS NULL)
+	CHECK ((date_completed IS NOT NULL AND date_dropped IS NULL) OR date_completed IS NULL)
 );
