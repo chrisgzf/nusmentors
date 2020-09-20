@@ -13,6 +13,7 @@ CREATE TABLE UsersInfo (
 	major				TEXT,
 	telegram			TEXT,
 	is_verified_email	        BOOLEAN DEFAULT FALSE,
+        CHECK (matric_date IS NULL OR grad_date IS NULL OR matric_date < grad_date)
 );
 
 CREATE TABLE CareerTypes (
@@ -21,24 +22,20 @@ CREATE TABLE CareerTypes (
 
 CREATE TABLE Requests (
 	req_id				TEXT PRIMARY KEY,
-	mentee_id			TEXT,
+	mentee_id			TEXT REFERENCES UsersInfo(user_id),
 	problem_type		        TEXT[]
-		CHECK (problem_type in ('resume','interviews','general')),
+		CHECK (problem_type <@ ARRAY['resume','interviews','general']),
 	title				TEXT,
 	description			TEXT,
 	career_type			TEXT[],
-	date_created	        	TIMESTAMP,
-	FOREIGN_KEY (mentee_id) REFERENCES Users(user_id),
-	FOREIGN KEY (career_type) REFERENCES CareerTypes ON DELETE SET DEFAULT
+	date_created	        	TIMESTAMP
 );
 
 CREATE TABLE Mentorship (
-	req_id				TEXT PRIMARY KEY,
-	mentor_id			TEXT,
+	req_id				TEXT PRIMARY KEY REFERENCES Requests(req_id),
+	mentor_id			TEXT REFERENCES UsersInfo(user_id),
 	date_formed			TIMESTAMP NOT NULL,
 	date_completed  		TIMESTAMP,
 	date_dropped			TIMESTAMP,
-	FOREIGN_KEY (req_id) REFERENCES Requests,
-	FOREIGN_KEY (mentor_id) REFERENCES Users(user_id),
 	CHECK ((date_completed IS NOT NULL AND date_dropped IS NULL) OR date_completed IS NULL)
 );
