@@ -3,11 +3,13 @@ import {
   AccordionActions,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Button,
   makeStyles,
   Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import MenteeCard from "components/MenteeCard";
 import React from "react";
 
 const menteeRequests = [
@@ -34,46 +36,18 @@ const menteeRequests = [
   },
 ];
 
-const useStyles = makeStyles((theme) => ({
-  heading: {
-    flexBasis: "33.33%",
-    flexShrink: 0,
-  },
-  secondaryHeading: {
-    color: theme.palette.text.secondary,
-  },
-}));
-
 const MentorPeople = () => {
-  const classes = useStyles();
   return (
-    <>
+    <Box>
       {menteeRequests.map((menteeRequest, index) => (
-        <Accordion key={index}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography className={classes.heading}>
-              {menteeRequest.name}
-            </Typography>
-            <Typography className={classes.secondaryHeading}>
-              {menteeRequest.title}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>{menteeRequest.description}</Typography>
-          </AccordionDetails>
-
-          <AccordionActions>
-            <Button size="small" color="primary">
-              Match
-            </Button>
-          </AccordionActions>
-        </Accordion>
+        <MenteeCard
+          key={index}
+          name={menteeRequest.name}
+          title={menteeRequest.title}
+          description={menteeRequest.description}
+        />
       ))}
-    </>
+    </Box>
   );
 };
 
