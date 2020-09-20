@@ -55,7 +55,7 @@ const dropmentee = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.status(200);
+                res.sendStatus(200);
             }
         }
     );
@@ -72,7 +72,7 @@ const markascomplete = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.status(200);
+                res.sendStatus(200);
             }
         }
     );
@@ -85,7 +85,7 @@ const getmentorship = (req, res) => {
 
     pool.query(
         `SELECT NOW() as time_of_request, problem_type, title, description, career_type, date_created, mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg
-         FROM MentorContact NATURAL JOIN MenteeContact NATURAL JOIN Mentorship
+         FROM MentorContact NATURAL JOIN MenteeContact NATURAL JOIN Requests
          WHERE req_id = $1`,
         [req_id],
         (q_err, q_res) => {

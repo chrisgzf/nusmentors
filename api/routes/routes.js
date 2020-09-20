@@ -11,7 +11,7 @@ router.route("/careers").get(getcareerfields);
 const auth = require("./impl/auth");
 
 router.route("/auth")
-    .post(auth.createnewuser);
+    .post(auth.createnewuser)
     .put(auth.updatenusemail);
 router.route("/auth/:uid")
     .get(auth.getuserinfo)
@@ -23,6 +23,7 @@ router.route("/auth/:uid/verify")
 /*====== END AUTH ======*/
 
 /*-------- REQS --------*/
+/*
 const reqs = require("./impl/reqs");
 
 router.route("/reqs")
@@ -33,6 +34,7 @@ router.route("/reqs/:req_id")
     .put(reqs.updaterequest);
 router.route("/reqs/:req_id/:mentor_uid")
     .put(reqs.acceptrequest);
+*/
 /*====== END REQS ======*/
 
 /*------ MATCHES -------*/
