@@ -10,6 +10,7 @@ function App() {
         <LogoIcon scale="50%" />
         <h1>NUSMentors</h1>
         <span>This is a placeholder homepage.</span>
+        <Link to="/dashboard">Dashboard</Link>
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>
       </header>
