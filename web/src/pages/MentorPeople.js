@@ -1,14 +1,4 @@
-import {
-  Accordion,
-  AccordionActions,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { Box } from "@material-ui/core";
 import MenteeCard from "components/MenteeCard";
 import React from "react";
 

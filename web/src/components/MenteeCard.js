@@ -15,9 +15,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(2),
   },
-  initialText: {
-    textOverflow: "ellipsis",
-  },
   actionArea: {
     justifyContent: "flex-end",
   },

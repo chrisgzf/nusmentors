@@ -3,11 +3,11 @@ import {
   AppBar,
   makeStyles,
   Box,
-  Button,
   Typography,
   useTheme,
   IconButton,
   useMediaQuery,
+  Button,
 } from "@material-ui/core";
 import React from "react";
 import { useFirebase } from "react-redux-firebase";
