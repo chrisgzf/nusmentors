@@ -1,13 +1,16 @@
 const pool = require("../../db");
 
 const getallrequests = (req, res) => {
-  pool.query(`SELECT * FROM Requests ORDER BY date_created DESC`, (q_err, q_res) => {
-    if (q_err) {
-      res.status(500).send(q_err);
-    } else {
-      res.json(q_res.rows);
-    }
-  });
+  pool.query(
+    `SELECT * FROM Requests ORDER BY date_created DESC`,
+    (q_err, q_res) => {
+      if (q_err) {
+        res.status(500).send(q_err);
+      } else {
+        res.json(q_res.rows);
+      }
+    },
+  );
 };
 
 const postnewrequest = (req, res) => {
@@ -79,9 +82,25 @@ const updaterequest = (req, res) => {
   );
 };
 
+const acceptrequest = (req, res) => {
+  const { req_id, mentor_uid } = req.params;
+  pool.query(
+    `CALL acceptRequest($1, $2)`,
+    [req_id, mentor_uid],
+    (q_err, q_res) => {
+      if (q_err) {
+        res.status(500).send(q_err.message || q_err);
+      } else {
+        res.sendStatus(200);
+      }
+    },
+  );
+};
+
 module.exports = {
   getallrequests,
   postnewrequest,
   deleterequest,
   updaterequest,
+  acceptrequest,
 };

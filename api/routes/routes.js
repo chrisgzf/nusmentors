@@ -37,6 +37,9 @@ router.route("/reqs/:req_id")
     .delete(reqs.deleterequest)
     .put(reqs.updaterequest);
 
+router.route("/reqs/:req_id/:mentor_uid")
+    .put(reqs.acceptrequest);
+
 /*
 const reqs = require("./impl/reqs");
 

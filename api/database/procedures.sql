@@ -15,3 +15,16 @@ CREATE OR REPLACE PROCEDURE
     END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE PROCEDURE
+    acceptRequest(
+        _req_id     TEXT,
+        _mentor_uid TEXT
+    ) AS $$
+
+    BEGIN 
+        UPDATE Requests
+        SET should_display=FALSE
+        WHERE req_id=_req_id;
+        INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (_req_id, _mentor_uid, NOW());
+    END;
+$$ LANGUAGE plpgsql;
