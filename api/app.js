@@ -1,5 +1,5 @@
 const MODES = { DEBUG: 0, PROD: 1};
-const mode = MODES.DEBUG;
+const mode = MODES.PROD; //MODES.DEBUG;
 
 const express = require("express");
 

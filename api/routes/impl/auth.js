@@ -19,7 +19,7 @@ const createnewuser = (req, res) => {
                 // uid/email not unique
                 res.status(409).send(q_err.message || q_err);
             } else {
-                res.status(200);
+                res.sendStatus(200);
             }
         }
     );
@@ -37,7 +37,7 @@ const updatenusemail = (req, res) => {
                 // email not unique
                 res.status(409).send(q_err.message || q_err);
             } else {
-                res.status(200);
+                res.sendStatus(200);
             }
         }
     );
@@ -54,7 +54,7 @@ const verifyemail = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.status(200);
+                res.sendStatus(200);
             }
         }
     );
@@ -70,7 +70,7 @@ const checkifverified = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.json(q_res);
+                res.json(q_res.rows[0].is_verified_email);
             }
         }
     );
@@ -113,7 +113,7 @@ const updateinfo = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.status(200);
+                res.sendStatus(200);
             }
         }
     );
@@ -125,12 +125,12 @@ const authenticate= (req, res) => {
 };
 
 module.exports = {
-    createnewuser,
-    updatenusemail,
-    verifyemail,
-    checkifverified,
-    getuserinfo,
-    updateinfo,
-    authenticate
+    createnewuser: createnewuser,
+    updatenusemail: updatenusemail,
+    verifyemail: verifyemail,
+    checkifverified: checkifverified,
+    getuserinfo: getuserinfo,
+    updateinfo: updateinfo,
+    authenticate: authenticate
 };
 
