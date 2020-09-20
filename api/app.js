@@ -11,6 +11,29 @@ const morgan = require("morgan"); // logs requests
 // Database
 const pool = require("./db");
 
+// Auth
+const admin = require("firebase-admin");
+
+const serviceAccount = require("config/nusmentors-firebase-adminsdk-key.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://nusmentors.firebaseio.com"
+});
+
+function checkAuth(req, res, next) {
+    if (req.headers.authtoken) {
+        admin.auth().verifyIdToken(req.headers.authtoken)
+          .then(() => {
+              next()
+          }).catch(() => {
+              res.status(403).send('Unauthorized')
+          });
+    } else {
+        res.status(403).send('Unauthorized')
+    }
+}
+
 // App
 const app = express();
 
@@ -29,6 +52,8 @@ app.use(helmet());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
+
+app.use('/', checkAuth);
 
 // Test db queries
 const main = require("./testRoutes/main");
