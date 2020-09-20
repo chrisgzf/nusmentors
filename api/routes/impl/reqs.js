@@ -82,6 +82,8 @@ const updaterequest = (req, res) => {
   );
 };
 
+// upon accepting a request, the req_id and mentor_uid is added to mentorship table 
+// and the request's should_display attribute is set to FALSE.
 const acceptrequest = (req, res) => {
   const { req_id, mentor_uid } = req.params;
   pool.query(

@@ -26,5 +26,5 @@ CREATE OR REPLACE PROCEDURE
         SET should_display=FALSE
         WHERE req_id=_req_id;
         INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (_req_id, _mentor_uid, NOW());
-    END;
+    COMMIT;
 $$ LANGUAGE plpgsql;
