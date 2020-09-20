@@ -28,7 +28,8 @@ CREATE TABLE Requests (
 	title				TEXT,
 	description			TEXT,
 	career_type			TEXT[],
-	date_created	        	TIMESTAMP
+	date_created	    TIMESTAMP,
+	should_display		BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE Mentorship (
