@@ -1,4 +1,4 @@
-const pool = require("path_to_psql_db");
+const pool = require('../../db');
 
 module.exports = (req, res) => {
   pool.query(

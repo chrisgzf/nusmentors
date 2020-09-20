@@ -1,3 +1,6 @@
+const MODES = { DEBUG: 0, PROD: 1};
+const mode = MODES.PROD; //MODES.DEBUG;
+
 const express = require("express");
 
 require("dotenv").config();
@@ -53,7 +56,15 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
+if (mode == MODES.PROD) {
+
 app.use('/', checkAuth);
+
+// Routes
+const router = require('./routes/routes');
+app.use('/', router);
+
+} else if (mode == MODES.DEBUG) {
 
 // Test db queries
 const main = require("./testRoutes/main");
@@ -62,6 +73,8 @@ const main = require("./testRoutes/main");
 app.get("/", (req, res) => res.json({ success: "true" }));
 app.get("/test", (req, res) => main.getData(req, res));
 app.post("/", (req, res) => res.send("POST request received"));
+
+}
 
 // App Server Connection
 app.listen(process.env.PORT || 8080, () => {

@@ -8,41 +8,44 @@ router.route("/careers").get(getcareerfields);
 /*====== GENERAL =======*/
 
 /*------- AUTH ---------*/
-const createnewuser = require("./impl/auth/createnewuser");
-const updatenusemail = require("./impl/auth/updatenusemail");
-const changepassword = require("./impl/auth/changepassword");
-const verifyemail = require("./impl/auth/verifyemail");
-const updateinfo = require("./impl/auth/updateinfo");
-const authenticate = require("./impl/auth/authenticate");
+const auth = require("./impl/auth");
 
-router.route("/auth/newuser").post(createnewuser);
-router.route("/auth/nusemail").put(updatenusemail);
-router.route("/auth/password").put(changepassword);
-router.route("/auth/verify").put(verifyemail);
-router.route("/auth/user/:uid").put(updateinfo);
-router.route("/auth/passport").post(authenticate);
+router.route("/auth")
+    .post(auth.createnewuser)
+    .put(auth.updatenusemail);
+router.route("/auth/:uid")
+    .get(auth.getuserinfo)
+    .put(auth.updateinfo)
+    .post(auth.authenticate);
+router.route("/auth/:uid/verify")
+    .put(auth.verifyemail)
+    .get(auth.checkifverified);
 /*====== END AUTH ======*/
 
 /*-------- REQS --------*/
-const postnewhelp = require("./impl/reqs/postnewhelp");
-const getallrequests = require("./impl/reqs/getallrequests");
-const deleterequest = require("./impl/reqs/deleterequest");
-const updaterequest = require("./impl/reqs/updaterequest");
-const acceptrequest = require("./impl/reqs/acceptrequest");
+/*
+const reqs = require("./impl/reqs");
 
-router.route("/reqs/newhelp").post(postnewhelp);
-router.route("/reqs/all").get(getallrequests);
-router.route("/reqs/delete/:req_id").delete(deleterequest);
-router.route("/reqs/update/:req_id").put(updaterequest);
-router.route("/reqs/accept/:req_id").put(acceptrequest);
+router.route("/reqs")
+    .post(reqs.postnewhelp)
+    .get(reqs.getallrequests);
+router.route("/reqs/:req_id")
+    .delete(reqs.deleterequest)
+    .put(reqs.updaterequest);
+router.route("/reqs/:req_id/:mentor_uid")
+    .put(reqs.acceptrequest);
+*/
 /*====== END REQS ======*/
 
 /*------ MATCHES -------*/
-const getcontact = require("./impl/matches/getcontact");
-const dropmentee = require("./impl/matches/dropmentee");
-const markascomplete = require("./impl/matches/markascomplete");
+const matches = require("./impl/matches");
 
-router.route("/matches/contact/:req_id/:requester_uid").get(getcontact);
-router.route("/matches/delete/:req_id").delete(dropmentee);
-router.route("/matches/done/:req_id").put(markascomplete);
+router.route("/matches/:req_id/:requester_uid")
+    .get(matches.getcontact);
+router.route("/matches/:req_id")
+    .get(matches.getmentorship)
+    .delete(matches.dropmentee)
+    .put(matches.markascomplete);
 /*===== END MATCHES ====*/
+
+module.exports = router;

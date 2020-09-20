@@ -12,7 +12,7 @@
 
 4. Connect to nusmentors database using `\c nusmentors`
 
-5. Initialize the necessary tables, e.g. `\i schema.sql` for actual use. Or `\i test.sql` for testing.
+5. Initialize the necessary tables, e.g. `\i setup.sql` for actual use. Or `\i test.sql` for testing.
 
 You may want to set aliases for `sudo service postgresql start` and `psql --user postgres -h localhost`. These are frequently used commands.
 
