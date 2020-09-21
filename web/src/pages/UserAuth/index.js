@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+
+import SwipeableViews from "react-swipeable-views";
+import { useHistory } from "react-router-dom";
+import { isEmpty, isLoaded, useFirebase } from "react-redux-firebase";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -12,18 +17,9 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import SwipeableViews from "react-swipeable-views";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import {
-  githubAuthProvider,
-  selectAuth,
-  // googleAuthProvider,
-  // facebookAuthProvider,
-} from "utils/firebase";
-import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { isEmpty, isLoaded, useFirebase } from "react-redux-firebase";
+import { selectAuth } from "utils/firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,10 +65,7 @@ function UserAuth() {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [fullName, setFullName] = useState("");
-
   const [isCreateAccount, setIsCreateAccount] = useState(true);
-  const [isLoadingRedirect, setIsLoadingRedirect] = useState(true);
-  const [authError, setAuthError] = useState();
 
   const history = useHistory();
   const auth = useSelector(selectAuth);
@@ -81,68 +74,20 @@ function UserAuth() {
   // Redirect user to dash if already logged in
   useEffect(() => {
     if (!isLoaded(auth) || isEmpty(auth)) return;
-    console.log("User already signed in:", auth);
     history.push("/dashboard");
   }, [auth, history]);
 
-  // useEffect(
-  //   () => {
-  //     getRedirectResult()
-  //       .then(({ user, additionalUserInfo }) => {
-  //         if (!user) {
-  //           setIsLoadingRedirect(false);
-  //         } else if (additionalUserInfo.isNewUser && !user.emailVerified) {
-  //           sendEmailVerificationToUser(user);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         setIsLoadingRedirect(false);
-  //         setAuthError(error.message);
-  //       });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [
-  //     /* Intentionally empty: run only once */
-  //   ],
-  // );
-
-  const handleSubmit = useCallback(async () => {
-    setAuthError(null);
-
-    let fut;
+  const handleSubmit = async () => {
     if (isCreateAccount) {
-      fut = firebase.createUser({ email, password });
+      return firebase.createUser({ email, password });
     } else {
-      fut = firebase.login({ email, password });
+      return firebase.login({ email, password });
     }
-    return fut.catch((error) => {
-      console.log(error.message);
-      setAuthError(error.message);
-    });
-  }, [email, password, isCreateAccount, firebase]);
+  };
 
-  const handleSocial = useCallback(
-    async (provider) => {
-      setAuthError(null);
-      return firebase.login(provider).catch((error) => {
-        setAuthError(error.message);
-      });
-    },
-    [firebase],
-  );
-
-  const handleGithub = useCallback(
-    async () => handleSocial(githubAuthProvider),
-    [handleSocial],
-  );
-  // const handleGoogle = useCallback(
-  //   async () => handleSocial(googleAuthProvider),
-  //   [handleSocial],
-  // );
-  // const handleFacebook = useCallback(
-  //   async () => handleSocial(facebookAuthProvider),
-  //   [handleSocial],
-  // );
+  const handleSocial = async (provider) => {
+    return firebase.login({ provider, type: "popup" });
+  };
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -183,7 +128,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
-                onClick={handleGithub}
+                onClick={() => handleSocial("github")}
               >
                 Sign in with GitHub
               </Button>

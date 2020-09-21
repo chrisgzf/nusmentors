@@ -7,8 +7,6 @@ const firebaseConfig = {
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
 };
 
-export const githubAuthProvider = new firebase.auth.GithubAuthProvider();
-
 export function setupFirebase() {
   // Initialise Firebase
   try {
