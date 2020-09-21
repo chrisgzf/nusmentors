@@ -1,3 +1,4 @@
+import { auth as firebaseAuth } from "auth/firebase";
 import useAuth from "auth/useAuth";
 
 const backendHost = process.env.REACT_APP_BACKEND_HOST
@@ -45,4 +46,24 @@ export function useBackend() {
   }
 
   return { sendRequest };
+}
+
+export async function sendRequest(endpoint, method, data, headers) {
+  const { currentUser } = firebaseAuth();
+  let additionalHeaders;
+  let token;
+
+  // Decide if user is logged in, and if user is logged in,
+  // add JWT token to request headers
+  if (currentUser) {
+    const idTokenResult = await currentUser.getIdTokenResult();
+    token = idTokenResult.token;
+  }
+
+  if (token) {
+    additionalHeaders = { ...headers, Authorization: `Bearer ${token}` };
+  } else {
+    additionalHeaders = headers;
+  }
+  return sendBackendRequest(endpoint, method, data, additionalHeaders);
 }
