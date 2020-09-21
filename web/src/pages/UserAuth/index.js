@@ -62,7 +62,7 @@ function UserAuth() {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,21 +82,12 @@ function UserAuth() {
     getRedirectResult,
   } = useAuth();
 
+  // Redirect user to dash if already logged in
   useEffect(() => {
-    const redirectUserIfPresent = async () => {
-      if (!user) return;
-
-      console.log("Already have signed in user:", user);
-      if (user) {
-        console.log(user.getIdTokenResult());
-      }
-      if (!user.emailVerified) {
-        history.push("/dashboard");
-      } else {
-        history.push("/register");
-      }
-    };
-    redirectUserIfPresent();
+    if (!user) return;
+    console.log("User already signed in:", user);
+    console.log(user.getIdTokenResult());
+    history.push("/dashboard");
   }, [user, history]);
 
   useEffect(
@@ -159,11 +150,11 @@ function UserAuth() {
   // );
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   const handleChangeIndex = (index) => {
-    setValue(index);
+    setTabValue(index);
   };
 
   return (
@@ -216,16 +207,8 @@ function UserAuth() {
               className={classes.paper}
               style={{ paddingTop: "0", paddingBottom: "0" }}
             >
-              {/* <Typography
-                className={classes.sectionTitle}
-                variant="h6"
-                component="h2"
-              >
-                Email Login / Sign-up
-              </Typography> */}
-              {/* <AppBar position="static" color="default"> */}
               <Tabs
-                value={value}
+                value={tabValue}
                 onChange={handleChange}
                 indicatorColor="primary"
                 textColor="primary"
@@ -236,13 +219,12 @@ function UserAuth() {
                 <Tab label="Sign in" />
                 <Tab label="Register" />
               </Tabs>
-              {/* </AppBar> */}
               <SwipeableViews
                 axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                index={value}
+                index={tabValue}
                 onChangeIndex={handleChangeIndex}
               >
-                <TabPanel value={value} index={0} dir={theme.direction}>
+                <TabPanel value={tabValue} index={0} dir={theme.direction}>
                   <form noValidate autoComplete="off" className={classes.form}>
                     <TextField
                       id="email"
@@ -282,7 +264,7 @@ function UserAuth() {
                     Sign in
                   </Button>
                 </TabPanel>
-                <TabPanel value={value} index={1} dir={theme.direction}>
+                <TabPanel value={tabValue} index={1} dir={theme.direction}>
                   <form noValidate autoComplete="off" className={classes.form}>
                     <TextField
                       id="name"
@@ -357,11 +339,7 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }
