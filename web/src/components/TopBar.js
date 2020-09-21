@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
+import { useFirebase } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
 const TopBar = () => {
   const classes = useStyles();
   const history = useHistory();
-  // const { signOut } = useAuth();
+  const firebase = useFirebase();
 
   const signOutAndRedirect = async () => {
-    // await signOut();
+    await firebase.logout();
     history.push("/login");
   };
 

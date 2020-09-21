@@ -82,7 +82,7 @@ function UserAuth() {
   useEffect(() => {
     if (!isLoaded(auth) || isEmpty(auth)) return;
     console.log("User already signed in:", auth);
-    // history.push("/dashboard");
+    history.push("/dashboard");
   }, [auth, history]);
 
   // useEffect(
