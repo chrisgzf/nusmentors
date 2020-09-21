@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -15,6 +15,14 @@ import {
 import SwipeableViews from "react-swipeable-views";
 
 import LogoHorizontal from "components/LogoHorizontal";
+import useAuth from "auth/useAuth";
+import {
+  githubAuthProvider,
+  // googleAuthProvider,
+  // facebookAuthProvider,
+  sendEmailVerificationToUser,
+} from "auth/firebase";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,6 +64,100 @@ function UserAuth() {
 
   const [value, setValue] = useState(0);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordAgain, setPasswordAgain] = useState("");
+  const [fullName, setFullName] = useState("");
+
+  const [isCreateAccount, setIsCreateAccount] = useState(true);
+  const [isLoadingRedirect, setIsLoadingRedirect] = useState(true);
+  const [authError, setAuthError] = useState();
+
+  const history = useHistory();
+  const {
+    user,
+    signIn,
+    signInWithRedirect,
+    signUp,
+    getRedirectResult,
+  } = useAuth();
+
+  useEffect(() => {
+    const redirectUserIfPresent = async () => {
+      if (!user) return;
+
+      console.log("Already have signed in user:", user);
+      if (user) {
+        console.log(user.getIdTokenResult());
+      }
+      if (!user.emailVerified) {
+        history.push("/dashboard");
+      } else {
+        history.push("/register");
+      }
+    };
+    redirectUserIfPresent();
+  }, [user, history]);
+
+  useEffect(
+    () => {
+      getRedirectResult()
+        .then(({ user, additionalUserInfo }) => {
+          if (!user) {
+            setIsLoadingRedirect(false);
+          } else if (additionalUserInfo.isNewUser && !user.emailVerified) {
+            sendEmailVerificationToUser(user);
+          }
+        })
+        .catch((error) => {
+          setIsLoadingRedirect(false);
+          setAuthError(error.message);
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      /* Intentionally empty: run only once */
+    ],
+  );
+
+  const handleSubmit = useCallback(async () => {
+    setAuthError(null);
+
+    let fut;
+    if (isCreateAccount) {
+      fut = signUp(email, password).then(sendEmailVerificationToUser);
+    } else {
+      fut = signIn(email, password);
+    }
+    return fut.catch((error) => {
+      console.log(error.message);
+      setAuthError(error.message);
+    });
+  }, [email, password, isCreateAccount, signIn, signUp]);
+
+  const handleSocial = useCallback(
+    async (provider) => {
+      setAuthError(null);
+      return signInWithRedirect(provider).catch((error) => {
+        setAuthError(error.message);
+      });
+    },
+    [signInWithRedirect],
+  );
+
+  const handleGithub = useCallback(
+    async () => handleSocial(githubAuthProvider),
+    [handleSocial],
+  );
+  // const handleGoogle = useCallback(
+  //   async () => handleSocial(googleAuthProvider),
+  //   [handleSocial],
+  // );
+  // const handleFacebook = useCallback(
+  //   async () => handleSocial(facebookAuthProvider),
+  //   [handleSocial],
+  // );
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -87,6 +189,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
+                disabled
               >
                 Sign in with Google
               </Button>
@@ -94,6 +197,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
+                onClick={handleGithub}
               >
                 Sign in with GitHub
               </Button>
@@ -101,6 +205,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
+                disabled
               >
                 Sign in with Facebook
               </Button>
@@ -145,6 +250,10 @@ function UserAuth() {
                       type="email"
                       fullWidth
                       margin="dense"
+                      value={email}
+                      onClick={(e) => {
+                        setEmail(e.target.value);
+                      }}
                     />
                     <TextField
                       id="password"
@@ -152,6 +261,10 @@ function UserAuth() {
                       type="password"
                       fullWidth
                       margin="dense"
+                      value={password}
+                      onClick={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
                   </form>
                   <Button
@@ -176,6 +289,10 @@ function UserAuth() {
                       label="Full Name"
                       fullWidth
                       margin="dense"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                      }}
                     />
                     <TextField
                       id="email"
@@ -183,6 +300,10 @@ function UserAuth() {
                       type="email"
                       fullWidth
                       margin="dense"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
                     />
                     <TextField
                       id="password"
@@ -190,6 +311,10 @@ function UserAuth() {
                       type="password"
                       fullWidth
                       margin="dense"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
                     <TextField
                       id="password"
@@ -197,12 +322,17 @@ function UserAuth() {
                       type="password"
                       fullWidth
                       margin="dense"
+                      value={passwordAgain}
+                      onChange={(e) => {
+                        setPasswordAgain(e.target.value);
+                      }}
                     />
                   </form>
                   <Button
                     className={classes.buttons}
                     variant="contained"
                     color="primary"
+                    onClick={handleSubmit}
                   >
                     Register
                   </Button>
