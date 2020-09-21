@@ -6,6 +6,7 @@ INSERT INTO CareerTypes(career_type) VALUES ('native dev');
 INSERT INTO CareerTypes(career_type) VALUES ('data science');
 
 INSERT INTO Requests(req_id, mentee_id, problem_type, title, description, career_type, date_created) VALUES ('r1', '1', ARRAY['resume', 'interviews'], 'title', 'descr', ARRAY['webdev'], NOW());
+INSERT INTO Requests(req_id, mentee_id, problem_type, title, description, career_type, date_created) VALUES ('r2', '1', ARRAY['resume', 'interviews', 'general'], 'title', 'descr', ARRAY['webdev', 'data science', 'native dev'], NOW());
 
 INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES ('r1','2',NOW());
 
