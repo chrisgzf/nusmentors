@@ -22,12 +22,29 @@ router.route("/auth/:uid/verify")
     .get(auth.checkifverified);
 /*====== END AUTH ======*/
 
+
+
+
 /*-------- REQS --------*/
+
+const reqs = require("./impl/reqs");
+
+router.route("/reqs")
+    .get(reqs.getallrequests)
+    .post(reqs.postnewrequest);
+
+router.route("/reqs/:req_id")
+    .delete(reqs.deleterequest)
+    .put(reqs.updaterequest);
+
+router.route("/reqs/:req_id/:mentor_uid")
+    .put(reqs.acceptrequest);
+
 /*
 const reqs = require("./impl/reqs");
 
 router.route("/reqs")
-    .post(reqs.postnewhelp)
+    .post(reqs.postnewrequest)
     .get(reqs.getallrequests);
 router.route("/reqs/:req_id")
     .delete(reqs.deleterequest)
