@@ -65,6 +65,7 @@ function UserAuth() {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [fullName, setFullName] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [isCreateAccount, setIsCreateAccount] = useState(true);
 
   const history = useHistory();
