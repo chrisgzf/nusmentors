@@ -7,7 +7,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
+import useAuth from "auth/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -19,10 +21,25 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "none",
     fontWeight: "bold",
   },
+  signOutBtn: {
+    color: "#fff",
+    "&:hover": {
+      // TODO: this is dam ugly
+      backgroundColor: "#98b6e3",
+    },
+  },
 }));
 
 const TopBar = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const { signOut } = useAuth();
+
+  const signOutAndRedirect = async () => {
+    await signOut();
+    history.push("/login");
+  };
+
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
@@ -37,7 +54,13 @@ const TopBar = () => {
           <Typography variant="h4">NUSMentors</Typography>
         </Box>
         <Box flexGrow="1" textAlign="right">
-          Sign out
+          <Button
+            className={classes.signOutBtn}
+            onClick={signOutAndRedirect}
+            color="default"
+          >
+            Sign out
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>
