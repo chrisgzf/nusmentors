@@ -15,14 +15,15 @@ import {
 import SwipeableViews from "react-swipeable-views";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import useAuth from "auth/useAuth";
 import {
   githubAuthProvider,
+  selectAuth,
   // googleAuthProvider,
   // facebookAuthProvider,
-  sendEmailVerificationToUser,
-} from "auth/firebase";
+} from "utils/firebase";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { isEmpty, isLoaded, useFirebase } from "react-redux-firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,66 +75,60 @@ function UserAuth() {
   const [authError, setAuthError] = useState();
 
   const history = useHistory();
-  const {
-    user,
-    signIn,
-    signInWithRedirect,
-    signUp,
-    getRedirectResult,
-  } = useAuth();
+  const auth = useSelector(selectAuth);
+  const firebase = useFirebase();
 
   // Redirect user to dash if already logged in
   useEffect(() => {
-    if (!user) return;
-    console.log("User already signed in:", user);
-    console.log(user.getIdTokenResult());
-    history.push("/dashboard");
-  }, [user, history]);
+    if (!isLoaded(auth) || isEmpty(auth)) return;
+    console.log("User already signed in:", auth);
+    // history.push("/dashboard");
+  }, [auth, history]);
 
-  useEffect(
-    () => {
-      getRedirectResult()
-        .then(({ user, additionalUserInfo }) => {
-          if (!user) {
-            setIsLoadingRedirect(false);
-          } else if (additionalUserInfo.isNewUser && !user.emailVerified) {
-            sendEmailVerificationToUser(user);
-          }
-        })
-        .catch((error) => {
-          setIsLoadingRedirect(false);
-          setAuthError(error.message);
-        });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      /* Intentionally empty: run only once */
-    ],
-  );
+  // useEffect(
+  //   () => {
+  //     getRedirectResult()
+  //       .then(({ user, additionalUserInfo }) => {
+  //         if (!user) {
+  //           setIsLoadingRedirect(false);
+  //         } else if (additionalUserInfo.isNewUser && !user.emailVerified) {
+  //           sendEmailVerificationToUser(user);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setIsLoadingRedirect(false);
+  //         setAuthError(error.message);
+  //       });
+  //   },
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [
+  //     /* Intentionally empty: run only once */
+  //   ],
+  // );
 
   const handleSubmit = useCallback(async () => {
     setAuthError(null);
 
     let fut;
     if (isCreateAccount) {
-      fut = signUp(email, password).then(sendEmailVerificationToUser);
+      fut = firebase.createUser({ email, password });
     } else {
-      fut = signIn(email, password);
+      fut = firebase.login({ email, password });
     }
     return fut.catch((error) => {
       console.log(error.message);
       setAuthError(error.message);
     });
-  }, [email, password, isCreateAccount, signIn, signUp]);
+  }, [email, password, isCreateAccount, firebase]);
 
   const handleSocial = useCallback(
     async (provider) => {
       setAuthError(null);
-      return signInWithRedirect(provider).catch((error) => {
+      return firebase.login(provider).catch((error) => {
         setAuthError(error.message);
       });
     },
-    [signInWithRedirect],
+    [firebase],
   );
 
   const handleGithub = useCallback(

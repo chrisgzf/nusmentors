@@ -9,8 +9,6 @@ import {
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import useAuth from "auth/useAuth";
-
 const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -33,10 +31,10 @@ const useStyles = makeStyles((theme) => ({
 const TopBar = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { signOut } = useAuth();
+  // const { signOut } = useAuth();
 
   const signOutAndRedirect = async () => {
-    await signOut();
+    // await signOut();
     history.push("/login");
   };
 
