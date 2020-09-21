@@ -1,4 +1,4 @@
-/* Initializes a test db */
+/* Initializes a test db, used for debug mode */
 
 DROP TABLE IF EXISTS test CASCADE;
 
