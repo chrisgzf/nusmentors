@@ -24,7 +24,7 @@ CREATE OR REPLACE PROCEDURE
     BEGIN 
         UPDATE Requests
         SET should_display=FALSE
-        WHERE req_id=_req_id;
-        INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (_req_id, _mentor_uid, NOW());
+        WHERE req_id=_req_id::INTEGER;
+        INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (_req_id::INTEGER, _mentor_uid, NOW());
     END;
 $$ LANGUAGE plpgsql;
