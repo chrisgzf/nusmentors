@@ -7,6 +7,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
+import { useSelector } from "react-redux";
+import { selectDisplayName } from "utils/firebase";
 
 //Placeholder values
 const mentees = [
@@ -33,11 +35,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
   const classes = useStyles();
+  const displayName = useSelector(selectDisplayName);
 
   const welcomeMessage = (
     <Grid item xs={12}>
       <Paper className={classes.paper}>
-        <Typography variant="h5">Welcome back Christopher!</Typography>
+        <Typography variant="h5">
+          Welcome back,{" "}
+          <span style={{ fontWeight: "bold" }}>{displayName}</span>!
+        </Typography>
       </Paper>
     </Grid>
   );

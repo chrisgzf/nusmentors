@@ -1,5 +1,5 @@
-import { auth as firebaseAuth } from "auth/firebase";
-import useAuth from "auth/useAuth";
+import { useSelector } from "react-redux";
+import { selectJWT } from "./firebase";
 
 const backendHost = process.env.REACT_APP_BACKEND_HOST
   ? process.env.REACT_APP_BACKEND_HOST
@@ -25,18 +25,12 @@ function sendBackendRequest(endpoint, method, data, headers) {
 }
 
 export function useBackend() {
-  const { user } = useAuth();
+  const token = useSelector(selectJWT);
 
   async function sendRequest(endpoint, method, data, headers) {
-    let token;
     let additionalHeaders;
 
-    // Decide if user is logged in, and if user is logged in,
-    // add JWT token to request headers
-    if (user) {
-      const idTokenResult = await user.getIdTokenResult();
-      token = idTokenResult.token;
-    }
+    // Add JWT token to request headers if it exists
     if (token) {
       additionalHeaders = { ...headers, Authorization: `Bearer ${token}` };
     } else {
@@ -44,26 +38,20 @@ export function useBackend() {
     }
     return sendBackendRequest(endpoint, method, data, additionalHeaders);
   }
-
   return { sendRequest };
 }
 
-export async function sendRequest(endpoint, method, data, headers) {
-  const { currentUser } = firebaseAuth();
-  let additionalHeaders;
-  let token;
+export function sendRequest(endpoint, method, data, headers) {
+  return async (dispatch, getState) => {
+    const token = selectJWT(getState());
+    let additionalHeaders;
 
-  // Decide if user is logged in, and if user is logged in,
-  // add JWT token to request headers
-  if (currentUser) {
-    const idTokenResult = await currentUser.getIdTokenResult();
-    token = idTokenResult.token;
-  }
-
-  if (token) {
-    additionalHeaders = { ...headers, Authorization: `Bearer ${token}` };
-  } else {
-    additionalHeaders = headers;
-  }
-  return sendBackendRequest(endpoint, method, data, additionalHeaders);
+    // Add JWT token to request headers if it exists
+    if (token) {
+      additionalHeaders = { ...headers, Authorization: `Bearer ${token}` };
+    } else {
+      additionalHeaders = headers;
+    }
+    return sendBackendRequest(endpoint, method, data, additionalHeaders);
+  };
 }

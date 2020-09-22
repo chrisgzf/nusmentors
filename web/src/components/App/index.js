@@ -2,19 +2,28 @@ import React from "react";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 
 import Homepage from "pages/Homepage";
 import UserAuth from "pages/UserAuth";
 import AppShell from "../AppShell";
-import { ProvideAuth } from "auth/useAuth";
+import { useDispatch } from "react-redux";
+import { setupFirebase } from "utils/firebase";
 
 const theme = createMuiTheme();
+const firebase = setupFirebase();
 
 function App() {
+  const dispatch = useDispatch();
+  const rrfProps = {
+    firebase,
+    config: {},
+    dispatch,
+  };
   return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <ProvideAuth>
+    <ReactReduxFirebaseProvider {...rrfProps}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
         <Router>
           <Switch>
             <Route exact path="/" component={Homepage} />
@@ -23,8 +32,8 @@ function App() {
             <Route component={AppShell} />
           </Switch>
         </Router>
-      </ProvideAuth>
-    </MuiThemeProvider>
+      </MuiThemeProvider>
+    </ReactReduxFirebaseProvider>
   );
 }
 
