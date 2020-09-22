@@ -7,8 +7,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { sendRequest } from "utils/backend";
+import { useSelector } from "react-redux";
 import { selectDisplayName } from "utils/firebase";
 
 //Placeholder values
@@ -36,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const displayName = useSelector(selectDisplayName);
 
   const welcomeMessage = (
