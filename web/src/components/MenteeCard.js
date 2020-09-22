@@ -44,9 +44,7 @@ const MenteeCard = ({ name, description, title }) => {
         </CardContent>
         <CardContent>
           <Collapse in={!expanded} unmountOnExit>
-            <Typography className={classes.initialText}>
-              {description.slice(0, 150)}...
-            </Typography>
+            <Typography>{description.slice(0, 150)}...</Typography>
           </Collapse>
 
           <Collapse in={expanded} unmountOnExit>
