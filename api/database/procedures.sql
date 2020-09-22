@@ -20,11 +20,18 @@ CREATE OR REPLACE PROCEDURE
         _req_id     TEXT,
         _mentor_uid TEXT
     ) AS $$
-
+    DECLARE 
+        mentee_id TEXT;
     BEGIN 
+        mentee_id := (SELECT DISTINCT R.mentee_id
+            FROM Requests R
+            WHERE req_id = _req_id::INTEGER);
+        
         UPDATE Requests
         SET should_display=FALSE
         WHERE req_id=_req_id::INTEGER;
+        
         INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (_req_id::INTEGER, _mentor_uid, NOW());
+        INSERT INTO Notifies(notif_type, from_id, to_id, date_created) VALUES('accept', _mentor_uid, mentee_id, NOW());
     END;
 $$ LANGUAGE plpgsql;
