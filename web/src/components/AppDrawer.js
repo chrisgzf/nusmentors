@@ -31,7 +31,7 @@ const routeItems = [
     label: "Dashboard",
   },
   {
-    path: "/mentor-people",
+    path: "/requests",
     label: "Mentor People",
   },
   {
