@@ -21,7 +21,7 @@ CREATE TABLE CareerTypes (
 );
 
 CREATE TABLE Requests (
-	req_id				TEXT PRIMARY KEY,
+	req_id				SERIAL PRIMARY KEY,
 	mentee_id			TEXT REFERENCES UsersInfo(user_id),
 	problem_type		        TEXT[]
 		CHECK (problem_type <@ ARRAY['resume','interviews','general']),
@@ -33,7 +33,7 @@ CREATE TABLE Requests (
 );
 
 CREATE TABLE Mentorship (
-	req_id				TEXT PRIMARY KEY REFERENCES Requests(req_id),
+	req_id				INTEGER PRIMARY KEY REFERENCES Requests(req_id),
 	mentor_id			TEXT REFERENCES UsersInfo(user_id),
 	date_formed			TIMESTAMP NOT NULL,
 	date_completed  		TIMESTAMP,

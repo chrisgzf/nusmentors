@@ -17,19 +17,18 @@ const getallrequests = (req, res) => {
 
 const postnewrequest = (req, res) => {
   const {
-    req_id,
     mentee_id,
     problem_type,
     title,
     description,
     career_type,
-    date_created,
+    date_created, // if date is undefined, we will use the current date
   } = req.body;
+
   pool.query(
-    `INSERT INTO Requests(req_id, mentee_id, problem_type, title, description, career_type, date_created)
-    VALUES($1, $2, $3, $4, $5, $6, $7)`,
+    `INSERT INTO Requests(mentee_id, problem_type, title, description, career_type, date_created)
+    VALUES($1, $2, $3, $4, $5, COALESCE($6, NOW()))`,
     [
-      req_id,
       mentee_id,
       problem_type,
       title,
