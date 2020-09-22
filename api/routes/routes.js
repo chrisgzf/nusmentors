@@ -27,7 +27,7 @@ router.route("/auth/:uid/verify")
 const reqs = require("./impl/reqs");
 
 router.route("/reqs")
-    .get(reqs.getallrequests)
+    .get(reqs.getallrequests) //returns user info (not id)
     .post(reqs.postnewrequest);
 
 router.route("/reqs/:req_id")
@@ -42,12 +42,16 @@ router.route("/reqs/:req_id/:mentor_uid")
 /*------ MATCHES -------*/
 const matches = require("./impl/matches");
 
-router.route("/matches/:req_id/:requester_uid")
-    .get(matches.getcontact);
+router.route("/matches/contact/:req_id/:requester_uid")
+    .get(matches.getcontact); //obsolete
 router.route("/matches/:req_id")
-    .get(matches.getmentorship)
     .delete(matches.dropmentee)
     .put(matches.markascomplete);
+
+router.route("/matches/mentees/:requester_uid")
+    .get(matches.getmenteementorships); //includes status dropped/completed
+router.route("/matches/mentors/:requester_uid")
+    .get(matches.getmentormentorships);
 /*===== END MATCHES ====*/
 
 module.exports = router;
