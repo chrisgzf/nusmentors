@@ -2,7 +2,9 @@ const pool = require("../../db");
 
 const getallrequests = (req, res) => {
   pool.query(
-    `SELECT * FROM Requests ORDER BY date_created DESC`,
+    `SELECT req_id, problem_type, title, description, career_type, date_created, should_display, name, photo_url, nus_email, matric_date, grad_date, major, telegram
+     FROM Requests INNER JOIN UsersInfo ON (UsersInfo.user_id = Requests.mentee_id)
+     ORDER BY date_created DESC`,
     (q_err, q_res) => {
       if (q_err) {
         res.status(500).send(q_err);
