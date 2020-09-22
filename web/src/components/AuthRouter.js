@@ -1,15 +1,21 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import RequestMentors from "pages/RequestMentors";
+import CreateRequest from "pages/CreateRequest";
 import Dashboard from "pages/Dashboard";
-import MentorPeople from "pages/MentorPeople";
+import Requests from "pages/Requests";
+import AcceptRequest from "pages/AcceptRequest";
+import Mentees from "pages/Mentees";
+import Mentors from "pages/Mentors";
 
 const AuthRouter = () => {
   return (
     <Switch>
-      <Route exact path="/request" component={RequestMentors} />
+      <Route exact path="/requests/create" component={CreateRequest} />
       <Route exact path="/dashboard" component={Dashboard} />
-      <Route exact path="/mentor-people" component={MentorPeople} />
+      <Route exact path="/requests" component={Requests} />
+      <Route exact path="/accept-request/:id" component={AcceptRequest} />
+      <Route exact path="/mentees" component={Mentees} />
+      <Route exact path="/mentors" component={Mentors} />
     </Switch>
   );
 };

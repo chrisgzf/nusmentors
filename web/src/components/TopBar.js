@@ -3,12 +3,19 @@ import {
   AppBar,
   makeStyles,
   Box,
-  Button,
   Typography,
+  useTheme,
+  IconButton,
+  useMediaQuery,
+  Button,
 } from "@material-ui/core";
 import React from "react";
 import { useFirebase } from "react-redux-firebase";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
+import MenuIcon from "@material-ui/icons/Menu";
+import { useDispatch } from "react-redux";
+import { openDrawer } from "slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -38,18 +45,23 @@ const TopBar = () => {
     await firebase.logout();
     history.push("/login");
   };
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const isDesktopView = useMediaQuery(theme.breakpoints.up("md"));
+  // Event handlers
+  const handleMenuClick = () => {
+    dispatch(openDrawer());
+  };
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
+        {isDesktopView ? null : (
+          <IconButton color="inherit" onClick={handleMenuClick}>
+            <MenuIcon color="inherit" />
+          </IconButton>
+        )}
         <Box flexGrow="1">
-          <Button component={Link} to="/dashboard">
-            <Typography variant="h5" className={classes.logo}>
-              Dashboard
-            </Typography>
-          </Button>
-        </Box>
-        <Box flexGrow="1" textAlign="center">
           <Typography variant="h4">NUSMentors</Typography>
         </Box>
         <Box flexGrow="1" textAlign="right">
