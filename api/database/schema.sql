@@ -2,11 +2,12 @@ DROP TABLE IF EXISTS UsersInfo CASCADE;
 DROP TABLE IF EXISTS CareerTypes CASCADE;
 DROP TABLE IF EXISTS Requests CASCADE;
 DROP TABLE IF EXISTS Mentorship CASCADE;
+DROP TABLE IF EXISTS Notifies CASCADE;
 
 CREATE TABLE UsersInfo (
 	user_id				TEXT PRIMARY KEY,
-        name                            TEXT NOT NULL,
-        photo_url                       TEXT,
+	name                            TEXT NOT NULL,
+	photo_url                       TEXT,
 	nus_email			TEXT UNIQUE,
 	matric_date			TIMESTAMP,
 	grad_date			TIMESTAMP,
@@ -39,4 +40,12 @@ CREATE TABLE Mentorship (
 	date_completed  		TIMESTAMP,
 	date_dropped			TIMESTAMP,
 	CHECK ((date_completed IS NOT NULL AND date_dropped IS NULL) OR date_completed IS NULL)
+);
+
+CREATE TABLE Notifies (
+	nid 			SERIAL PRIMARY KEY,
+	notif_type 		TEXT NOT NULL,
+	from_id 			TEXT REFERENCES UsersInfo(user_id),
+	to_id 				TEXT REFERENCES UsersInfo(user_id),
+	date_created	TIMESTAMP
 );

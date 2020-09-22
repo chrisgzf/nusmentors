@@ -54,4 +54,10 @@ router.route("/matches/mentors/:requester_uid")
     .get(matches.getmentormentorships);
 /*===== END MATCHES ====*/
 
+/*------ NOTIFICATIONS -------*/
+const getnotifications = require("./impl/getnotifications");
+router.route("/notifs").get(getnotifications);
+
+/*===== END NOTIFICATIONS====*/
+
 module.exports = router;
