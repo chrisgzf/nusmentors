@@ -17,3 +17,5 @@ INSERT INTO Requests(mentee_id, problem_type, title, description, career_type, d
 INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (1,'2',NOW());
 INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (2,'2',NOW());
 INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (4,'3',NOW());
+
+INSERT INTO Notifies(notif_type, from_id, to_id, date_created) VALUES ('accept', '2', '1', NOW());

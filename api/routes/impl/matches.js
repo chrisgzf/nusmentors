@@ -82,7 +82,7 @@ const getmenteementorships = (req, res) => {
     const req_uid = req.params.requester_uid;
 
     pool.query(
-        `SELECT NOW() as time_of_request, problem_type, title, description, career_type, date_created, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg, status
+        `SELECT NOW() as time_of_request, req_id, problem_type, title, description, career_type, date_created, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg, status
          FROM MenteeContact NATURAL JOIN Requests NATURAL JOIN MentorshipMetadata
          WHERE mentor_id = $1`,
         [req_uid],
@@ -103,7 +103,7 @@ const getmentormentorships = (req, res) => {
     const req_uid = req.params.requester_uid;
 
     pool.query(
-        `SELECT NOW() as time_of_request, problem_type, title, description, career_type, date_created, mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, status
+        `SELECT NOW() as time_of_request, req_id, problem_type, title, description, career_type, date_created, mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, status
          FROM MentorContact NATURAL JOIN Requests NATURAL JOIN MentorshipMetadata
          WHERE mentee_id = $1`,
         [req_uid],
