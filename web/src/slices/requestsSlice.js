@@ -11,7 +11,7 @@ export const fetchRequests = createAsyncThunk(
   "requests/fetchRequests",
   async (_, { dispatch }) => {
     const requests = await dispatch(sendRequest("reqs", "GET"));
-    return requests.json();
+    return requests;
   },
 );
 
@@ -22,14 +22,15 @@ export const acceptRequest = createAsyncThunk(
     const requests = await dispatch(
       sendRequest(`reqs/${requestId}/${uid}`, "PUT"),
     );
-    return requests.json();
+    return requests;
   },
 );
+
 export const addRequest = createAsyncThunk(
   "requests/addRequest",
   async (data, { dispatch }) => {
     const requests = await dispatch(sendRequest("reqs", "POST", data));
-    return requests.json();
+    return requests;
   },
 );
 

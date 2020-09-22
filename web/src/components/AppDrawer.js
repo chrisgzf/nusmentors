@@ -35,7 +35,7 @@ const routeItems = [
     label: "Mentor People",
   },
   {
-    path: "/request",
+    path: "/requests/create",
     label: "Look for a mentor",
   },
   {

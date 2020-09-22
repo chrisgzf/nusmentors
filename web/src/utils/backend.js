@@ -21,6 +21,12 @@ function sendBackendRequest(endpoint, method, data, headers) {
     method, // GET POST PUT DELETE etc
     headers: actualHeaders,
     body: JSON.stringify(data),
+  }).then(async (response) => {
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text);
+    }
+    return response.json();
   });
 }
 
