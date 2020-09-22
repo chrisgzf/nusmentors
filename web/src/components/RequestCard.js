@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RequestCard = ({ request, match }) => {
+const RequestCard = ({ request, match = null }) => {
   const { name, title, description, matric_date, major } = request;
   // https://stackoverflow.com/questions/8152426/how-can-i-calculate-the-number-of-years-between-two-dates
   const currentYear =
