@@ -24,6 +24,39 @@ admin.initializeApp({
   databaseURL: "https://nusmentors.firebaseio.com",
 });
 
+function verifySocialLoginEmails(uid) {
+  admin
+    .auth()
+    .getUser(uid)
+    .then((userRecord) => userRecord.toJSON())
+    .then((records) => {
+      if (records.emailVerified) {
+        return;
+      }
+      if (!records.providerData) {
+        return;
+      }
+      const provider = records.providerData[0].providerId;
+      if (
+        provider.includes("github") ||
+        provider.includes("facebook") ||
+        provider.includes("google")
+      ) {
+        admin
+          .auth()
+          .updateUser(uid, {
+            emailVerified: true,
+          })
+          .catch((e) => {
+            console.log(e.message);
+          });
+      }
+    })
+    .catch((e) => {
+      console.log(e.message);
+    });
+}
+
 function checkAuth(req, res, next) {
   if (req.headers.authorization) {
     const token = req.headers.authorization.split(" ")[1]; // comply with frontend header (Bearer ${token})
@@ -33,6 +66,7 @@ function checkAuth(req, res, next) {
       .then((decodedToken) => {
         let uid = decodedToken.uid;
         req.body = { ...req.body, uid: uid };
+        verifySocialLoginEmails(uid);
         next();
       })
       .catch(() => {

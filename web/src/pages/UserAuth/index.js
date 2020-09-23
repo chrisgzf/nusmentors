@@ -25,10 +25,20 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import { selectAuth, selectFBEmail, selectFBPhotoURL } from "utils/firebase";
+import {
+  selectAuth,
+  selectFBEmail,
+  selectFBEmailVerified,
+  selectFBPhotoURL,
+} from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
-import { fetchUserInfo, postUserInfo, selectUserError } from "slices/userSlice";
+import {
+  fetchUserInfo,
+  postUserInfo,
+  selectName,
+  selectUserError,
+} from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,12 +77,17 @@ const useStyles = makeStyles((theme) => ({
 function UserAuth() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
+
   // step 0: firebase loading
   // step 1: social / email login
   // step 2: additional details
+  // step 3: verify email address
   const [authStep, setAuthStep] = useState(0);
   const userError = useSelector(selectUserError);
   const fbLoggedIn = !isEmpty(useSelector(selectAuth));
+  const fbEmailVerified = useSelector(selectFBEmailVerified);
+  const userName = useSelector(selectName);
 
   useEffect(() => {
     dispatch(fetchUserInfo());
@@ -83,10 +98,16 @@ function UserAuth() {
       setAuthStep(1);
       return;
     }
-    if (userError === "Record not found for UID") {
+    if (!userName) {
       setAuthStep(2);
+      return;
     }
-  }, [userError, fbLoggedIn]);
+    if (!fbEmailVerified) {
+      setAuthStep(3);
+      return;
+    }
+    history.push("/dashboard");
+  }, [userError, fbLoggedIn, fbEmailVerified, userName, history]);
 
   return (
     <div className={classes.root}>
@@ -97,6 +118,7 @@ function UserAuth() {
         {authStep === 0 && <CircularProgress />}
         {authStep === 1 && <AuthForm />}
         {authStep === 2 && <DetailsForm />}
+        {authStep === 3 && <div>Verify Email Lol</div>}
       </Container>
     </div>
   );
@@ -119,12 +141,6 @@ function AuthForm() {
   const history = useHistory();
   const auth = useSelector(selectAuth);
   const firebase = useFirebase();
-
-  // Redirect user to dash if already logged in
-  // useEffect(() => {
-  //   if (!isLoaded(auth) || isEmpty(auth)) return;
-  //   history.push("/dashboard");
-  // }, [auth, history]);
 
   const handleSubmit = async () => {
     if (isCreateAccount) {
@@ -360,6 +376,7 @@ function DetailsForm() {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const firebase = useFirebase();
   const { register, handleSubmit, errors, control, setValue } = useForm();
 
   const [matricDate, setMatricDate] = useState(new Date());
@@ -424,6 +441,7 @@ function DetailsForm() {
       photo_url,
       tg_handle,
     };
+    firebase.reloadAuth().catch((e) => console.log(e.message));
     dispatch(postUserInfo(payload));
   };
 
