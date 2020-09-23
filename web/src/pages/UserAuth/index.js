@@ -25,10 +25,10 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import { selectAuth } from "utils/firebase";
+import { selectAuth, selectFBEmail, selectFBPhotoURL } from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
-import { fetchUserInfo, selectUserError } from "slices/userSlice";
+import { fetchUserInfo, postUserInfo, selectUserError } from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -359,10 +359,24 @@ function AuthForm() {
 function DetailsForm() {
   const classes = useStyles();
   const theme = useTheme();
+  const dispatch = useDispatch();
   const { register, handleSubmit, errors, control, setValue } = useForm();
 
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
+  const [nusEmailFromFB, setNusEmailFromFB] = useState("");
+
+  const {
+    email: fbEmail,
+    displayName: fbDisplayName,
+    photoURL: fbPhotoUrl,
+  } = useSelector(selectAuth);
+
+  useEffect(() => {
+    if (fbEmail && fbEmail.includes("nus.edu")) {
+      setNusEmailFromFB(fbEmail);
+    }
+  }, [fbEmail]);
 
   useEffect(() => {
     register("matricDate", {
@@ -386,10 +400,31 @@ function DetailsForm() {
   };
 
   const onDetailsFormSubmit = (data) => {
-    console.log(data);
-    console.log(errors);
+    data.email = data.email ? data.email : fbEmail;
+    data.nusEmail = data.nusEmail ? data.nusEmail : nusEmailFromFB;
     data.matricDate = stripDateDay(data.matricDate);
     data.gradDate = stripDateDay(data.gradDate);
+    const {
+      email,
+      gradDate: graduate_in,
+      major,
+      matricDate: matric_date,
+      name,
+      nusEmail: nus_email,
+      photoUrl: photo_url,
+      telegram: tg_handle,
+    } = data;
+    const payload = {
+      email,
+      graduate_in,
+      major,
+      matric_date,
+      name,
+      nus_email,
+      photo_url,
+      tg_handle,
+    };
+    dispatch(postUserInfo(payload));
   };
 
   const fieldRequired = (
@@ -422,36 +457,41 @@ function DetailsForm() {
             required
             margin="dense"
             name="name"
+            defaultValue={fbDisplayName}
             helperText={errors.name ? fieldRequired : null}
             inputRef={(ref) => register(ref, { required: true })}
           />
           <Grid container justify="space-between" alignItems="center">
             <Grid item xs={12} sm={5}>
-              <TextField
-                label="Email"
-                id="email"
-                required
-                type="email"
-                fullWidth
-                margin="dense"
-                name="email"
-                inputRef={(ref) =>
-                  register(ref, { required: true, pattern: /\S+@\S+\.\S+/ })
-                }
-                helperText={
-                  errors.email ? (
-                    errors.email.type === "required" ? (
-                      fieldRequired
+              {fbEmail && (
+                <TextField
+                  label="Email"
+                  id="email"
+                  required
+                  type="email"
+                  fullWidth
+                  defaultValue={fbEmail}
+                  disabled
+                  margin="dense"
+                  name="email"
+                  inputRef={(ref) =>
+                    register(ref, { required: true, pattern: /\S+@\S+\.\S+/ })
+                  }
+                  helperText={
+                    errors.email ? (
+                      errors.email.type === "required" ? (
+                        fieldRequired
+                      ) : (
+                        <span style={{ color: "red" }}>
+                          Please enter a valid email address
+                        </span>
+                      )
                     ) : (
-                      <span style={{ color: "red" }}>
-                        Please enter a valid email address
-                      </span>
+                      "For login and contact purposes"
                     )
-                  ) : (
-                    "For login and contact purposes"
-                  )
-                }
-              />
+                  }
+                />
+              )}
             </Grid>
             <Grid item xs={12} sm={5}>
               <TextField
@@ -462,6 +502,8 @@ function DetailsForm() {
                 fullWidth
                 margin="dense"
                 name="nusEmail"
+                defaultValue={nusEmailFromFB}
+                disabled={!!nusEmailFromFB}
                 helperText={
                   errors.nusEmail ? (
                     errors.nusEmail.type === "required" ? (
@@ -576,6 +618,7 @@ function DetailsForm() {
           <TextField
             label="Photo URL (todo replace this)"
             fullWidth
+            defaultValue={fbPhotoUrl}
             margin="dense"
             name="photoUrl"
             inputRef={register}
