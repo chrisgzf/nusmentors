@@ -87,7 +87,7 @@ const getuserinfo = (req, res) => {
   const uid = req.body.uid;
 
   pool.query(
-    `SELECT name, photo_url, nus_email, matric_date, grad_date, major, telegram FROM UsersInfo WHERE user_id = $1`,
+    `SELECT name, photo_url, email, nus_email, matric_date, grad_date, major, telegram FROM UsersInfo WHERE user_id = $1`,
     [uid],
     (q_err, q_res) => {
       if (q_err) {
