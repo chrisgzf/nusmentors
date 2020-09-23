@@ -8,6 +8,7 @@ CREATE TABLE UsersInfo (
 	user_id				TEXT PRIMARY KEY,
 	name                            TEXT NOT NULL,
 	photo_url                       TEXT,
+        email                           TEXT UNIQUE,
 	nus_email			TEXT UNIQUE,
 	matric_date			TIMESTAMP,
 	grad_date			TIMESTAMP,

@@ -3,7 +3,8 @@ const pool = require('../../db');
 const createnewuser = (req, res) => {
     const fbuid       = req.body.uid;
     const name        = req.body.name;
-    const nusemail    = req.body.email;
+    const nusemail    = req.body.nus_email;
+    const email       = req.body.email;
     const photo_url   = req.body.photo_url;
     const matric_date = req.body.matric_date;
     const grad_date   = req.body.graduate_in;
@@ -11,9 +12,9 @@ const createnewuser = (req, res) => {
     const telegram    = req.body.tg_handle;
 
     pool.query(
-        `INSERT INTO UsersInfo(user_id, name, nus_email, photo_url, matric_date, grad_date, major, telegram) 
-         VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [fbuid, name, nusemail, photo_url, matric_date, grad_date, major, telegram],
+        `INSERT INTO UsersInfo(user_id, name, nus_email, email, photo_url, matric_date, grad_date, major, telegram) 
+         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [fbuid, name, nusemail, email, photo_url, matric_date, grad_date, major, telegram],
         (q_err, q_res) => {
             if (q_err) {
                 // uid/email not unique
