@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import SwipeableViews from "react-swipeable-views";
 import { useHistory } from "react-router-dom";
@@ -28,6 +28,7 @@ import LogoHorizontal from "components/LogoHorizontal";
 import { selectAuth } from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
+import { fetchUserInfo, selectUserError } from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,10 +66,27 @@ const useStyles = makeStyles((theme) => ({
 
 function UserAuth() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   // step 0: firebase loading
   // step 1: social / email login
   // step 2: additional details
-  const [authStep, setAuthStep] = useState(2);
+  const [authStep, setAuthStep] = useState(0);
+  const userError = useSelector(selectUserError);
+  const fbLoggedIn = !isEmpty(useSelector(selectAuth));
+
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!fbLoggedIn) {
+      setAuthStep(1);
+      return;
+    }
+    if (userError === "Record not found for UID") {
+      setAuthStep(2);
+    }
+  }, [userError, fbLoggedIn]);
 
   return (
     <div className={classes.root}>
@@ -103,10 +121,10 @@ function AuthForm() {
   const firebase = useFirebase();
 
   // Redirect user to dash if already logged in
-  useEffect(() => {
-    if (!isLoaded(auth) || isEmpty(auth)) return;
-    history.push("/dashboard");
-  }, [auth, history]);
+  // useEffect(() => {
+  //   if (!isLoaded(auth) || isEmpty(auth)) return;
+  //   history.push("/dashboard");
+  // }, [auth, history]);
 
   const handleSubmit = async () => {
     if (isCreateAccount) {
@@ -370,6 +388,8 @@ function DetailsForm() {
   const onDetailsFormSubmit = (data) => {
     console.log(data);
     console.log(errors);
+    data.matricDate = stripDateDay(data.matricDate);
+    data.gradDate = stripDateDay(data.gradDate);
   };
 
   const fieldRequired = (
