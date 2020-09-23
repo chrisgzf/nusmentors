@@ -15,7 +15,7 @@ const morgan = require("morgan"); // logs requests
 const app = express();
 
 // App Middleware
-const whitelist = ["http://localhost:3000", "https://nusmentors.vercel.app/"];
+const whitelist = ["http://localhost:3000", "https://nusmentors.herokuapp.com/"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
