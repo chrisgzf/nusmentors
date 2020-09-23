@@ -13,11 +13,10 @@ const auth = require("./impl/auth");
 router.route("/auth")
     .post(auth.createnewuser)
     .put(auth.updatenusemail);
-router.route("/auth/:uid")
+router.route("/auth/info")
     .get(auth.getuserinfo)
-    .put(auth.updateinfo)
-    .post(auth.authenticate);
-router.route("/auth/:uid/verify")
+    .put(auth.updateinfo);
+router.route("/auth/verify")
     .put(auth.verifyemail)
     .get(auth.checkifverified);
 /*====== END AUTH ======*/
@@ -34,7 +33,7 @@ router.route("/reqs/:req_id")
     .delete(reqs.deleterequest)
     .put(reqs.updaterequest);
 
-router.route("/reqs/:req_id/:mentor_uid")
+router.route("/reqs/:req_id/accept")
     .put(reqs.acceptrequest);
 
 /*====== END REQS ======*/
@@ -42,15 +41,15 @@ router.route("/reqs/:req_id/:mentor_uid")
 /*------ MATCHES -------*/
 const matches = require("./impl/matches");
 
-router.route("/matches/contact/:req_id/:requester_uid")
+router.route("/matches/contact/:req_id")
     .get(matches.getcontact); //obsolete
 router.route("/matches/:req_id")
     .delete(matches.dropmentee)
     .put(matches.markascomplete);
 
-router.route("/matches/mentees/:requester_uid")
+router.route("/matches/mentees")
     .get(matches.getmenteementorships); //includes status dropped/completed
-router.route("/matches/mentors/:requester_uid")
+router.route("/matches/mentors")
     .get(matches.getmentormentorships);
 /*===== END MATCHES ====*/
 

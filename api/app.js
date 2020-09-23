@@ -11,6 +11,35 @@ const bodyParser = require("body-parser"); // turns response into usable format
 const cors = require("cors"); // allows/disallows cross-site communication
 const morgan = require("morgan"); // logs requests
 
+// Database
+const pool = require("./db");
+
+// Auth
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./config/nusmentors-firebase-adminsdk-key.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://nusmentors.firebaseio.com"
+});
+
+function checkAuth(req, res, next) {
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
+        admin.auth().verifyIdToken(token)
+          .then((decodedToken) => {
+              let uid = decodedToken.uid;
+              req.body = { ...req.body, uid: uid};
+              next()
+          }).catch(() => {
+              res.status(403).send('Unauthorized')
+          });
+    } else {
+        res.status(403).send('Unauthorized')
+    }
+}
+
 // App
 const app = express();
 
@@ -31,9 +60,13 @@ app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
 if (mode == MODES.PROD) {
+
+  app.use('/', checkAuth);
+
   // Routes
   const router = require("./routes/routes");
   app.use("/", router);
+
 } else if (mode == MODES.DEBUG) {
   // Test db queries
   const main = require("./testRoutes/main");
@@ -48,3 +81,4 @@ if (mode == MODES.PROD) {
 app.listen(process.env.PORT || 8080, () => {
   console.log(`app is running on port ${process.env.PORT || 8080}`);
 });
+

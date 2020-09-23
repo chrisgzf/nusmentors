@@ -2,7 +2,7 @@ const pool = require('../../db');
 
 const getcontact = (req, res) => {
     const req_id  = req.params.req_id;
-    const req_uid = req.params.requester_uid;
+    const req_uid = req.body.uid; //requester_uid
 
     pool.query(
         `SELECT mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg
@@ -46,7 +46,7 @@ const getcontact = (req, res) => {
 
 const dropmentee = (req, res) => {
     const req_id = req.params.req_id;
-    const uid = req.body.mentor_uid;
+    const uid = req.body.uid; //mentor_id
 
     pool.query(
         `UPDATE Mentorship SET date_dropped = NOW() WHERE req_id = $1 AND mentor_id = $2`,
@@ -79,7 +79,7 @@ const markascomplete = (req, res) => {
 }
 
 const getmenteementorships = (req, res) => {
-    const req_uid = req.params.requester_uid;
+    const req_uid = req.body.uid; //requester_uid
 
     pool.query(
         `SELECT NOW() as time_of_request, req_id, problem_type, title, description, career_type, date_created, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg, status
@@ -100,7 +100,7 @@ const getmenteementorships = (req, res) => {
 };
 
 const getmentormentorships = (req, res) => {
-    const req_uid = req.params.requester_uid;
+    const req_uid = req.body.uid; //requester_uid
 
     pool.query(
         `SELECT NOW() as time_of_request, req_id, problem_type, title, description, career_type, date_created, mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, status
