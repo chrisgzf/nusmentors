@@ -30,7 +30,7 @@ const createnewuser = (req, res) => {
         // uid/email not unique
         res.status(409).send(q_err.message || q_err);
       } else {
-        res.sendStatus(200);
+        res.status(200).send({ message: "OK" });
       }
     },
   );
