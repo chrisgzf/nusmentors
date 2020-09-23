@@ -1,4 +1,4 @@
-INSERT INTO UsersInfo(user_id, name, nus_email, matric_date, major) VALUES ('1', 'Alice', 'alice@u.nus.edu', NOW(), 'CS');
+INSERT INTO UsersInfo(user_id, name, nus_email, email, matric_date, major) VALUES ('1', 'Alice', 'alice@u.nus.edu', 'alice@gmail.com', NOW(), 'CS');
 INSERT INTO UsersInfo(user_id, name, nus_email, matric_date, major, is_verified_email) VALUES ('2', 'Bob', 'bob@u.nus.edu', NOW(), 'CS', TRUE);
 INSERT INTO UsersInfo(user_id, name, nus_email, matric_date, major, is_verified_email) VALUES ('3', 'Charlie', 'charlie@u.nus.edu', NOW(), 'CS', TRUE);
 INSERT INTO UsersInfo(user_id, name, nus_email, matric_date, major, is_verified_email) VALUES ('4', 'Dan', 'dan@u.nus.edu', NOW(), 'CS', TRUE);
