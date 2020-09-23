@@ -44,7 +44,7 @@ function checkAuth(req, res, next) {
 const app = express();
 
 // App Middleware
-const whitelist = ["http://localhost:3000", "https://nusmentors.vercel.app/"];
+const whitelist = ["http://localhost:3000", "https://nusmentors-api.herokuapp.com/"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
