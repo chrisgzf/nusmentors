@@ -28,12 +28,7 @@ import LogoHorizontal from "components/LogoHorizontal";
 import fbInstance, { selectAuth, selectFBEmailVerified } from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
-import {
-  fetchUserInfo,
-  postUserInfo,
-  selectName,
-  selectUserError,
-} from "slices/userSlice";
+import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,7 +74,6 @@ function UserAuth() {
   // step 2: additional details
   // step 3: verify email address
   const [authStep, setAuthStep] = useState(0);
-  const userError = useSelector(selectUserError);
   const fbLoggedIn = !isEmpty(useSelector(selectAuth));
   const fbEmailVerified = useSelector(selectFBEmailVerified);
   const userName = useSelector(selectName);
@@ -102,7 +96,7 @@ function UserAuth() {
       return;
     }
     history.push("/dashboard");
-  }, [userError, fbLoggedIn, fbEmailVerified, userName, history]);
+  }, [fbLoggedIn, fbEmailVerified, userName, history]);
 
   return (
     <div className={classes.root}>
