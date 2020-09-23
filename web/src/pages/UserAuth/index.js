@@ -80,7 +80,7 @@ function UserAuth() {
 
   useEffect(() => {
     dispatch(fetchUserInfo());
-  }, [dispatch]);
+  }, [dispatch, fbLoggedIn]);
 
   useEffect(() => {
     if (!fbLoggedIn) {

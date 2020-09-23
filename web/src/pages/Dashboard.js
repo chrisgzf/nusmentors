@@ -1,7 +1,7 @@
 import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectFBDisplayName } from "utils/firebase";
+import { selectName } from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
   const classes = useStyles();
-  const displayName = useSelector(selectFBDisplayName);
+  const displayName = useSelector(selectName);
 
   const welcomeMessage = (
     <Grid item xs={12}>
