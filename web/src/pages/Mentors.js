@@ -1,33 +1,45 @@
-//TODO: FIX MENTORS PAGE
-import { Box, Typography } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchRequests,
-  getRequests,
-  getRequestState,
-} from "slices/requestsSlice";
+import { Link } from "react-router-dom";
+import { fetchMentors, getMentors, getMentorState } from "slices/mentorsSlice";
 
 const Mentors = () => {
   const dispatch = useDispatch();
-  const requests = useSelector(getRequests);
-  const requestStatus = useSelector(getRequestState);
-
+  const mentors = useSelector(getMentors);
+  const mentorStatus = useSelector(getMentorState);
   // runs once
   useEffect(() => {
-    if (requestStatus === "idle") {
-      dispatch(fetchRequests());
+    if (mentorStatus === "idle") {
+      dispatch(fetchMentors());
     }
-  }, [dispatch, requestStatus]);
+  }, [dispatch, mentorStatus]);
 
   return (
     <Box>
       <Typography align="center" variant="h4">
         You have matched with these mentors
       </Typography>
-      {requests.map((request, index) => (
-        <RequestCard key={index} request={request} />
+      {mentors.map((mentor, index) => (
+        <RequestCard
+          key={index}
+          name={mentor.name}
+          title={mentor.title}
+          description={mentor.description}
+          matricDate={mentor.matric_date}
+          major={mentor.major}
+          dateCreated={mentor.date_created}
+          action={
+            <Button
+              component={Link}
+              variant="contained"
+              to={`/mentors/${mentor.req_id}`}
+            >
+              Details
+            </Button>
+          }
+        />
       ))}
     </Box>
   );

@@ -1,7 +1,8 @@
-import { Box, Typography } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   fetchRequests,
   getRequests,
@@ -26,7 +27,25 @@ const Requests = () => {
         These guys need help
       </Typography>
       {requests.map((request, index) => (
-        <RequestCard key={index} request={request} />
+        <RequestCard
+          key={index}
+          name={request.name}
+          title={request.title}
+          description={request.description}
+          matricDate={request.matric_date}
+          major={request.major}
+          dateCreated={request.date_created}
+          action={
+            <Button
+              component={Link}
+              variant="contained"
+              color="primary"
+              to={`/accept-request/${request.req_id}`}
+            >
+              Match
+            </Button>
+          }
+        />
       ))}
     </Box>
   );
