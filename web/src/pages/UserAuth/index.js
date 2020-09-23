@@ -27,6 +27,7 @@ import {
 import LogoHorizontal from "components/LogoHorizontal";
 import { selectAuth } from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
+import { Controller, useForm } from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,7 +68,7 @@ function UserAuth() {
   // step 0: firebase loading
   // step 1: social / email login
   // step 2: additional details
-  const [authStep, setAuthStep] = useState(1);
+  const [authStep, setAuthStep] = useState(2);
 
   return (
     <div className={classes.root}>
@@ -340,21 +341,40 @@ function AuthForm() {
 function DetailsForm() {
   const classes = useStyles();
   const theme = useTheme();
+  const { register, handleSubmit, errors, control, setValue } = useForm();
 
-  const [email, setEmail] = useState("");
-  const [nusEmail, setNusEmail] = useState("");
-  const [name, setName] = useState("");
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
-  const [major, setMajor] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
-  const [telegram, setTelegram] = useState("");
+
+  useEffect(() => {
+    register("matricDate", {
+      required: true,
+      validate: {
+        invalidDate: (date) => date < gradDate,
+      },
+    });
+    register("gradDate", {
+      required: true,
+      validate: {
+        invalidDate: (date) => date > matricDate,
+      },
+    });
+  }, [register, gradDate, matricDate]);
 
   const stripDateDay = (date) => {
     let newDate = date.toISOString().split("T")[0];
     newDate = newDate.slice(0, -2) + "01";
     return newDate;
   };
+
+  const onDetailsFormSubmit = (data) => {
+    console.log(data);
+    console.log(errors);
+  };
+
+  const fieldRequired = (
+    <span style={{ color: "red" }}>This field is required</span>
+  );
 
   return (
     <Container
@@ -369,148 +389,188 @@ function DetailsForm() {
           Please fill these additional details to complete your NUSMentors
           profile:
         </p>
-        <form noValidate autoComplete="off" className={classes.form}>
-          <FormControl fullWidth>
-            <TextField
-              label="Display Name"
-              id="name"
-              fullWidth
-              required
-              margin="dense"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </FormControl>
+        <form
+          noValidate
+          autoComplete="off"
+          className={classes.form}
+          onSubmit={handleSubmit(onDetailsFormSubmit)}
+        >
+          <TextField
+            label="Display Name"
+            id="name"
+            fullWidth
+            required
+            margin="dense"
+            name="name"
+            helperText={errors.name ? fieldRequired : null}
+            inputRef={(ref) => register(ref, { required: true })}
+          />
           <Grid container justify="space-between" alignItems="center">
             <Grid item xs={12} sm={5}>
-              <FormControl fullWidth>
-                <TextField
-                  label="Email"
-                  id="email"
-                  required
-                  type="email"
-                  fullWidth
-                  margin="dense"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
-                <FormHelperText>For login and contact purposes</FormHelperText>
-              </FormControl>
+              <TextField
+                label="Email"
+                id="email"
+                required
+                type="email"
+                fullWidth
+                margin="dense"
+                name="email"
+                inputRef={(ref) =>
+                  register(ref, { required: true, pattern: /\S+@\S+\.\S+/ })
+                }
+                helperText={
+                  errors.email ? (
+                    errors.email.type === "required" ? (
+                      fieldRequired
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        Please enter a valid email address
+                      </span>
+                    )
+                  ) : (
+                    "For login and contact purposes"
+                  )
+                }
+              />
             </Grid>
             <Grid item xs={12} sm={5}>
-              <FormControl fullWidth>
-                <TextField
-                  label="NUS Email"
-                  id="nus-email"
-                  required
-                  type="email"
-                  fullWidth
-                  margin="dense"
-                  value={nusEmail}
-                  onChange={(e) => {
-                    setNusEmail(e.target.value);
-                  }}
-                />
-                <FormHelperText>
-                  For NUS student / alumnus verification
-                </FormHelperText>
-              </FormControl>
+              <TextField
+                label="NUS Email"
+                id="nus-email"
+                required
+                type="email"
+                fullWidth
+                margin="dense"
+                name="nusEmail"
+                helperText={
+                  errors.nusEmail ? (
+                    errors.nusEmail.type === "required" ? (
+                      fieldRequired
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        Please enter a valid NUS email address
+                      </span>
+                    )
+                  ) : (
+                    "For NUS student/alumnus verification"
+                  )
+                }
+                inputRef={(ref) =>
+                  register(ref, {
+                    required: true,
+                    pattern: /\S+@\S*nus\.edu\S*/,
+                  })
+                }
+              />
             </Grid>
           </Grid>
           <Grid container justify="space-between" alignItems="center">
             <Grid item xs={12} sm={5}>
-              <FormControl fullWidth>
-                <KeyboardDatePicker
-                  required
-                  disableToolbar
-                  margin="normal"
-                  fullWidth
-                  id="matric-date-picker"
-                  label="Matriculation Month"
-                  views={["year", "month"]}
-                  value={matricDate}
-                  onChange={setMatricDate}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-              </FormControl>
+              <KeyboardDatePicker
+                disableToolbar
+                margin="normal"
+                fullWidth
+                required
+                id="matric-date-picker"
+                label="Matriculation Month"
+                views={["year", "month"]}
+                value={matricDate}
+                onChange={(date) => {
+                  setMatricDate(date);
+                  setValue("matricDate", date, { shouldValidate: true });
+                }}
+                helperText={
+                  errors.matricDate ? (
+                    errors.matricDate.type === "required" ? (
+                      fieldRequired
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        Matriculation date must be before graduation date
+                      </span>
+                    )
+                  ) : null
+                }
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
             </Grid>
             <Grid item xs={12} sm={5}>
-              <FormControl fullWidth>
-                <KeyboardDatePicker
-                  required
-                  disableToolbar
-                  fullWidth
-                  margin="normal"
-                  id="matric-date-picker"
-                  label="Graduation Month"
-                  views={["year", "month"]}
-                  value={gradDate}
-                  onChange={setGradDate}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-              </FormControl>
+              <KeyboardDatePicker
+                disableToolbar
+                fullWidth
+                required
+                margin="normal"
+                id="grad-date-picker"
+                label="Graduation Month"
+                views={["year", "month"]}
+                value={gradDate}
+                helperText={
+                  errors.gradDate ? (
+                    errors.gradDate.type === "required" ? (
+                      fieldRequired
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        Graduation date must be after matriculation date
+                      </span>
+                    )
+                  ) : null
+                }
+                onChange={(date) => {
+                  setGradDate(date);
+                  setValue("gradDate", date, { shouldValidate: true });
+                }}
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+              />
             </Grid>
           </Grid>
           <FormControl fullWidth required>
             <InputLabel id="major-label">Major</InputLabel>
-            <Select
-              labelId="major-label"
-              fullWidth
-              displayEmpty
-              value={major}
-              style={{ textAlign: "left" }}
-              onChange={(e) => {
-                setMajor(e.target.value);
-              }}
-            >
-              {[
-                "Business Analytics",
-                "Computer Science",
-                "Information Security",
-                "Information Systems",
-                "Computer Engineering",
-              ].map((major) => (
-                <MenuItem key={major} value={major}>
-                  {major}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField
-              label="Photo URL (todo replace this)"
-              fullWidth
-              margin="dense"
-              value={photoUrl}
-              onChange={(e) => {
-                setPhotoUrl(e.target.value);
-              }}
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField
-              label="Telegram Handle (optional)"
-              fullWidth
-              margin="dense"
-              value={telegram}
-              onChange={(e) => {
-                setTelegram(e.target.value);
-              }}
+            <Controller
+              as={
+                <Select fullWidth style={{ textAlign: "left" }}>
+                  {[
+                    "Business Analytics",
+                    "Computer Science",
+                    "Information Security",
+                    "Information Systems",
+                    "Computer Engineering",
+                  ].map((major) => (
+                    <MenuItem key={major} value={major}>
+                      {major}
+                    </MenuItem>
+                  ))}
+                </Select>
+              }
+              name="major"
+              rules={{ required: true }}
+              control={control}
+              defaultValue=""
             />
             <FormHelperText>
-              To help your mentee/mentor contact you
+              {errors.major ? fieldRequired : null}
             </FormHelperText>
           </FormControl>
+          <TextField
+            label="Photo URL (todo replace this)"
+            fullWidth
+            margin="dense"
+            name="photoUrl"
+            inputRef={register}
+          />
+          <TextField
+            label="Telegram Handle (optional)"
+            fullWidth
+            margin="dense"
+            name="telegram"
+            helperText="To help your mentee/mentor contact you"
+            inputRef={register}
+            // TODO: check for @ in telegram handle
+          />
           <div style={{ textAlign: "right", marginTop: theme.spacing(4) }}>
-            <Button variant="contained" color="primary" onClick={null}>
+            <Button type="submit" variant="contained" color="primary">
               Submit
             </Button>
           </div>
