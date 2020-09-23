@@ -21,43 +21,50 @@ const serviceAccount = require("./config/nusmentors-firebase-adminsdk-key.json")
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://nusmentors.firebaseio.com"
+  databaseURL: "https://nusmentors.firebaseio.com",
 });
 
 function checkAuth(req, res, next) {
   if (req.headers.authorization) {
-    const token = req.headers.authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
-    admin.auth().verifyIdToken(token)
+    const token = req.headers.authorization.split(" ")[1]; // comply with frontend header (Bearer ${token})
+    admin
+      .auth()
+      .verifyIdToken(token)
       .then((decodedToken) => {
         let uid = decodedToken.uid;
-        req.body = { ...req.body, uid: uid};
+        req.body = { ...req.body, uid: uid };
         next();
-      }).catch(() => {
+      })
+      .catch(() => {
         if (process.env.NODE_ENV !== "production") {
           console.log("No uid found, bypassing in development with uid 1");
-          req.body = { ...req.body, uid: "1"};
+          req.body = { ...req.body, uid: "1" };
           next();
         } else {
-          res.status(403).send('Unauthorized');
+          res.status(403).send("Unauthorized");
         }
       });
   } else {
     if (process.env.NODE_ENV !== "production") {
       console.log("No uid found, bypassing in development with uid 1");
-      req.body = { ...req.body, uid: "1"};
+      req.body = { ...req.body, uid: "1" };
       next();
     } else {
-      res.status(403).send('Unauthorized');
+      res.status(403).send("Unauthorized");
     }
   }
-    
 }
 
 // App
 const app = express();
 
 // App Middleware
-const whitelist = ["http://localhost:3000", "https://nusmentors-api.herokuapp.com/"];
+const whitelist = [
+  "http://localhost:3000",
+  "https://nusmentors-api.herokuapp.com/",
+  "https://nusmentors.vercel.app/",
+  "https://nusmentors.com/",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -73,13 +80,11 @@ app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
 if (mode == MODES.PROD) {
-
-  app.use('/', checkAuth);
+  app.use("/", checkAuth);
 
   // Routes
   const router = require("./routes/routes");
   app.use("/", router);
-
 } else if (mode == MODES.DEBUG) {
   // Test db queries
   const main = require("./testRoutes/main");
@@ -94,4 +99,3 @@ if (mode == MODES.PROD) {
 app.listen(process.env.PORT || 8080, () => {
   console.log(`app is running on port ${process.env.PORT || 8080}`);
 });
-
