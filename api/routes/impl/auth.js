@@ -44,7 +44,7 @@ const updatenusemail = (req, res) => {
 };
 
 const verifyemail = (req, res) => {
-    const uid      = req.params.uid;
+    const uid      = req.body.uid;
     const nusemail = req.body.email;
     
     pool.query(
@@ -61,7 +61,7 @@ const verifyemail = (req, res) => {
 };
 
 const checkifverified = (req, res) => {
-    const uid = req.params.uid;
+    const uid = req.body.uid;
 
     pool.query(
         `SELECT is_verified_email FROM UsersInfo WHERE user_id = $1`,
@@ -77,7 +77,7 @@ const checkifverified = (req, res) => {
 };
 
 const getuserinfo = (req, res) => {
-    const uid = req.params.uid;
+    const uid = req.body.uid;
 
     pool.query(
         `SELECT name, photo_url, nus_email, matric_date, grad_date, major, telegram FROM UsersInfo WHERE user_id = $1`,
@@ -95,7 +95,7 @@ const getuserinfo = (req, res) => {
 };
 
 const updateinfo = (req, res) => {
-    const uid       = req.params.uid;
+    const uid       = req.body.uid;
     const name      = req.body.name;
     const photo_url = req.body.photo_url;
     const grad_date = req.body.graduate_in;

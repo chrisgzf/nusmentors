@@ -17,13 +17,15 @@ const getallrequests = (req, res) => {
 
 const postnewrequest = (req, res) => {
   const {
-    mentee_id,
+    uid,
     problem_type,
     title,
     description,
     career_type,
     date_created, // if date is undefined, we will use the current date
   } = req.body;
+
+  const mentee_id = uid;
 
   pool.query(
     `INSERT INTO Requests(mentee_id, problem_type, title, description, career_type, date_created)
@@ -86,7 +88,8 @@ const updaterequest = (req, res) => {
 // upon accepting a request, the req_id and mentor_uid is added to mentorship table 
 // and the request's should_display attribute is set to FALSE.
 const acceptrequest = (req, res) => {
-  const { req_id, mentor_uid } = req.params;
+  const { req_id } = req.params;
+  const mentor_uid = req.body.uid;
   pool.query(
     `CALL acceptRequest($1, $2)`,
     [req_id, mentor_uid],
