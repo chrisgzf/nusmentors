@@ -57,6 +57,21 @@ const useStyles = makeStyles((theme) => ({
 
 function UserAuth() {
   const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <Container maxWidth="lg">
+        <div className={classes.logo}>
+          <LogoHorizontal scale="100%" />
+        </div>
+        <AuthForm />
+      </Container>
+    </div>
+  );
+}
+
+function AuthForm() {
+  const classes = useStyles();
   const theme = useTheme();
 
   const [tabValue, setTabValue] = useState(0);
@@ -161,176 +176,170 @@ function UserAuth() {
   }, [fbAuthError]);
 
   return (
-    <div className={classes.root}>
-      <Container maxWidth="lg">
-        <div className={classes.logo}>
-          <LogoHorizontal scale="100%" />
-        </div>
-        <Typography className={classes.title} variant="h4" component="h1">
-          Sign in/Register
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={5}>
-            <Paper className={classes.paper}>
-              <Typography
-                className={classes.sectionTitle}
-                variant="h6"
-                component="h2"
-              >
-                Social Login
-              </Typography>
-              <Button
-                className={classes.socialLoginButtons}
-                variant="contained"
-                color="primary"
-                disabled
-              >
-                Sign in with Google
-              </Button>
-              <Button
-                className={classes.socialLoginButtons}
-                variant="contained"
-                color="primary"
-                onClick={() => handleSocial("github")}
-              >
-                Sign in with GitHub
-              </Button>
-              <Button
-                className={classes.socialLoginButtons}
-                variant="contained"
-                color="primary"
-                disabled
-              >
-                Sign in with Facebook
-              </Button>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={7}>
-            <Paper
-              className={classes.paper}
-              style={{ paddingTop: "0", paddingBottom: "0" }}
+    <>
+      <Typography className={classes.title} variant="h4" component="h1">
+        Sign in/Register
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={5}>
+          <Paper className={classes.paper}>
+            <Typography
+              className={classes.sectionTitle}
+              variant="h6"
+              component="h2"
             >
-              <Tabs
-                value={tabValue}
-                onChange={handleTabChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-                style={{ width: "100%" }}
-              >
-                <Tab label="Sign in" />
-                <Tab label="Register" />
-              </Tabs>
-              <SwipeableViews
-                axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                index={tabValue}
-                onChangeIndex={handleChangeIndex}
-              >
-                <TabPanel value={tabValue} index={0} dir={theme.direction}>
-                  <form noValidate autoComplete="off" className={classes.form}>
-                    <TextField
-                      id="email"
-                      label="Email"
-                      type="email"
-                      fullWidth
-                      margin="dense"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                      }}
-                    />
-                    <TextField
-                      id="password"
-                      label="Password"
-                      type="password"
-                      fullWidth
-                      margin="dense"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                  </form>
+              Social Login
+            </Typography>
+            <Button
+              className={classes.socialLoginButtons}
+              variant="contained"
+              color="primary"
+              disabled
+            >
+              Sign in with Google
+            </Button>
+            <Button
+              className={classes.socialLoginButtons}
+              variant="contained"
+              color="primary"
+              onClick={() => handleSocial("github")}
+            >
+              Sign in with GitHub
+            </Button>
+            <Button
+              className={classes.socialLoginButtons}
+              variant="contained"
+              color="primary"
+              disabled
+            >
+              Sign in with Facebook
+            </Button>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={7}>
+          <Paper
+            className={classes.paper}
+            style={{ paddingTop: "0", paddingBottom: "0" }}
+          >
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label="full width tabs example"
+              style={{ width: "100%" }}
+            >
+              <Tab label="Sign in" />
+              <Tab label="Register" />
+            </Tabs>
+            <SwipeableViews
+              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+              index={tabValue}
+              onChangeIndex={handleChangeIndex}
+            >
+              <TabPanel value={tabValue} index={0} dir={theme.direction}>
+                <form noValidate autoComplete="off" className={classes.form}>
+                  <TextField
+                    id="email"
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    margin="dense"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                  <TextField
+                    id="password"
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                </form>
+                <Box p={1}>
+                  <span style={{ color: "red" }}>{authError}&nbsp;</span>
+                </Box>
+                <Button
+                  className={classes.buttons}
+                  variant="contained"
+                  color="default"
+                  disabled
+                >
+                  Forgot Password
+                </Button>
+                <Button
+                  className={classes.buttons}
+                  variant="contained"
+                  color="primary"
+                  disabled={!canSignIn}
+                  onClick={handleSubmit}
+                >
+                  Sign in
+                </Button>
+              </TabPanel>
+              <TabPanel value={tabValue} index={1} dir={theme.direction}>
+                <form noValidate autoComplete="off" className={classes.form}>
+                  <TextField
+                    id="email"
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    margin="dense"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                  <TextField
+                    id="password"
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                  <TextField
+                    id="password"
+                    label="Confirm Password"
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    value={passwordAgain}
+                    onChange={(e) => {
+                      setPasswordAgain(e.target.value);
+                    }}
+                  />
                   <Box p={1}>
                     <span style={{ color: "red" }}>{authError}&nbsp;</span>
                   </Box>
-                  <Button
-                    className={classes.buttons}
-                    variant="contained"
-                    color="default"
-                    disabled
-                  >
-                    Forgot Password
-                  </Button>
-                  <Button
-                    className={classes.buttons}
-                    variant="contained"
-                    color="primary"
-                    disabled={!canSignIn}
-                    onClick={handleSubmit}
-                  >
-                    Sign in
-                  </Button>
-                </TabPanel>
-                <TabPanel value={tabValue} index={1} dir={theme.direction}>
-                  <form noValidate autoComplete="off" className={classes.form}>
-                    <TextField
-                      id="email"
-                      label="Email"
-                      type="email"
-                      fullWidth
-                      margin="dense"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                      }}
-                    />
-                    <TextField
-                      id="password"
-                      label="Password"
-                      type="password"
-                      fullWidth
-                      margin="dense"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                    <TextField
-                      id="password"
-                      label="Confirm Password"
-                      type="password"
-                      fullWidth
-                      margin="dense"
-                      value={passwordAgain}
-                      onChange={(e) => {
-                        setPasswordAgain(e.target.value);
-                      }}
-                    />
-                    <Box p={1}>
-                      <span style={{ color: "red" }}>{authError}&nbsp;</span>
-                    </Box>
-                  </form>
-                  <Button
-                    className={classes.buttons}
-                    variant="contained"
-                    color="primary"
-                    disabled={!canRegister}
-                    onClick={handleSubmit}
-                  >
-                    Register
-                  </Button>
-                </TabPanel>
-              </SwipeableViews>
-            </Paper>
-          </Grid>
+                </form>
+                <Button
+                  className={classes.buttons}
+                  variant="contained"
+                  color="primary"
+                  disabled={!canRegister}
+                  onClick={handleSubmit}
+                >
+                  Register
+                </Button>
+              </TabPanel>
+            </SwipeableViews>
+          </Paper>
         </Grid>
-      </Container>
-    </div>
+      </Grid>
+    </>
   );
 }
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
