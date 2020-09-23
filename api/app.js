@@ -25,19 +25,23 @@ admin.initializeApp({
 });
 
 function checkAuth(req, res, next) {
+    req.body = { ...req.body, uid: "1"};
+    next();
+    /*
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
         admin.auth().verifyIdToken(token)
           .then((decodedToken) => {
               let uid = decodedToken.uid;
               req.body = { ...req.body, uid: uid};
-              next()
+              next();
           }).catch(() => {
               res.status(403).send('Unauthorized')
           });
     } else {
         res.status(403).send('Unauthorized')
     }
+    */
 }
 
 // App
