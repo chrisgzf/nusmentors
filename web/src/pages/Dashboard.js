@@ -1,27 +1,7 @@
-import {
-  Grid,
-  List,
-  ListItem,
-  makeStyles,
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
 import { selectDisplayName } from "utils/firebase";
-
-//Placeholder values
-const mentees = [
-  {
-    name: "Kai Xin",
-  },
-  {
-    name: "Thuya",
-  },
-  {
-    name: "Clement",
-  },
-];
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -48,23 +28,9 @@ const Dashboard = () => {
     </Grid>
   );
 
-  const menteeBoard = (
-    <Grid item xs={12}>
-      <Paper className={classes.paper}>
-        <Typography variant="h5">You have paired up with</Typography>
-        <List>
-          {mentees.map((mentee, id) => (
-            <ListItem key={id}>{mentee.name}</ListItem>
-          ))}
-        </List>
-      </Paper>
-    </Grid>
-  );
-
   return (
     <Grid container spacing={2}>
       {welcomeMessage}
-      {menteeBoard}
     </Grid>
   );
 };

@@ -39,17 +39,21 @@ const requestsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    // @ts-ignore
     [fetchRequests.pending]: (state, action) => {
       state.status = "loading";
     },
+    // @ts-ignore
     [fetchRequests.fulfilled]: (state, action) => {
       state.status = "succeeded";
       state.items = action.payload;
     },
+    // @ts-ignore
     [fetchRequests.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     },
+    // @ts-ignore
     [addRequest.fulfilled]: (state, action) => {
       state.items.push(action.payload);
     },

@@ -1,33 +1,46 @@
 //TODO: FIX MENTORS PAGE
-import { Box, Typography } from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchRequests,
-  getRequests,
-  getRequestState,
-} from "slices/requestsSlice";
+import { Link } from "react-router-dom";
+import { fetchMentees, getMentees, getMenteeState } from "slices/menteesSlice";
 
 const Mentees = () => {
   const dispatch = useDispatch();
-  const requests = useSelector(getRequests);
-  const requestStatus = useSelector(getRequestState);
-
+  const mentees = useSelector(getMentees);
+  const menteeStatus = useSelector(getMenteeState);
   // runs once
   useEffect(() => {
-    if (requestStatus === "idle") {
-      dispatch(fetchRequests());
+    if (menteeStatus === "idle") {
+      dispatch(fetchMentees());
     }
-  }, [dispatch, requestStatus]);
+  }, [dispatch, menteeStatus]);
 
   return (
     <Box>
       <Typography align="center" variant="h4">
         You have matched with these mentees
       </Typography>
-      {requests.map((request, index) => (
-        <RequestCard key={index} request={request} />
+      {mentees.map((mentee, index) => (
+        <RequestCard
+          key={index}
+          name={mentee.name}
+          title={mentee.title}
+          description={mentee.description}
+          matricDate={mentee.matric_date}
+          major={mentee.major}
+          dateCreated={mentee.date_created}
+          action={
+            <Button
+              component={Link}
+              variant="contained"
+              to={`/mentees/${mentee.req_id}`}
+            >
+              Details
+            </Button>
+          }
+        />
       ))}
     </Box>
   );

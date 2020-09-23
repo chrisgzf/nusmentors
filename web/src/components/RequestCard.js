@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -9,10 +7,12 @@ import {
   makeStyles,
   Typography,
   IconButton,
+  Box,
 } from "@material-ui/core";
 import Collapse from "@kunukn/react-collapse";
 import clsx from "clsx";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { timeSince } from "utils/time";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,24 +28,35 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
+  info: {
+    wordBreak: "break-word",
+    overflowWrap: "anywhere",
+  },
   actions: {
     justifyContent: "flex-end",
   },
 }));
 
-const RequestCard = ({ request, match = null }) => {
-  const { name, title, description, matric_date, major } = request;
+const RequestCard = ({
+  name = "",
+  title,
+  description,
+  matricDate = "",
+  major = "",
+  dateCreated,
+  contact = undefined,
+  action = null,
+}) => {
   // https://stackoverflow.com/questions/8152426/how-can-i-calculate-the-number-of-years-between-two-dates
   const currentYear =
-    new Date(
-      new Date().getTime() - new Date(matric_date).getTime(),
-    ).getFullYear() -
+    new Date(Date.now() - new Date(matricDate).getTime()).getFullYear() -
     1970 +
     1;
 
   const toExpandDescription = description.length > 100;
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
+  const postedDuration = timeSince(new Date(dateCreated));
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -59,11 +70,13 @@ const RequestCard = ({ request, match = null }) => {
       }
       subheader={
         <>
+          {name && currentYear && major && (
+            <Typography variant="subtitle2" color="primary">
+              by {name}, Year {currentYear}, Majoring in {major}
+            </Typography>
+          )}
           <Typography variant="subtitle1" color="textSecondary">
-            by {name}
-          </Typography>
-          <Typography variant="subtitle2" color="primary">
-            Year {currentYear}, {major}
+            posted {postedDuration} ago
           </Typography>
         </>
       }
@@ -83,6 +96,38 @@ const RequestCard = ({ request, match = null }) => {
       }
     />
   );
+
+  const contactDetails = contact ? (
+    <CardContent>
+      <Typography variant="h6">
+        <Box px={1}>{contact.title}</Box>
+      </Typography>
+      <Typography>
+        <Box
+          display="flex"
+          alignItems="flex-start"
+          flexWrap="wrap"
+          flexDirection="column"
+          justifyContent="space-between"
+        >
+          <Box className={classes.info} px={1}>
+            Name: <b>{contact.name}</b>
+          </Box>
+          <Box className={classes.info} px={1}>
+            Email: <b>{contact.email}</b>
+          </Box>
+          {contact.telegramHandle && (
+            <Box className={classes.info} px={1}>
+              telegram: <b>@{contact.telegramHandle}</b>
+            </Box>
+          )}
+          <Box className={classes.info} px={1}>
+            Major: <b>{contact.major}</b>
+          </Box>
+        </Box>
+      </Typography>
+    </CardContent>
+  ) : null;
 
   const requestBody = (
     <CardContent>
@@ -107,17 +152,9 @@ const RequestCard = ({ request, match = null }) => {
   return (
     <Card className={classes.root}>
       {requestTitle}
+      {contactDetails}
       {requestBody}
-      <CardActions className={classes.actions}>
-        <Button
-          component={Link}
-          variant="contained"
-          color="primary"
-          to={`/accept-request/${request.req_id}`}
-        >
-          Match
-        </Button>
-      </CardActions>
+      <CardActions className={classes.actions}>{action}</CardActions>
     </Card>
   );
 };
