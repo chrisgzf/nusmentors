@@ -25,23 +25,32 @@ admin.initializeApp({
 });
 
 function checkAuth(req, res, next) {
-    req.body = { ...req.body, uid: "1"};
-    next();
-    /*
-    if (req.headers.authorization) {
-        const token = req.headers.authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
-        admin.auth().verifyIdToken(token)
-          .then((decodedToken) => {
-              let uid = decodedToken.uid;
-              req.body = { ...req.body, uid: uid};
-              next();
-          }).catch(() => {
-              res.status(403).send('Unauthorized')
-          });
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
+    admin.auth().verifyIdToken(token)
+      .then((decodedToken) => {
+        let uid = decodedToken.uid;
+        req.body = { ...req.body, uid: uid};
+        next();
+      }).catch(() => {
+        if (process.env.NODE_ENV !== "production") {
+          console.log("No uid found, bypassing in development with uid 1");
+          req.body = { ...req.body, uid: "1"};
+          next();
+        } else {
+          res.status(403).send('Unauthorized');
+        }
+      });
+  } else {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("No uid found, bypassing in development with uid 1");
+      req.body = { ...req.body, uid: "1"};
+      next();
     } else {
-        res.status(403).send('Unauthorized')
+      res.status(403).send('Unauthorized');
     }
-    */
+  }
+    
 }
 
 // App
