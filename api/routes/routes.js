@@ -23,29 +23,41 @@ router.route("/auth/:uid/verify")
 /*====== END AUTH ======*/
 
 /*-------- REQS --------*/
-/*
+
 const reqs = require("./impl/reqs");
 
 router.route("/reqs")
-    .post(reqs.postnewhelp)
-    .get(reqs.getallrequests);
+    .get(reqs.getallrequests) //returns user info (not id)
+    .post(reqs.postnewrequest);
+
 router.route("/reqs/:req_id")
     .delete(reqs.deleterequest)
     .put(reqs.updaterequest);
+
 router.route("/reqs/:req_id/:mentor_uid")
     .put(reqs.acceptrequest);
-*/
+
 /*====== END REQS ======*/
 
 /*------ MATCHES -------*/
 const matches = require("./impl/matches");
 
-router.route("/matches/:req_id/:requester_uid")
-    .get(matches.getcontact);
+router.route("/matches/contact/:req_id/:requester_uid")
+    .get(matches.getcontact); //obsolete
 router.route("/matches/:req_id")
-    .get(matches.getmentorship)
     .delete(matches.dropmentee)
     .put(matches.markascomplete);
+
+router.route("/matches/mentees/:requester_uid")
+    .get(matches.getmenteementorships); //includes status dropped/completed
+router.route("/matches/mentors/:requester_uid")
+    .get(matches.getmentormentorships);
 /*===== END MATCHES ====*/
+
+/*------ NOTIFICATIONS -------*/
+const getnotifications = require("./impl/getnotifications");
+router.route("/notifs").get(getnotifications);
+
+/*===== END NOTIFICATIONS====*/
 
 module.exports = router;

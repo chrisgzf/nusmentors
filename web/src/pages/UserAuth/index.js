@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+
+import SwipeableViews from "react-swipeable-views";
+import { useHistory } from "react-router-dom";
+import { isEmpty, isLoaded, useFirebase } from "react-redux-firebase";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -12,9 +17,9 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import SwipeableViews from "react-swipeable-views";
 
 import LogoHorizontal from "components/LogoHorizontal";
+import { selectAuth } from "utils/firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,14 +59,43 @@ function UserAuth() {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordAgain, setPasswordAgain] = useState("");
+  const [fullName, setFullName] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [isCreateAccount, setIsCreateAccount] = useState(true);
+
+  const history = useHistory();
+  const auth = useSelector(selectAuth);
+  const firebase = useFirebase();
+
+  // Redirect user to dash if already logged in
+  useEffect(() => {
+    if (!isLoaded(auth) || isEmpty(auth)) return;
+    history.push("/dashboard");
+  }, [auth, history]);
+
+  const handleSubmit = async () => {
+    if (isCreateAccount) {
+      return firebase.createUser({ email, password });
+    } else {
+      return firebase.login({ email, password });
+    }
+  };
+
+  const handleSocial = async (provider) => {
+    return firebase.login({ provider, type: "popup" });
+  };
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   const handleChangeIndex = (index) => {
-    setValue(index);
+    setTabValue(index);
   };
 
   return (
@@ -87,6 +121,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
+                disabled
               >
                 Sign in with Google
               </Button>
@@ -94,6 +129,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
+                onClick={() => handleSocial("github")}
               >
                 Sign in with GitHub
               </Button>
@@ -101,6 +137,7 @@ function UserAuth() {
                 className={classes.socialLoginButtons}
                 variant="contained"
                 color="primary"
+                disabled
               >
                 Sign in with Facebook
               </Button>
@@ -111,16 +148,8 @@ function UserAuth() {
               className={classes.paper}
               style={{ paddingTop: "0", paddingBottom: "0" }}
             >
-              {/* <Typography
-                className={classes.sectionTitle}
-                variant="h6"
-                component="h2"
-              >
-                Email Login / Sign-up
-              </Typography> */}
-              {/* <AppBar position="static" color="default"> */}
               <Tabs
-                value={value}
+                value={tabValue}
                 onChange={handleChange}
                 indicatorColor="primary"
                 textColor="primary"
@@ -131,13 +160,12 @@ function UserAuth() {
                 <Tab label="Sign in" />
                 <Tab label="Register" />
               </Tabs>
-              {/* </AppBar> */}
               <SwipeableViews
                 axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                index={value}
+                index={tabValue}
                 onChangeIndex={handleChangeIndex}
               >
-                <TabPanel value={value} index={0} dir={theme.direction}>
+                <TabPanel value={tabValue} index={0} dir={theme.direction}>
                   <form noValidate autoComplete="off" className={classes.form}>
                     <TextField
                       id="email"
@@ -145,6 +173,10 @@ function UserAuth() {
                       type="email"
                       fullWidth
                       margin="dense"
+                      value={email}
+                      onClick={(e) => {
+                        setEmail(e.target.value);
+                      }}
                     />
                     <TextField
                       id="password"
@@ -152,6 +184,10 @@ function UserAuth() {
                       type="password"
                       fullWidth
                       margin="dense"
+                      value={password}
+                      onClick={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
                   </form>
                   <Button
@@ -169,13 +205,17 @@ function UserAuth() {
                     Sign in
                   </Button>
                 </TabPanel>
-                <TabPanel value={value} index={1} dir={theme.direction}>
+                <TabPanel value={tabValue} index={1} dir={theme.direction}>
                   <form noValidate autoComplete="off" className={classes.form}>
                     <TextField
                       id="name"
                       label="Full Name"
                       fullWidth
                       margin="dense"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                      }}
                     />
                     <TextField
                       id="email"
@@ -183,6 +223,10 @@ function UserAuth() {
                       type="email"
                       fullWidth
                       margin="dense"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
                     />
                     <TextField
                       id="password"
@@ -190,6 +234,10 @@ function UserAuth() {
                       type="password"
                       fullWidth
                       margin="dense"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
                     <TextField
                       id="password"
@@ -197,12 +245,17 @@ function UserAuth() {
                       type="password"
                       fullWidth
                       margin="dense"
+                      value={passwordAgain}
+                      onChange={(e) => {
+                        setPasswordAgain(e.target.value);
+                      }}
                     />
                   </form>
                   <Button
                     className={classes.buttons}
                     variant="contained"
                     color="primary"
+                    onClick={handleSubmit}
                   >
                     Register
                   </Button>
@@ -227,11 +280,7 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }

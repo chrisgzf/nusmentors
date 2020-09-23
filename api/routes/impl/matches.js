@@ -78,25 +78,40 @@ const markascomplete = (req, res) => {
     );
 }
 
-/* NOTE: getmentorship does not check for identity */
-const getmentorship = (req, res) => {
-    const req_id  = req.params.req_id;
+const getmenteementorships = (req, res) => {
     const req_uid = req.params.requester_uid;
 
     pool.query(
-        `SELECT NOW() as time_of_request, problem_type, title, description, career_type, date_created, mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg
-         FROM MentorContact NATURAL JOIN MenteeContact NATURAL JOIN Requests
-         WHERE req_id = $1`,
-        [req_id],
+        `SELECT NOW() as time_of_request, req_id, problem_type, title, description, career_type, date_created, mentee_uid, mentee_name, mentee_photo, mentee_email, mentee_major, mentee_tg, status
+         FROM MenteeContact NATURAL JOIN Requests NATURAL JOIN MentorshipMetadata
+         WHERE mentor_id = $1`,
+        [req_uid],
         (q_err, q_res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
-            } else if (q_res.length == 0) {
-                res.status(403).send("No permission to view request contacts.");
-                // request does not exist
             } else {
-                // assert q_res.length == 1
-                info = q_res.rows[0];
+                info = q_res.rows;
+
+                res.status(200).send(info);
+                // note timing info also sent as reference time in case frontend backend dif times. (relative time may be useful)
+            }
+        }
+    );
+};
+
+const getmentormentorships = (req, res) => {
+    const req_uid = req.params.requester_uid;
+
+    pool.query(
+        `SELECT NOW() as time_of_request, req_id, problem_type, title, description, career_type, date_created, mentor_uid, mentor_name, mentor_photo, mentor_email, mentor_major, mentor_tg, status
+         FROM MentorContact NATURAL JOIN Requests NATURAL JOIN MentorshipMetadata
+         WHERE mentee_id = $1`,
+        [req_uid],
+        (q_err, q_res) => {
+            if (q_err) {
+                res.status(500).send(q_err.message || q_err);
+            } else {
+                info = q_res.rows;
 
                 res.status(200).send(info);
                 // note timing info also sent as reference time in case frontend backend dif times. (relative time may be useful)
@@ -109,6 +124,7 @@ module.exports = {
     getcontact,
     dropmentee,
     markascomplete,
-    getmentorship
+    getmenteementorships,
+    getmentormentorships
 };
 
