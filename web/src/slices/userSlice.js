@@ -47,7 +47,7 @@ export const fetchUserInfo = createAsyncThunk(
 export const postUserInfo = createAsyncThunk(
   "user/postUserInfo",
   async (data, { dispatch }) => {
-    const response = await dispatch(sendRequest("auth", "POST", data));
+    await dispatch(sendRequest("auth", "POST", data));
     const {
       email,
       graduate_in,

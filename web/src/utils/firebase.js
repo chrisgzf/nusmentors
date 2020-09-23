@@ -32,3 +32,5 @@ export const selectFBPhotoURL = (state) => state.firebase.auth.photoURL;
 export const selectUid = (state) => state.firebase.auth.uid;
 export const selectFBAuthError = (state) => state.firebase.authError;
 export const selectIsFBLoaded = (state) => state.firebase.auth.isLoaded;
+
+export default firebase;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import SwipeableViews from "react-swipeable-views";
 import { useHistory } from "react-router-dom";
-import { isEmpty, isLoaded, useFirebase } from "react-redux-firebase";
+import { isEmpty, useFirebase } from "react-redux-firebase";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -25,12 +25,7 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import {
-  selectAuth,
-  selectFBEmail,
-  selectFBEmailVerified,
-  selectFBPhotoURL,
-} from "utils/firebase";
+import fbInstance, { selectAuth, selectFBEmailVerified } from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -118,7 +113,7 @@ function UserAuth() {
         {authStep === 0 && <CircularProgress />}
         {authStep === 1 && <AuthForm />}
         {authStep === 2 && <DetailsForm />}
-        {authStep === 3 && <div>Verify Email Lol</div>}
+        {authStep === 3 && <VerifyEmailPage />}
       </Container>
     </div>
   );
@@ -138,8 +133,6 @@ function AuthForm() {
   const [canRegister, setCanRegister] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(false);
 
-  const history = useHistory();
-  const auth = useSelector(selectAuth);
   const firebase = useFirebase();
 
   const handleSubmit = async () => {
@@ -656,6 +649,44 @@ function DetailsForm() {
             </Button>
           </div>
         </form>
+      </Paper>
+    </Container>
+  );
+}
+
+function VerifyEmailPage() {
+  const classes = useStyles();
+  const theme = useTheme();
+
+  const { email: fbEmail } = useSelector(selectAuth);
+
+  useEffect(() => {
+    fbInstance
+      .auth()
+      .currentUser.sendEmailVerification({
+        url: "https://nusmentors.com/login",
+      })
+      .then(() => {
+        console.log("Verification email sent.");
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+  }, []);
+
+  return (
+    <Container
+      maxWidth="md"
+      style={{ padding: "0", marginBottom: theme.spacing(2) }}
+    >
+      <Typography className={classes.title} variant="h5" component="h1">
+        Verify Email
+      </Typography>
+      <Paper className={classes.paper}>
+        <p>
+          We have sent you a verification email at <b>{fbEmail}</b>. Please open
+          your inbox and verify your email address.
+        </p>
       </Paper>
     </Container>
   );
