@@ -28,10 +28,10 @@ const MenteeContact = () => {
       dateCreated={menteeContact.date_created}
       contact={{
         title: "Contact your mentee here!",
-        name: menteeContact.mentor_name,
-        email: menteeContact.mentor_email,
-        telegramHandle: menteeContact.mentor_tg,
-        major: menteeContact.mentor_major,
+        name: menteeContact.mentee_name,
+        email: menteeContact.mentee_email,
+        telegramHandle: menteeContact.mentee_tg,
+        major: menteeContact.mentee_major,
       }}
     />
   );
