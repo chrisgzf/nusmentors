@@ -65,6 +65,8 @@ function UserAuth() {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [fullName, setFullName] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [canRegister, setCanRegister] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [isCreateAccount, setIsCreateAccount] = useState(true);
 
@@ -90,13 +92,41 @@ function UserAuth() {
     return firebase.login({ provider, type: "popup" });
   };
 
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue);
+  const handleTabChange = (event, newValue) => {
+    handleChangeIndex(newValue);
   };
 
   const handleChangeIndex = (index) => {
     setTabValue(index);
+    if (index === 0) {
+      setIsCreateAccount(false);
+    } else {
+      setIsCreateAccount(true);
+    }
   };
+
+  // registration form validation
+  useEffect(() => {
+    if (!isCreateAccount) return;
+    if (!email && !password && !passwordAgain) return;
+    if (email && /\S+@\S+\.\S+/.test(email) && password === passwordAgain) {
+      setAuthError("");
+      setCanRegister(true);
+      return;
+    }
+    setCanRegister(false);
+
+    if (!email) {
+      setAuthError("Please enter an email address");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setAuthError("Please enter a valid email address");
+      return;
+    }
+    setAuthError("Passwords do not match");
+  }, [isCreateAccount, email, passwordAgain, password]);
 
   return (
     <div className={classes.root}>
@@ -150,7 +180,7 @@ function UserAuth() {
             >
               <Tabs
                 value={tabValue}
-                onChange={handleChange}
+                onChange={handleTabChange}
                 indicatorColor="primary"
                 textColor="primary"
                 variant="fullWidth"
@@ -174,7 +204,7 @@ function UserAuth() {
                       fullWidth
                       margin="dense"
                       value={email}
-                      onClick={(e) => {
+                      onChange={(e) => {
                         setEmail(e.target.value);
                       }}
                     />
@@ -185,7 +215,7 @@ function UserAuth() {
                       fullWidth
                       margin="dense"
                       value={password}
-                      onClick={(e) => {
+                      onChange={(e) => {
                         setPassword(e.target.value);
                       }}
                     />
@@ -194,6 +224,7 @@ function UserAuth() {
                     className={classes.buttons}
                     variant="contained"
                     color="default"
+                    disabled
                   >
                     Forgot Password
                   </Button>
@@ -201,22 +232,13 @@ function UserAuth() {
                     className={classes.buttons}
                     variant="contained"
                     color="primary"
+                    disabled
                   >
                     Sign in
                   </Button>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1} dir={theme.direction}>
                   <form noValidate autoComplete="off" className={classes.form}>
-                    <TextField
-                      id="name"
-                      label="Full Name"
-                      fullWidth
-                      margin="dense"
-                      value={fullName}
-                      onChange={(e) => {
-                        setFullName(e.target.value);
-                      }}
-                    />
                     <TextField
                       id="email"
                       label="Email"
@@ -250,11 +272,15 @@ function UserAuth() {
                         setPasswordAgain(e.target.value);
                       }}
                     />
+                    <Box p={1}>
+                      <span style={{ color: "red" }}>{authError}&nbsp;</span>
+                    </Box>
                   </form>
                   <Button
                     className={classes.buttons}
                     variant="contained"
                     color="primary"
+                    disabled={!canRegister}
                     onClick={handleSubmit}
                   >
                     Register
