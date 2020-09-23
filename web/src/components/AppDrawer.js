@@ -1,12 +1,10 @@
 import {
-  Box,
   Drawer,
   List,
   ListItem,
   ListItemText,
   makeStyles,
   Toolbar,
-  Typography,
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
@@ -57,6 +55,7 @@ const AppDrawer = () => {
   const classes = useStyles();
   const location = useLocation();
 
+  // @ts-ignore
   const isDrawerOpen = useSelector((state) => state.ui.isDrawerOpen);
   const dispatch = useDispatch();
 
