@@ -101,7 +101,7 @@ const userSlice = createSlice({
 });
 
 // Selectors
-export const selectUser = (state) => state.user;
+export const selectUser = (state) => state.user.items;
 export const selectName = (state) => state.user.items.name;
 export const selectNUSEmail = (state) => state.user.items.nusEmail;
 export const selectPhotoURL = (state) => state.user.items.photoUrl;
