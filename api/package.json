@@ -4,7 +4,7 @@
   "description": "nusmentors API",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node app.js",
     "prettier": "prettier --write './**/*.js'"
   },
   "author": "group9",
