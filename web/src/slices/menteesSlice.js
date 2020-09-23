@@ -49,8 +49,6 @@ export const fetchMentees = createAsyncThunk(
       sendRequest("matches/mentees/" + uid, "GET"),
     );
     //TODO: FETCH USING CORRECT ROUTES
-    const user = await dispatch(sendRequest("auth/" + uid, "GET"));
-    console.log(user);
     return mentees;
   },
 );

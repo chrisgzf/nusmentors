@@ -33,8 +33,6 @@ export const fetchMentors = createAsyncThunk(
       sendRequest("matches/mentors/" + uid, "GET"),
     );
     //TODO: FETCH USING CORRECT ROUTES
-    const user = await dispatch(sendRequest("auth/" + uid, "GET"));
-    console.log(user);
     return mentors;
   },
 );
