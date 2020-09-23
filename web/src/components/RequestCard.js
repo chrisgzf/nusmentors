@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
+  info: {
+    wordBreak: "break-word",
+    overflowWrap: "anywhere",
+  },
   actions: {
     justifyContent: "flex-end",
   },
@@ -106,18 +110,18 @@ const RequestCard = ({
           flexDirection="column"
           justifyContent="space-between"
         >
-          <Box px={1}>
+          <Box className={classes.info} px={1}>
             Name: <b>{contact.name}</b>
           </Box>
-          <Box px={1}>
+          <Box className={classes.info} px={1}>
             Email: <b>{contact.email}</b>
           </Box>
           {contact.telegramHandle && (
-            <Box px={1}>
+            <Box className={classes.info} px={1}>
               telegram: <b>@{contact.telegramHandle}</b>
             </Box>
           )}
-          <Box px={1}>
+          <Box className={classes.info} px={1}>
             Major: <b>{contact.major}</b>
           </Box>
         </Box>
