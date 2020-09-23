@@ -25,8 +25,8 @@ admin.initializeApp({
 });
 
 function checkAuth(req, res, next) {
-    if (req.headers.Authorization) {
-        const token = req.headers.Authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1]; // comply with frontend header (Bearer ${token})
         admin.auth().verifyIdToken(token)
           .then((decodedToken) => {
               let uid = decodedToken.uid;
