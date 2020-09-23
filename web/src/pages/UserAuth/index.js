@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import { selectAuth } from "utils/firebase";
+import { selectAuth, selectFBAuthError } from "utils/firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,13 +66,14 @@ function UserAuth() {
   const [passwordAgain, setPasswordAgain] = useState("");
   const [fullName, setFullName] = useState("");
   const [authError, setAuthError] = useState("");
+  const [canSignIn, setCanSignIn] = useState(false);
   const [canRegister, setCanRegister] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [isCreateAccount, setIsCreateAccount] = useState(true);
+  const [isCreateAccount, setIsCreateAccount] = useState(false);
 
   const history = useHistory();
   const auth = useSelector(selectAuth);
   const firebase = useFirebase();
+  const fbAuthError = useSelector(selectFBAuthError);
 
   // Redirect user to dash if already logged in
   useEffect(() => {
@@ -82,9 +83,9 @@ function UserAuth() {
 
   const handleSubmit = async () => {
     if (isCreateAccount) {
-      return firebase.createUser({ email, password });
+      firebase.createUser({ email, password }).catch((e) => {});
     } else {
-      return firebase.login({ email, password });
+      firebase.login({ email, password }).catch((e) => {});
     }
   };
 
@@ -103,7 +104,31 @@ function UserAuth() {
     } else {
       setIsCreateAccount(true);
     }
+    setAuthError("");
   };
+
+  // login form validation
+  useEffect(() => {
+    if (isCreateAccount) return;
+    if (!email && !password) return;
+    if (email && /\S+@\S+\.\S+/.test(email) && password) {
+      setAuthError("");
+      setCanSignIn(true);
+      return;
+    }
+    setCanSignIn(false);
+
+    if (!email) {
+      setAuthError("Please enter an email address");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setAuthError("Please enter a valid email address");
+      return;
+    }
+    setAuthError("Please enter a password");
+  }, [isCreateAccount, email, password]);
 
   // registration form validation
   useEffect(() => {
@@ -127,6 +152,13 @@ function UserAuth() {
     }
     setAuthError("Passwords do not match");
   }, [isCreateAccount, email, passwordAgain, password]);
+
+  useEffect(() => {
+    console.log(fbAuthError);
+    if (fbAuthError) {
+      setAuthError(fbAuthError.message);
+    }
+  }, [fbAuthError]);
 
   return (
     <div className={classes.root}>
@@ -220,6 +252,9 @@ function UserAuth() {
                       }}
                     />
                   </form>
+                  <Box p={1}>
+                    <span style={{ color: "red" }}>{authError}&nbsp;</span>
+                  </Box>
                   <Button
                     className={classes.buttons}
                     variant="contained"
@@ -232,7 +267,8 @@ function UserAuth() {
                     className={classes.buttons}
                     variant="contained"
                     color="primary"
-                    disabled
+                    disabled={!canSignIn}
+                    onClick={handleSubmit}
                   >
                     Sign in
                   </Button>
