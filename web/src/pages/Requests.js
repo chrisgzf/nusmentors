@@ -21,7 +21,9 @@ const Requests = () => {
     }
   }, [dispatch, requestStatus]);
 
-  return (
+  return requestStatus === "pending" ? (
+    <Box>Loading</Box>
+  ) : (
     <Box>
       <Typography align="center" variant="h4">
         These guys need help
