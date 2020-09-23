@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "watch": "nodemon app.js",
     "prettier": "prettier --write './**/*.js'"
   },
   "author": "group9",
