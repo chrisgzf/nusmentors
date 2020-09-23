@@ -1,10 +1,12 @@
 import {
+  Box,
   Drawer,
   List,
   ListItem,
   ListItemText,
   makeStyles,
   Toolbar,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
@@ -22,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     width,
+  },
+  selected: {
+    fontWeight: "bold",
   },
 }));
 
@@ -73,7 +78,16 @@ const AppDrawer = () => {
           component={Link}
           to={routeItem.path}
         >
-          <ListItemText>{routeItem.label}</ListItemText>
+          <ListItemText>
+            <span
+              style={{
+                fontWeight:
+                  location.pathname === routeItem.path ? "bold" : "normal",
+              }}
+            >
+              {routeItem.label}
+            </span>
+          </ListItemText>
         </ListItem>
       ))}
     </List>
