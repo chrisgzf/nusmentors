@@ -10,8 +10,14 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   Box,
+  CircularProgress,
   Container,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Tab,
   Tabs,
   TextField,
@@ -19,7 +25,8 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import { selectAuth, selectFBAuthError } from "utils/firebase";
+import { selectAuth } from "utils/firebase";
+import { KeyboardDatePicker } from "@material-ui/pickers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +64,10 @@ const useStyles = makeStyles((theme) => ({
 
 function UserAuth() {
   const classes = useStyles();
+  // step 0: firebase loading
+  // step 1: social / email login
+  // step 2: additional details
+  const [authStep, setAuthStep] = useState(1);
 
   return (
     <div className={classes.root}>
@@ -64,7 +75,9 @@ function UserAuth() {
         <div className={classes.logo}>
           <LogoHorizontal scale="100%" />
         </div>
-        <AuthForm />
+        {authStep === 0 && <CircularProgress />}
+        {authStep === 1 && <AuthForm />}
+        {authStep === 2 && <DetailsForm />}
       </Container>
     </div>
   );
@@ -79,7 +92,6 @@ function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
-  const [fullName, setFullName] = useState("");
   const [authError, setAuthError] = useState("");
   const [canSignIn, setCanSignIn] = useState(false);
   const [canRegister, setCanRegister] = useState(false);
@@ -88,7 +100,6 @@ function AuthForm() {
   const history = useHistory();
   const auth = useSelector(selectAuth);
   const firebase = useFirebase();
-  const fbAuthError = useSelector(selectFBAuthError);
 
   // Redirect user to dash if already logged in
   useEffect(() => {
@@ -98,9 +109,13 @@ function AuthForm() {
 
   const handleSubmit = async () => {
     if (isCreateAccount) {
-      firebase.createUser({ email, password }).catch((e) => {});
+      firebase.createUser({ email, password }).catch((error) => {
+        setAuthError(error.message);
+      });
     } else {
-      firebase.login({ email, password }).catch((e) => {});
+      firebase.login({ email, password }).catch((error) => {
+        setAuthError(error.message);
+      });
     }
   };
 
@@ -168,28 +183,14 @@ function AuthForm() {
     setAuthError("Passwords do not match");
   }, [isCreateAccount, email, passwordAgain, password]);
 
-  useEffect(() => {
-    console.log(fbAuthError);
-    if (fbAuthError) {
-      setAuthError(fbAuthError.message);
-    }
-  }, [fbAuthError]);
-
   return (
     <>
-      <Typography className={classes.title} variant="h4" component="h1">
+      <Typography className={classes.title} variant="h5" component="h1">
         Sign in/Register
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={5}>
           <Paper className={classes.paper}>
-            <Typography
-              className={classes.sectionTitle}
-              variant="h6"
-              component="h2"
-            >
-              Social Login
-            </Typography>
             <Button
               className={classes.socialLoginButtons}
               variant="contained"
@@ -241,7 +242,6 @@ function AuthForm() {
               <TabPanel value={tabValue} index={0} dir={theme.direction}>
                 <form noValidate autoComplete="off" className={classes.form}>
                   <TextField
-                    id="email"
                     label="Email"
                     type="email"
                     fullWidth
@@ -252,7 +252,6 @@ function AuthForm() {
                     }}
                   />
                   <TextField
-                    id="password"
                     label="Password"
                     type="password"
                     fullWidth
@@ -287,7 +286,6 @@ function AuthForm() {
               <TabPanel value={tabValue} index={1} dir={theme.direction}>
                 <form noValidate autoComplete="off" className={classes.form}>
                   <TextField
-                    id="email"
                     label="Email"
                     type="email"
                     fullWidth
@@ -298,7 +296,6 @@ function AuthForm() {
                     }}
                   />
                   <TextField
-                    id="password"
                     label="Password"
                     type="password"
                     fullWidth
@@ -309,7 +306,6 @@ function AuthForm() {
                     }}
                   />
                   <TextField
-                    id="password"
                     label="Confirm Password"
                     type="password"
                     fullWidth
@@ -340,6 +336,190 @@ function AuthForm() {
     </>
   );
 }
+
+function DetailsForm() {
+  const classes = useStyles();
+  const theme = useTheme();
+
+  const [email, setEmail] = useState("");
+  const [nusEmail, setNusEmail] = useState("");
+  const [name, setName] = useState("");
+  const [matricDate, setMatricDate] = useState(new Date());
+  const [gradDate, setGradDate] = useState(new Date());
+  const [major, setMajor] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [telegram, setTelegram] = useState("");
+
+  const stripDateDay = (date) => {
+    let newDate = date.toISOString().split("T")[0];
+    newDate = newDate.slice(0, -2) + "01";
+    return newDate;
+  };
+
+  return (
+    <Container
+      maxWidth="md"
+      style={{ padding: "0", marginBottom: theme.spacing(2) }}
+    >
+      <Typography className={classes.title} variant="h5" component="h1">
+        Additional Details
+      </Typography>
+      <Paper className={classes.paper}>
+        <p>
+          Please fill these additional details to complete your NUSMentors
+          profile:
+        </p>
+        <form noValidate autoComplete="off" className={classes.form}>
+          <FormControl fullWidth>
+            <TextField
+              label="Display Name"
+              id="name"
+              fullWidth
+              required
+              margin="dense"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
+          </FormControl>
+          <Grid container justify="space-between" alignItems="center">
+            <Grid item xs={12} sm={5}>
+              <FormControl fullWidth>
+                <TextField
+                  label="Email"
+                  id="email"
+                  required
+                  type="email"
+                  fullWidth
+                  margin="dense"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <FormHelperText>For login and contact purposes</FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={5}>
+              <FormControl fullWidth>
+                <TextField
+                  label="NUS Email"
+                  id="nus-email"
+                  required
+                  type="email"
+                  fullWidth
+                  margin="dense"
+                  value={nusEmail}
+                  onChange={(e) => {
+                    setNusEmail(e.target.value);
+                  }}
+                />
+                <FormHelperText>
+                  For NUS student / alumnus verification
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Grid container justify="space-between" alignItems="center">
+            <Grid item xs={12} sm={5}>
+              <FormControl fullWidth>
+                <KeyboardDatePicker
+                  required
+                  disableToolbar
+                  margin="normal"
+                  fullWidth
+                  id="matric-date-picker"
+                  label="Matriculation Month"
+                  views={["year", "month"]}
+                  value={matricDate}
+                  onChange={setMatricDate}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={5}>
+              <FormControl fullWidth>
+                <KeyboardDatePicker
+                  required
+                  disableToolbar
+                  fullWidth
+                  margin="normal"
+                  id="matric-date-picker"
+                  label="Graduation Month"
+                  views={["year", "month"]}
+                  value={gradDate}
+                  onChange={setGradDate}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+          <FormControl fullWidth required>
+            <InputLabel id="major-label">Major</InputLabel>
+            <Select
+              labelId="major-label"
+              fullWidth
+              displayEmpty
+              value={major}
+              style={{ textAlign: "left" }}
+              onChange={(e) => {
+                setMajor(e.target.value);
+              }}
+            >
+              {[
+                "Business Analytics",
+                "Computer Science",
+                "Information Security",
+                "Information Systems",
+                "Computer Engineering",
+              ].map((major) => (
+                <MenuItem key={major} value={major}>
+                  {major}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth>
+            <TextField
+              label="Photo URL (todo replace this)"
+              fullWidth
+              margin="dense"
+              value={photoUrl}
+              onChange={(e) => {
+                setPhotoUrl(e.target.value);
+              }}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <TextField
+              label="Telegram Handle (optional)"
+              fullWidth
+              margin="dense"
+              value={telegram}
+              onChange={(e) => {
+                setTelegram(e.target.value);
+              }}
+            />
+            <FormHelperText>
+              To help your mentee/mentor contact you
+            </FormHelperText>
+          </FormControl>
+          <div style={{ textAlign: "right", marginTop: theme.spacing(4) }}>
+            <Button variant="contained" color="primary" onClick={null}>
+              Submit
+            </Button>
+          </div>
+        </form>
+      </Paper>
+    </Container>
+  );
+}
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
