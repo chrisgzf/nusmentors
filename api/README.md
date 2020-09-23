@@ -20,4 +20,4 @@ You may want to set aliases for `sudo service postgresql start` and `psql --user
 
 1. Ensure that you have `yarn` installed on your system
 
-2. In this folder, run `yarn install` followed by `yarn start`.
+2. In this folder, run `yarn install` followed by `yarn watch`.
