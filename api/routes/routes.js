@@ -54,9 +54,9 @@ router.route("/matches/mentors")
 /*===== END MATCHES ====*/
 
 /*------ NOTIFICATIONS -------*/
-const getnotifications = require("./impl/getnotifications");
-router.route("/notifs").get(getnotifications);
-
+const notifications = require("./impl/notifications");
+router.route("/notifs")
+    .post(notifications.getnotifications);
+    
 /*===== END NOTIFICATIONS====*/
-
 module.exports = router;
