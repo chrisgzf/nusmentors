@@ -56,7 +56,7 @@ router.route("/matches/mentors")
 /*------ NOTIFICATIONS -------*/
 const notifications = require("./impl/notifications");
 router.route("/notifs")
-    .post(notifications.getnotifications)
+    .get(notifications.getnotifications)
     .put(notifications.markasread);
     
 /*===== END NOTIFICATIONS====*/
