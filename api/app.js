@@ -17,7 +17,10 @@ const pool = require("./db");
 // Auth
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./config/nusmentors-firebase-adminsdk-key.json");
+const serviceAccount =
+  process.env.NODE_ENV === "production"
+    ? JSON.parse(Buffer.from(process.env.GOOGLE_CONFIG_BASE64, "base64"))
+    : require("./config/nusmentors-firebase-adminsdk-key.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
