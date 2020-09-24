@@ -60,6 +60,7 @@ function CreateRequest() {
     resume: false,
     interview: false,
     general: false,
+    career_types: [],
   });
 
   const handleInputChange = (event) => {
@@ -68,6 +69,10 @@ function CreateRequest() {
     const name = target.name;
     console.log({ [name]: value });
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAutocompleteChange = (event, value) => {
+    setFormData({ ...formData, career_types: value });
   };
 
   const handleSubmit = () => {
@@ -81,10 +86,14 @@ function CreateRequest() {
         return entry[1];
       })
       .map((entry) => entry[0]);
+    const flattened_careers = formData.career_types
+      .map( entry => entry.career_type );
+
     const requestData = {
       problem_types: selectedTypes,
       title: formData.title,
       description: formData.description,
+      career_type: flattened_careers,
     };
     dispatch(addRequest(requestData))
       .then(unwrapResult)
@@ -166,6 +175,7 @@ function CreateRequest() {
                 placeholder="Relevant careers"
               />
             )}
+            onChange={handleAutocompleteChange}
           />
           <Button
             className={classes.buttons}
