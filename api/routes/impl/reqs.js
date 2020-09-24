@@ -97,7 +97,7 @@ const acceptrequest = (req, res) => {
       if (q_err) {
         res.status(500).send(q_err.message || q_err);
       } else {
-        res.status(200).json(q_res.rows);
+        res.status(200).send({ message: "OK" });
       }
     },
   );
