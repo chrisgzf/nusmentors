@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { selectJWT } from "./firebase";
 
 const backendHost = process.env.REACT_APP_BACKEND_HOST
-  ? process.env.z
+  ? process.env.REACT_APP_BACKEND_HOST
   : process.env.NODE_ENV === "development"
   ? "http://localhost:8080"
   : "https://someherokuurl";
