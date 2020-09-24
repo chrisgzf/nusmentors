@@ -7,6 +7,7 @@ import userReducer from "../slices/userSlice";
 import logger from "redux-logger";
 import mentorsReducer from "slices/mentorsSlice";
 import menteesReducer from "slices/menteesSlice";
+import notificationsReducer from "slices/notificationSlice";
 
 export default configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export default configureStore({
     mentors: mentorsReducer,
     mentees: menteesReducer,
     user: userReducer,
+    notifications: notificationsReducer,
   },
   middleware: getDefaultMiddleware({
     serializableCheck: false,

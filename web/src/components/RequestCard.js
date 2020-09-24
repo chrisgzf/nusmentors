@@ -53,7 +53,7 @@ const RequestCard = ({
     1970 +
     1;
 
-  const toExpandDescription = description.length > 100;
+  const toExpandDescription = description && description.length > 100;
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const postedDuration = timeSince(new Date(dateCreated));
@@ -102,7 +102,7 @@ const RequestCard = ({
       <Typography variant="h6">
         <Box px={1}>{contact.title}</Box>
       </Typography>
-      <Typography>
+      <Typography component={"span"}>
         <Box
           display="flex"
           alignItems="flex-start"

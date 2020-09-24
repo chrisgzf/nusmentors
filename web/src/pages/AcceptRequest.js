@@ -7,10 +7,9 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { acceptRequest } from "slices/requestsSlice";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,11 +28,10 @@ const AcceptRequest = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const classes = useStyles();
+  const history = useHistory();
 
   const handleAcceptRequest = () => {
-    dispatch(acceptRequest(id))
-      .then(unwrapResult)
-      .then(() => console.log(acceptRequest));
+    dispatch(acceptRequest(id)).then(() => history.push(`/mentees/${id}`));
   };
 
   return (
