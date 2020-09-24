@@ -48,7 +48,7 @@ const updatenusemail = (req, res) => {
         // email not unique
         res.status(409).send(q_err.message || q_err);
       } else {
-        res.sendStatus(200);
+        res.status(200).send({ message: "OK" });
       }
     },
   );
@@ -62,7 +62,7 @@ const verifyemail = (req, res) => {
     if (q_err) {
       res.status(500).send(q_err.message || q_err);
     } else {
-      res.sendStatus(200);
+      res.status(200).send({ message: "OK" });
     }
   });
 };
@@ -120,7 +120,7 @@ const updateinfo = (req, res) => {
       if (q_err) {
         res.status(500).send(q_err.message || q_err);
       } else {
-        res.sendStatus(200);
+        res.status(200).send({ message: "OK" });
       }
     },
   );

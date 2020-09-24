@@ -55,7 +55,7 @@ const dropmentee = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.sendStatus(200);
+                res.status(200).send({ message: "OK" });
             }
         }
     );
@@ -72,7 +72,7 @@ const markascomplete = (req, res) => {
             if (q_err) {
                 res.status(500).send(q_err.message || q_err);
             } else {
-                res.sendStatus(200);
+                res.status(200).send({ message: "OK" });
             }
         }
     );

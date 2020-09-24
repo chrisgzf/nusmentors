@@ -42,7 +42,7 @@ const postnewrequest = (req, res) => {
       if (q_err) {
         res.status(500).send(q_err);
       } else {
-        res.sendStatus(200);
+        res.json(req.body);
       }
     },
   );
@@ -58,7 +58,7 @@ const deleterequest = (req, res) => {
       if (q_err) {
         res.status(500).send(q_err.message || q_err);
       } else {
-        res.sendStatus(200);
+        res.status(200).send({ message: "OK" });
       }
     },
   );
@@ -79,7 +79,7 @@ const updaterequest = (req, res) => {
       if (q_err) {
         res.status(500).send(q_err.message || q_err);
       } else {
-        res.sendStatus(200);
+        res.status(200).send({ message: "OK" });
       }
     },
   );
@@ -97,7 +97,7 @@ const acceptrequest = (req, res) => {
       if (q_err) {
         res.status(500).send(q_err.message || q_err);
       } else {
-        res.sendStatus(200);
+        res.status(200).send({ message: "OK" });
       }
     },
   );
