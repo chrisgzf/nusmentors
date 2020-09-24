@@ -32,6 +32,6 @@ CREATE OR REPLACE PROCEDURE
         WHERE req_id=_req_id::INTEGER;
         
         INSERT INTO Mentorship(req_id, mentor_id, date_formed) VALUES (_req_id::INTEGER, _mentor_uid, NOW());
-        INSERT INTO Notifies(notif_type, from_id, to_id, date_created) VALUES('accept', _mentor_uid, mentee_id, NOW());
+        INSERT INTO Notifies(notif_type, from_id, to_id, date_created, is_from_mentor) VALUES('accept', _mentor_uid, mentee_id, NOW(), TRUE);
     END;
 $$ LANGUAGE plpgsql;

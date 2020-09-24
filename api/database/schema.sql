@@ -49,5 +49,6 @@ CREATE TABLE Notifies (
 	from_id 			TEXT REFERENCES UsersInfo(user_id),
 	to_id 				TEXT REFERENCES UsersInfo(user_id),
 	date_created	TIMESTAMP,
-	is_read			BOOLEAN DEFAULT FALSE
+	is_read			BOOLEAN DEFAULT FALSE,
+	is_from_mentor		BOOLEAN 
 );
