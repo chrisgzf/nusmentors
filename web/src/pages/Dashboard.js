@@ -1,6 +1,12 @@
 import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import React from "react";
-import { useSelector } from "react-redux";
+import NotificationBox from "components/NotificationBox";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchNotifications,
+  getNotifications,
+  getNotificationState,
+} from "slices/notificationSlice";
 import { selectName } from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +22,15 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
   const displayName = useSelector(selectName);
-
+  const notifications = useSelector(getNotifications);
+  const notificationStatus = useSelector(getNotificationState);
+  console.log(notifications);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (notificationStatus === "idle") {
+      dispatch(fetchNotifications());
+    }
+  }, [dispatch, notificationStatus]);
   const welcomeMessage = (
     <Grid item xs={12}>
       <Paper className={classes.paper}>
@@ -27,10 +41,30 @@ const Dashboard = () => {
       </Paper>
     </Grid>
   );
+  const notificationArea = (
+    <Grid item xs={12}>
+      <Paper className={classes.paper}>
+        {notifications.length > 0 ? (
+          <>
+            <Typography variant="h5">Notifications</Typography>
+            {notifications.map((notification) => (
+              <NotificationBox
+                key={notification.nid}
+                notification={notification}
+              />
+            ))}
+          </>
+        ) : (
+          <Typography variant="h5">No notifications so far!</Typography>
+        )}
+      </Paper>
+    </Grid>
+  );
 
   return (
     <Grid container spacing={2}>
       {welcomeMessage}
+      {notificationArea}
     </Grid>
   );
 };

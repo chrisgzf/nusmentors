@@ -11,7 +11,9 @@ import {
 
 const Requests = () => {
   const dispatch = useDispatch();
-  const requests = useSelector(getRequests);
+  const requests = useSelector(getRequests)
+    .filter((request) => request.should_display)
+    .sort((a, b) => b.date_created.localeCompare(a.date_created));
   const requestStatus = useSelector(getRequestState);
 
   // runs once

@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import { addRequest } from "slices/requestsSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 function CreateRequest() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -57,8 +58,8 @@ function CreateRequest() {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log({ [name]: value });
-    setFormData({ ...formData, [name]: value });
+    const newData = { ...formData, [name]: value };
+    setFormData(newData);
   };
 
   const handleSubmit = () => {
@@ -77,10 +78,10 @@ function CreateRequest() {
       title: formData.title,
       description: formData.description,
     };
-    dispatch(addRequest(requestData))
-      .then(unwrapResult)
-      .then(console.log)
-      .catch(console.log);
+    // @ts-ignore
+    dispatch(addRequest(requestData)).then(() => {
+      history.push("/requests");
+    });
   };
   const types = [
     {
@@ -103,7 +104,7 @@ function CreateRequest() {
           What would you like to request help on?
         </Typography>
         <form noValidate autoComplete="off" className={classes.form}>
-          <FormControl component="fieldset">
+          <FormControl required component="fieldset">
             <FormLabel component="legend">
               What type of help do you need?
             </FormLabel>
@@ -122,7 +123,7 @@ function CreateRequest() {
                 />
               ))}
             </FormGroup>
-            <FormHelperText>Select your career type help!</FormHelperText>
+            <FormHelperText>{"Select your career type help!"}</FormHelperText>
           </FormControl>
           <TextField
             name="title"
@@ -130,6 +131,7 @@ function CreateRequest() {
             type="text"
             fullWidth
             margin="dense"
+            required
             value={formData.title}
             onChange={handleInputChange}
           />
@@ -138,6 +140,7 @@ function CreateRequest() {
             label="Describe your concerns"
             type="text"
             fullWidth
+            required
             multiline
             rows={5}
             margin="dense"
@@ -146,6 +149,11 @@ function CreateRequest() {
           />
           <Button
             className={classes.buttons}
+            disabled={
+              formData.title === "" ||
+              formData.description === "" ||
+              (!formData.interview && !formData.resume && !formData.general)
+            }
             onClick={handleSubmit}
             variant="contained"
             color="primary"
