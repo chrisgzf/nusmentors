@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Checkbox,
+  Chip,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -13,6 +14,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useDispatch } from "react-redux";
 import { addRequest } from "slices/requestsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -41,6 +43,13 @@ const useStyles = makeStyles((theme) => ({
     width: "90%",
   },
 }));
+
+///* TODO: get career types from bkend
+const careerOptions = [
+    { career_type: "webdev" },
+    { career_type: "data science" },
+]
+//*/
 
 function CreateRequest() {
   const classes = useStyles();
@@ -143,6 +152,20 @@ function CreateRequest() {
             margin="dense"
             value={formData.description}
             onChange={handleInputChange}
+          />
+          <Autocomplete
+            multiple
+            id="tags-standard"
+            options={careerOptions} //TODO
+            getOptionLabel={(option) => option.career_type}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                label="Select career tags (optional)"
+                placeholder="Relevant careers"
+              />
+            )}
           />
           <Button
             className={classes.buttons}
