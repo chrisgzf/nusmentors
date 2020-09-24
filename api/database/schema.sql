@@ -48,5 +48,6 @@ CREATE TABLE Notifies (
 	notif_type 		TEXT NOT NULL,
 	from_id 			TEXT REFERENCES UsersInfo(user_id),
 	to_id 				TEXT REFERENCES UsersInfo(user_id),
-	date_created	TIMESTAMP
+	date_created	TIMESTAMP,
+	is_read			BOOLEAN DEFAULT FALSE
 );

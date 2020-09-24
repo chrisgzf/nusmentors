@@ -3,12 +3,12 @@ const pool = require("../../db");
 const getnotifications = (req, res) => {
   const req_uid = req.body.req_uid;
   pool.query(
-  `SELECT U.name, N.to_id , N.notif_type, N.date_created, R.title, R.req_id 
+    `SELECT U.name, N.nid, N.to_id , N.notif_type, N.date_created, R.title, R.req_id 
   FROM Notifies N, UsersInfo U, Requests R
   WHERE N.from_id = U.user_id
   AND N.to_id = R.mentee_id
   AND N.to_id = $1`,
-  [req_uid],
+    [req_uid],
     (q_err, q_res) => {
       if (q_err) {
         res.status(500).send(q_err);
@@ -19,5 +19,19 @@ const getnotifications = (req, res) => {
   );
 };
 
+const markasread = (req, res) => {
+  const nid = req.body.nid;
+  pool.query(
+    `UPDATE Notifies SET is_read = TRUE WHERE nid = $1`,
+    [nid],
+    (q_err, q_res) => {
+      if (q_err) {
+        res.status(500).send(q_err);
+      } else {
+        res.status(200).send({ message: "OK" });
+      }
+    },
+  );
+};
 
-module.exports = {getnotifications}
+module.exports = { getnotifications, markasread };
