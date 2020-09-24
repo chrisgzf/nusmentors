@@ -35,3 +35,38 @@ CREATE OR REPLACE PROCEDURE
         INSERT INTO Notifies(notif_type, from_id, to_id, date_created, is_from_mentor) VALUES('accept', _mentor_uid, mentee_id, NOW(), TRUE);
     END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE PROCEDURE
+    dropMentee(
+        _req_id     TEXT,
+        _mentor_uid TEXT
+    ) AS $$
+    DECLARE 
+        mentee_id TEXT;
+    BEGIN 
+        mentee_id := (SELECT DISTINCT R.mentee_id
+            FROM Requests R
+            WHERE req_id = _req_id::INTEGER);
+        
+        UPDATE Mentorship SET date_dropped = NOW() WHERE req_id = _req_id::INTEGER AND mentor_id = _mentor_uid;
+        INSERT INTO Notifies(notif_type, from_id, to_id, date_created, is_from_mentor) VALUES('dropped', _mentor_uid, mentee_id, NOW(), TRUE);
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE PROCEDURE
+    markAsComplete(
+        _req_id     TEXT,
+        _mentor_uid TEXT
+    ) AS $$
+    DECLARE 
+        _mentee_id TEXT;
+    BEGIN 
+        _mentee_id := (SELECT DISTINCT R.mentee_id
+            FROM Requests R
+            WHERE req_id = _req_id::INTEGER);     
+
+        UPDATE Mentorship SET date_completed = NOW() WHERE req_id = _req_id::INTEGER AND (mentor_id = _mentor_uid OR (_req_id::INTEGER, _mentor_uid) IN (SELECT req_id, mentee_id FROM Requests));
+        INSERT INTO Notifies(notif_type, from_id, to_id, date_created, is_from_mentor) VALUES('complete', _mentor_uid, _mentee_id, NOW(), TRUE);
+    END;
+$$ LANGUAGE plpgsql;
+

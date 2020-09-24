@@ -49,7 +49,7 @@ const dropmentee = (req, res) => {
     const uid = req.body.uid; //mentor_id
 
     pool.query(
-        `UPDATE Mentorship SET date_dropped = NOW() WHERE req_id = $1 AND mentor_id = $2`,
+        `CALL dropMentee($1, $2)`,
         [req_id, uid],
         (q_err, q_res) => {
             if (q_err) {
@@ -66,7 +66,7 @@ const markascomplete = (req, res) => {
     const uid = req.body.uid;
 
     pool.query(
-        `UPDATE Mentorship SET date_completed = NOW() WHERE req_id = $1 AND (mentor_id = $2 OR ($1, $2) IN (SELECT req_id, mentee_id FROM Requests))`,
+        `CALL markAsComplete($1, $2)`,
         [req_id, uid],
         (q_err, q_res) => {
             if (q_err) {
