@@ -9,6 +9,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
+  Avatar,
   Box,
   CircularProgress,
   Container,
@@ -29,6 +30,8 @@ import fbInstance, { selectAuth, selectFBEmailVerified } from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
 import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
+import useIsMobile from "utils/useIsMobile";
+import { deepOrange } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +64,10 @@ const useStyles = makeStyles((theme) => ({
   form: {
     margin: `${theme.spacing(1)}px auto`,
     width: "90%",
+  },
+  avatarOrange: {
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
   },
 }));
 
@@ -364,11 +371,21 @@ function DetailsForm() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const firebase = useFirebase();
-  const { register, handleSubmit, errors, control, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+    watch,
+  } = useForm();
+  const isMobile = useIsMobile();
 
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
   const [nusEmailFromFB, setNusEmailFromFB] = useState("");
+
+  const watchName = watch("name");
 
   const {
     email: fbEmail,
@@ -455,6 +472,40 @@ function DetailsForm() {
           className={classes.form}
           onSubmit={handleSubmit(onDetailsFormSubmit)}
         >
+          <Avatar
+            src={fbPhotoUrl}
+            className={classes.avatarOrange}
+            style={{
+              height: isMobile ? "150px" : "200px",
+              width: isMobile ? "150px" : "200px",
+              margin: "0 auto",
+            }}
+          >
+            {watchName &&
+              watchName
+                .split(/\s/)
+                .reduce((response, word) => (response += word.slice(0, 1)), "")
+                .toUpperCase()}
+          </Avatar>
+          {/* dummy input to accept a file */}
+          <input
+            id="pic-upload"
+            accept="image/*"
+            style={{ display: "none" }}
+            type="file"
+          />
+          <label htmlFor="pic-upload">
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              size="small"
+              style={{ margin: `${theme.spacing(2)}px 0` }}
+            >
+              Upload Photo
+            </Button>
+          </label>
+
           <TextField
             label="Display Name"
             id="name"
