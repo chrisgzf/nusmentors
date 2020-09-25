@@ -3,11 +3,16 @@ import React, { useEffect } from "react";
 import TopBar from "./TopBar";
 import AppDrawer from "./AppDrawer";
 import AuthRouter from "./AuthRouter";
-import { fetchUserInfo, selectUserError } from "slices/userSlice";
+import { fetchUserInfo, selectName, selectUserError } from "slices/userSlice";
 import { isEmpty } from "react-redux-firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuth, selectFBEmailVerified } from "utils/firebase";
+import {
+  selectAuth,
+  selectFBEmailVerified,
+  selectIsFBLoaded,
+} from "utils/firebase";
 import { useHistory } from "react-router-dom";
+import LoadingSplash from "./LoadingSplash";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,41 +29,52 @@ const AppShell = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const isFBLoaded = useSelector(selectIsFBLoaded);
   const fbLoggedIn = !isEmpty(useSelector(selectAuth));
   const fbEmailVerified = useSelector(selectFBEmailVerified);
   const userError = useSelector(selectUserError);
+  const userName = useSelector(selectName);
 
-  // Fetch user data on mount
+  // Fetch user data when logged in
   useEffect(() => {
+    if (!isFBLoaded || !fbLoggedIn) return;
     dispatch(fetchUserInfo());
-  }, [dispatch]);
+  }, [dispatch, isFBLoaded, fbLoggedIn]);
 
   // If user has insufficient details, kick them to login page
   useEffect(() => {
+    if (!isFBLoaded || !fbLoggedIn) return;
     if (userError) {
       history.push("/login");
-      return;
     }
-  }, [dispatch, history, userError]);
+  }, [dispatch, history, userError, isFBLoaded, fbLoggedIn]);
 
   // Kick users out of app if they are not logged in or email not verified
   useEffect(() => {
-    if (!fbLoggedIn || !fbEmailVerified) {
-      history.push("/login");
+    if (!isFBLoaded) {
       return;
     }
-  }, [fbLoggedIn, fbEmailVerified, history]);
+    if (!fbLoggedIn || !fbEmailVerified) {
+      history.push("/login");
+    }
+  }, [isFBLoaded, fbLoggedIn, fbEmailVerified, history]);
 
   return (
     <>
-      <TopBar />
-      <Box className={classes.container}>
-        <AppDrawer />
-        <Container className={classes.content} maxWidth="md">
-          <Toolbar />
-          <AuthRouter />
-        </Container>
-      </Box>
+      {userName ? (
+        <>
+          <TopBar />
+          <Box className={classes.container}>
+            <AppDrawer />
+            <Container className={classes.content} maxWidth="md">
+              <Toolbar />
+              <AuthRouter />
+            </Container>
+          </Box>
+        </>
+      ) : (
+        <LoadingSplash />
+      )}
     </>
   );
 };
