@@ -9,6 +9,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
+  Avatar,
   Box,
   CircularProgress,
   Container,
@@ -18,6 +19,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Tab,
   Tabs,
   TextField,
@@ -25,10 +27,23 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import fbInstance, { selectAuth, selectFBEmailVerified } from "utils/firebase";
+import fbInstance, {
+  selectAuth,
+  selectFBEmailVerified,
+  selectIsFBLoaded,
+} from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
-import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
+import {
+  fetchUserInfo,
+  postUserInfo,
+  selectFetchUserStatus,
+  selectName,
+} from "slices/userSlice";
+import useIsMobile from "utils/useIsMobile";
+import { useOnlineStorage } from "utils/onlineStorage";
+import Alert from "components/Alert";
+import { getUppercaseOfWords } from "utils/text";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +91,8 @@ function UserAuth() {
   const [authStep, setAuthStep] = useState(0);
   const fbLoggedIn = !isEmpty(useSelector(selectAuth));
   const fbEmailVerified = useSelector(selectFBEmailVerified);
+  const isFbLoaded = useSelector(selectIsFBLoaded);
+  const fetchUserStatus = useSelector(selectFetchUserStatus);
   const userName = useSelector(selectName);
 
   useEffect(() => {
@@ -83,6 +100,12 @@ function UserAuth() {
   }, [dispatch, fbLoggedIn]);
 
   useEffect(() => {
+    if (!fetchUserStatus || fetchUserStatus === "loading" || !isFbLoaded) {
+      // wait for user fetching API call to either succeed or fail
+      // wait for Firebase to load
+      setAuthStep(0);
+      return;
+    }
     if (!fbLoggedIn) {
       setAuthStep(1);
       return;
@@ -96,7 +119,14 @@ function UserAuth() {
       return;
     }
     history.push("/dashboard");
-  }, [fbLoggedIn, fbEmailVerified, userName, history]);
+  }, [
+    fbLoggedIn,
+    fbEmailVerified,
+    userName,
+    history,
+    fetchUserStatus,
+    isFbLoaded,
+  ]);
 
   return (
     <div className={classes.root}>
@@ -364,13 +394,29 @@ function DetailsForm() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const firebase = useFirebase();
-  const { register, handleSubmit, errors, control, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+    watch,
+  } = useForm();
+  const isMobile = useIsMobile();
+
+  const { uploadUserFile } = useOnlineStorage();
 
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
+  const [snackbar, setSnackbar] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [nusEmailFromFB, setNusEmailFromFB] = useState("");
 
+  const watchName = watch("name");
+  const watchPhotoUrl = watch("photoUrl");
+
   const {
+    uid,
     email: fbEmail,
     displayName: fbDisplayName,
     photoURL: fbPhotoUrl,
@@ -395,7 +441,12 @@ function DetailsForm() {
         invalidDate: (date) => date > matricDate,
       },
     });
+    register("photoUrl");
   }, [register, gradDate, matricDate]);
+
+  useEffect(() => {
+    setValue("photoUrl", fbPhotoUrl);
+  }, [fbPhotoUrl, setValue]);
 
   const stripDateDay = (date) => {
     let newDate = date.toISOString().split("T")[0];
@@ -432,6 +483,41 @@ function DetailsForm() {
     dispatch(postUserInfo(payload));
   };
 
+  const uploadUserProfilePic = async (event) => {
+    const file = event.target.files[0];
+    let url;
+    setIsUploading(true);
+    try {
+      const uploadedFile = await uploadUserFile(uid, file);
+      url = await uploadedFile.uploadTaskSnapshot.ref.getDownloadURL();
+    } catch {
+      setIsUploading(false);
+      setSnackbar(
+        <Alert
+          onClose={() => {
+            setSnackbar(null);
+          }}
+          severity="warning"
+        >
+          There were problems uploading your photo. Please try again.
+        </Alert>,
+      );
+    }
+    setValue("photoUrl", url);
+    setIsUploading(false);
+
+    setSnackbar(
+      <Alert
+        onClose={() => {
+          setSnackbar(null);
+        }}
+        severity="success"
+      >
+        Photo uploaded successfully.
+      </Alert>,
+    );
+  };
+
   const fieldRequired = (
     <span style={{ color: "red" }}>This field is required</span>
   );
@@ -441,6 +527,15 @@ function DetailsForm() {
       maxWidth="md"
       style={{ padding: "0", marginBottom: theme.spacing(2) }}
     >
+      <Snackbar
+        open={!!snackbar}
+        autoHideDuration={4000}
+        onClose={() => {
+          setSnackbar(null);
+        }}
+      >
+        {snackbar}
+      </Snackbar>
       <Typography className={classes.title} variant="h5" component="h1">
         Additional Details
       </Typography>
@@ -455,6 +550,39 @@ function DetailsForm() {
           className={classes.form}
           onSubmit={handleSubmit(onDetailsFormSubmit)}
         >
+          <Avatar
+            src={watchPhotoUrl}
+            style={{
+              height: isMobile ? "150px" : "200px",
+              width: isMobile ? "150px" : "200px",
+              margin: "0 auto",
+            }}
+          >
+            <span style={{ fontSize: isMobile ? "2rem" : "4rem" }}>
+              {watchName && getUppercaseOfWords(watchName)}
+            </span>
+          </Avatar>
+          {/* dummy input to accept a file */}
+          <input
+            id="pic-upload"
+            accept="image/*"
+            hidden
+            type="file"
+            onChange={uploadUserProfilePic}
+          />
+          <label htmlFor="pic-upload">
+            <Button
+              variant="contained"
+              color="primary"
+              component="span"
+              disabled={isUploading}
+              size="small"
+              style={{ margin: `${theme.spacing(2)}px 0` }}
+            >
+              {isUploading ? "Uploading..." : "Upload Photo"}
+            </Button>
+          </label>
+
           <TextField
             label="Display Name"
             id="name"
@@ -620,14 +748,6 @@ function DetailsForm() {
               {errors.major ? fieldRequired : null}
             </FormHelperText>
           </FormControl>
-          <TextField
-            label="Photo URL (todo replace this)"
-            fullWidth
-            defaultValue={fbPhotoUrl}
-            margin="dense"
-            name="photoUrl"
-            inputRef={register}
-          />
           <TextField
             label="Telegram Handle (optional)"
             fullWidth

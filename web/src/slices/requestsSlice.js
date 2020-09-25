@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { sendRequest } from "utils/backend";
-import { selectUid } from "utils/firebase";
+import { fetchMentees } from "./menteesSlice";
 
 const initialState = {
   items: [],
@@ -17,20 +17,18 @@ export const fetchRequests = createAsyncThunk(
 
 export const acceptRequest = createAsyncThunk(
   "requests/acceptRequest",
-  async (requestId, { getState, dispatch }) => {
-    const uid = selectUid(getState());
-    const requests = await dispatch(
-      sendRequest(`reqs/${requestId}/${uid}`, "PUT"),
-    );
-    return requests;
+  async (requestId, { dispatch }) => {
+    await dispatch(sendRequest(`reqs/${requestId}/accept`, "PUT"));
+    await dispatch(fetchMentees);
+    return requestId;
   },
 );
 
 export const addRequest = createAsyncThunk(
   "requests/addRequest",
   async (data, { dispatch }) => {
-    const requests = await dispatch(sendRequest("reqs", "POST", data));
-    return requests;
+    await dispatch(sendRequest("reqs", "POST", data));
+    await dispatch(fetchRequests);
   },
 );
 
@@ -54,8 +52,13 @@ const requestsSlice = createSlice({
       state.error = action.error.message;
     },
     // @ts-ignore
-    [addRequest.fulfilled]: (state, action) => {
-      state.items.push(action.payload);
+    [acceptRequest.fulfilled]: (state, action) => {
+      const request = state.items.find(
+        (item) => item.req_id === action.payload,
+      );
+      if (request) {
+        request.to_display = false;
+      }
     },
   },
 });

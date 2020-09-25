@@ -11,7 +11,9 @@ import {
 
 const Requests = () => {
   const dispatch = useDispatch();
-  const requests = useSelector(getRequests);
+  const requests = useSelector(getRequests)
+    .filter((request) => request.should_display)
+    .sort((a, b) => b.date_created.localeCompare(a.date_created));
   const requestStatus = useSelector(getRequestState);
 
   // runs once
@@ -21,7 +23,9 @@ const Requests = () => {
     }
   }, [dispatch, requestStatus]);
 
-  return (
+  return requestStatus === "pending" ? (
+    <Box>Loading</Box>
+  ) : (
     <Box>
       <Typography align="center" variant="h4">
         These guys need help
@@ -35,6 +39,8 @@ const Requests = () => {
           matricDate={request.matric_date}
           major={request.major}
           dateCreated={request.date_created}
+          index={index}
+          photoUrl={request.photo_url}
           action={
             <Button
               component={Link}

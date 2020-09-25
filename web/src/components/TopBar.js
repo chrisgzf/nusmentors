@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "slices/uiSlice";
+import { clearUserState } from "slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -40,13 +41,15 @@ const TopBar = () => {
   const classes = useStyles();
   const history = useHistory();
   const firebase = useFirebase();
+  const dispatch = useDispatch();
 
   const signOutAndRedirect = async () => {
     await firebase.logout();
+    dispatch(clearUserState());
     history.push("/login");
   };
+
   const theme = useTheme();
-  const dispatch = useDispatch();
   const isDesktopView = useMediaQuery(theme.breakpoints.up("md"));
   // Event handlers
   const handleMenuClick = () => {

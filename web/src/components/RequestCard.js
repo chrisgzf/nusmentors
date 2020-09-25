@@ -13,6 +13,7 @@ import Collapse from "@kunukn/react-collapse";
 import clsx from "clsx";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { timeSince } from "utils/time";
+import UserAvatar from "components/UserAvatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,8 @@ const RequestCard = ({
   matricDate = "",
   major = "",
   dateCreated,
+  photoUrl = "",
+  index = 0,
   contact = undefined,
   action = null,
 }) => {
@@ -53,7 +56,7 @@ const RequestCard = ({
     1970 +
     1;
 
-  const toExpandDescription = description.length > 100;
+  const toExpandDescription = description && description.length > 100;
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const postedDuration = timeSince(new Date(dateCreated));
@@ -63,6 +66,7 @@ const RequestCard = ({
   };
   const requestTitle = (
     <CardHeader
+      avatar={<UserAvatar photoUrl={photoUrl} name={name} index={index} />}
       title={
         <Typography variant="h5" color="textPrimary">
           {title}
@@ -102,7 +106,7 @@ const RequestCard = ({
       <Typography variant="h6">
         <Box px={1}>{contact.title}</Box>
       </Typography>
-      <Typography>
+      <Typography component={"span"}>
         <Box
           display="flex"
           alignItems="flex-start"

@@ -1,3 +1,4 @@
+import { Typography } from "@material-ui/core";
 //TODO: FIX MENTORS PAGE
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
@@ -17,6 +18,14 @@ const MentorContact = () => {
       dispatch(fetchMentors());
     }
   }, [dispatch, mentorStatus]);
+
+  if (!mentorContact) {
+    return (
+      <Typography align="center" variant="h5">
+        Mentor not found
+      </Typography>
+    );
+  }
 
   return (
     <RequestCard
