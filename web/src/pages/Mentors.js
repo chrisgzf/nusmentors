@@ -53,9 +53,30 @@ const Mentors = () => {
 
   if (mentors.length === 0) {
     return wrapper(
-      <Typography align="center" variant="h4">
-        No mentors yet
-      </Typography>,
+      <div
+        style={{
+          maxWidth: "600px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          height: window.innerHeight * 0.8,
+        }}
+      >
+        <div
+          style={{
+            marginBottom: "20px",
+            fontWeight: "bold",
+            fontSize: "1.8rem",
+          }}
+        >
+          No mentors yet 😟
+        </div>
+        <div style={{ fontSize: "1.2rem", textAlign: "center" }}>
+          Put up a mentorship request via "Look for a Mentor" on your left! Be
+          patient and wait for a mentor to match you.
+        </div>
+      </div>,
     );
   }
 
