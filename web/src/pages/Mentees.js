@@ -56,9 +56,29 @@ const Mentees = () => {
 
   if (mentees.length === 0) {
     return wrapper(
-      <Typography align="center" variant="h4">
-        No mentees yet
-      </Typography>,
+      <div
+        style={{
+          maxWidth: "600px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          height: window.innerHeight * 0.8,
+        }}
+      >
+        <div
+          style={{
+            marginBottom: "20px",
+            fontWeight: "bold",
+            fontSize: "1.8rem",
+          }}
+        >
+          No mentees yet 😟
+        </div>
+        <div style={{ fontSize: "1.2rem", textAlign: "center" }}>
+          Match a mentee via "Be a Mentor" on your left!
+        </div>
+      </div>,
     );
   }
 
