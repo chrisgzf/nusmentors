@@ -12,6 +12,7 @@ import {
   Paper,
   TextField,
   Typography,
+  useTheme,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     padding: theme.spacing(2),
-    margin: theme.spacing(1),
   },
   buttons: {
     margin: theme.spacing(1),
@@ -65,6 +65,7 @@ function CreateRequest() {
   const careers = useSelector(getCareers);
   const careerStatus = useSelector(getCareerState);
   const appIsOnline = useSelector(selectAppIsOnline);
+  const theme = useTheme();
 
   useEffect(() => {
     if (careerStatus === "idle") {
@@ -137,12 +138,19 @@ function CreateRequest() {
             NUSMentors is currently offline! You cannot create a request!
           </Alert>
         )}
-        <Typography align="center" variant="h5">
+        <Typography
+          align="center"
+          variant="h5"
+          style={{ margin: `${theme.spacing(2)}px 0`, fontWeight: "500" }}
+        >
           What would you like to request help on?
         </Typography>
         <form noValidate autoComplete="off" className={classes.form}>
           <FormControl required component="fieldset">
-            <FormLabel component="legend">
+            <FormLabel
+              component="legend"
+              style={{ margin: `${theme.spacing(1.5)}px 0` }}
+            >
               What type of help do you need?
             </FormLabel>
             <FormGroup row>
@@ -160,7 +168,6 @@ function CreateRequest() {
                 />
               ))}
             </FormGroup>
-            <FormHelperText>{"Select your career type help!"}</FormHelperText>
           </FormControl>
           <TextField
             name="title"
@@ -171,6 +178,7 @@ function CreateRequest() {
             required
             value={formData.title}
             onChange={handleInputChange}
+            style={{ margin: `${theme.spacing(2)}px 0` }}
           />
           <TextField
             name="description"
@@ -179,10 +187,11 @@ function CreateRequest() {
             fullWidth
             required
             multiline
-            rows={5}
+            rows={8}
             margin="dense"
             value={formData.description}
             onChange={handleInputChange}
+            style={{ margin: `${theme.spacing(2)}px 0` }}
           />
           <Autocomplete
             multiple
@@ -195,26 +204,30 @@ function CreateRequest() {
                 {...params}
                 variant="standard"
                 label="Select career tags (optional)"
+                style={{ margin: `${theme.spacing(2)}px 0` }}
                 placeholder="Relevant careers"
               />
             )}
             onChange={handleAutocompleteChange}
           />
-          <Button
-            className={classes.buttons}
-            disabled={
-              !appIsOnline ||
-              isSubmitting ||
-              formData.title === "" ||
-              formData.description === "" ||
-              (!formData.interview && !formData.resume && !formData.general)
-            }
-            onClick={handleSubmit}
-            variant="contained"
-            color="primary"
-          >
-            Find a Mentor!
-          </Button>
+          <div style={{ textAlign: "right" }}>
+            <Button
+              className={classes.buttons}
+              disabled={
+                !appIsOnline ||
+                isSubmitting ||
+                formData.title === "" ||
+                formData.description === "" ||
+                (!formData.interview && !formData.resume && !formData.general)
+              }
+              onClick={handleSubmit}
+              variant="contained"
+              color="primary"
+              style={{ margin: `${theme.spacing(2)}px 0`, right: "0" }}
+            >
+              Find a Mentor!
+            </Button>
+          </div>
         </form>
       </Paper>
     </div>
