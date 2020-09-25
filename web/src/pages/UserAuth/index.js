@@ -19,6 +19,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Tab,
   Tabs,
   TextField,
@@ -33,6 +34,7 @@ import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
 import useIsMobile from "utils/useIsMobile";
 import { useOnlineStorage } from "utils/onlineStorage";
 import { deepOrange } from "@material-ui/core/colors";
+import Alert from "components/Alert";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -386,6 +388,7 @@ function DetailsForm() {
 
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
+  const [snackbar, setSnackbar] = useState(null);
   const [nusEmailFromFB, setNusEmailFromFB] = useState("");
 
   const watchName = watch("name");
@@ -461,9 +464,34 @@ function DetailsForm() {
 
   const uploadUserProfilePic = async (event) => {
     const file = event.target.files[0];
-    const uploadedFile = await uploadUserFile(uid, file);
-    const url = await uploadedFile.uploadTaskSnapshot.ref.getDownloadURL();
+    let url;
+    try {
+      const uploadedFile = await uploadUserFile(uid, file);
+      url = await uploadedFile.uploadTaskSnapshot.ref.getDownloadURL();
+    } catch {
+      setSnackbar(
+        <Alert
+          onClose={() => {
+            setSnackbar(null);
+          }}
+          severity="warning"
+        >
+          There were problems uploading your photo. Please try again.
+        </Alert>,
+      );
+    }
     setValue("photoUrl", url);
+
+    setSnackbar(
+      <Alert
+        onClose={() => {
+          setSnackbar(null);
+        }}
+        severity="success"
+      >
+        Photo uploaded successfully.
+      </Alert>,
+    );
   };
 
   const fieldRequired = (
@@ -475,6 +503,15 @@ function DetailsForm() {
       maxWidth="md"
       style={{ padding: "0", marginBottom: theme.spacing(2) }}
     >
+      <Snackbar
+        open={!!snackbar}
+        autoHideDuration={4000}
+        onClose={() => {
+          setSnackbar(null);
+        }}
+      >
+        {snackbar}
+      </Snackbar>
       <Typography className={classes.title} variant="h5" component="h1">
         Additional Details
       </Typography>
