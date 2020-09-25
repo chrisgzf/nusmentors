@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SwipeableViews from "react-swipeable-views";
 import { useHistory } from "react-router-dom";
 import { isEmpty, useFirebase } from "react-redux-firebase";
+import { Helmet } from "react-helmet";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -237,6 +238,9 @@ function AuthForm({ isLoginPage }) {
 
   return (
     <>
+      <Helmet>
+        <title>NUSMentors - {isCreateAccount ? "Register" : "Login"}</title>
+      </Helmet>
       <Typography className={classes.title} variant="h5" component="h1">
         {isCreateAccount ? "Register" : "Sign In"}
       </Typography>
@@ -527,6 +531,9 @@ function DetailsForm() {
       maxWidth="md"
       style={{ padding: "0", marginBottom: theme.spacing(2) }}
     >
+      <Helmet>
+        <title>NUSMentors - Update Profile</title>
+      </Helmet>
       <Snackbar
         open={!!snackbar}
         autoHideDuration={4000}
@@ -793,6 +800,9 @@ function VerifyEmailPage() {
       maxWidth="md"
       style={{ padding: "0", marginBottom: theme.spacing(2) }}
     >
+      <Helmet>
+        <title>NUSMentors - Verify Email</title>
+      </Helmet>
       <Typography className={classes.title} variant="h5" component="h1">
         Verify Email
       </Typography>
