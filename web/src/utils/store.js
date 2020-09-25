@@ -1,4 +1,8 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import {
+  combineReducers,
+  configureStore,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit";
 import counterReducer from "../components/Counter/counterSlice";
 import { firebaseReducer } from "react-redux-firebase";
 import uiReducer from "../slices/uiSlice";
@@ -9,38 +13,47 @@ import mentorsReducer from "slices/mentorsSlice";
 import menteesReducer from "slices/menteesSlice";
 import notificationsReducer from "slices/notificationSlice";
 import careersReducer from "slices/careerSlice";
-
-const MY_KEY = "1F90B1515A19E0991F865DBC7669CF41";
-
-export const saveState = (state) => {
-  let stringifiedState = JSON.stringify(state);
-  localStorage.setItem(MY_KEY, stringifiedState);
-};
-export const loadState = () => {
-  let json = localStorage.getItem(MY_KEY) || "{}";
-  let state = JSON.parse(json);
-
-  if (state) {
-    return state;
-  } else {
-    return undefined; // To use the defaults in the reducers
-  }
-};
-
-export default configureStore({
-  reducer: {
-    counter: counterReducer,
-    firebase: firebaseReducer,
-    ui: uiReducer,
-    requests: requestsReducer,
-    mentors: mentorsReducer,
-    mentees: menteesReducer,
-    user: userReducer,
-    notifications: notificationsReducer,
-    careers: careersReducer,
+import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import { persistStore, persistReducer, createTransform } from "redux-persist";
+const SetTransform = createTransform(
+  (inboundState, key) => {
+    // convert mySet to an Array.
+    return inboundState;
   },
-  preloadedState: loadState(),
-  middleware: getDefaultMiddleware({
-    serializableCheck: false,
-  }).concat(logger),
+  // transform state being rehydrated
+  (outboundState, key) => {
+    return { ...outboundState, status: "idle" };
+  },
+  // define which reducers this transform gets called for.
+  { blacklist: ["ui", "firebase"] },
+);
+
+const persistConfig = {
+  key: "root",
+  storage,
+  transforms: [SetTransform],
+};
+
+const reducer = combineReducers({
+  counter: counterReducer,
+  firebase: firebaseReducer,
+  ui: uiReducer,
+  requests: requestsReducer,
+  mentors: mentorsReducer,
+  mentees: menteesReducer,
+  user: userReducer,
+  notifications: notificationsReducer,
+  careers: careersReducer,
 });
+const persistedReducer = persistReducer(persistConfig, reducer);
+
+export default () => {
+  let store = configureStore({
+    reducer: persistedReducer,
+    middleware: getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(logger),
+  });
+  let persistor = persistStore(store);
+  return { store, persistor };
+};

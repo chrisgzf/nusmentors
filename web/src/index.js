@@ -2,14 +2,20 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "components/App";
-import store, { saveState } from "utils/store";
+import createPersistedStore from "utils/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
+import { PersistGate } from "redux-persist/integration/react";
+import LoadingSplash from "components/LoadingSplash";
+
+const persistStore = createPersistedStore();
 
 ReactDOM.render(
   // <React.StrictMode>
-  <Provider store={store}>
-    <App />
+  <Provider store={persistStore.store}>
+    <PersistGate loading={<LoadingSplash />} persistor={persistStore.persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
   // </React.StrictMode>,
   document.getElementById("root"),
@@ -19,8 +25,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.register();
-
-// This subscriber writes to local storage anytime the state updates.
-store.subscribe(() => {
-  saveState(store.getState());
-});
