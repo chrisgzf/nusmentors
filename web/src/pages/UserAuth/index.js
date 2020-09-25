@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function UserAuth() {
+function UserAuth({ isLoginPage = true }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -135,7 +135,7 @@ function UserAuth() {
           <LogoHorizontal scale="100%" />
         </div>
         {authStep === 0 && <CircularProgress />}
-        {authStep === 1 && <AuthForm />}
+        {authStep === 1 && <AuthForm isLoginPage={isLoginPage} />}
         {authStep === 2 && <DetailsForm />}
         {authStep === 3 && <VerifyEmailPage />}
       </Container>
@@ -143,11 +143,11 @@ function UserAuth() {
   );
 }
 
-function AuthForm() {
+function AuthForm({ isLoginPage }) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(isLoginPage ? 0 : 1);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -155,7 +155,7 @@ function AuthForm() {
   const [authError, setAuthError] = useState("");
   const [canSignIn, setCanSignIn] = useState(false);
   const [canRegister, setCanRegister] = useState(false);
-  const [isCreateAccount, setIsCreateAccount] = useState(false);
+  const [isCreateAccount, setIsCreateAccount] = useState(!isLoginPage);
 
   const firebase = useFirebase();
 
@@ -238,7 +238,7 @@ function AuthForm() {
   return (
     <>
       <Typography className={classes.title} variant="h5" component="h1">
-        Sign in/Register
+        {isCreateAccount ? "Register" : "Sign In"}
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={5}>
@@ -249,7 +249,7 @@ function AuthForm() {
               color="primary"
               disabled
             >
-              Sign in with Google
+              {isCreateAccount ? "Register" : "Sign In"} with Google
             </Button>
             <Button
               className={classes.socialLoginButtons}
@@ -257,7 +257,7 @@ function AuthForm() {
               color="primary"
               onClick={() => handleSocial("github")}
             >
-              Sign in with GitHub
+              {isCreateAccount ? "Register" : "Sign In"} with Github
             </Button>
             <Button
               className={classes.socialLoginButtons}
@@ -265,7 +265,7 @@ function AuthForm() {
               color="primary"
               disabled
             >
-              Sign in with Facebook
+              {isCreateAccount ? "Register" : "Sign In"} with Facebook
             </Button>
           </Paper>
         </Grid>
