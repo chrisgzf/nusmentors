@@ -157,6 +157,7 @@ function AuthForm({ isLoginPage }) {
   const [canSignIn, setCanSignIn] = useState(false);
   const [canRegister, setCanRegister] = useState(false);
   const [isCreateAccount, setIsCreateAccount] = useState(!isLoginPage);
+  const [snackbar, setSnackbar] = useState(null);
 
   const firebase = useFirebase();
 
@@ -172,8 +173,30 @@ function AuthForm({ isLoginPage }) {
     }
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar(null);
+  };
+
   const handleSocial = async (provider) => {
-    return firebase.login({ provider, type: "popup" });
+    return firebase
+      .login({ provider, type: "popup" })
+      .then(() => {
+        setSnackbar(
+          <Alert onClose={handleSnackbarClose} severity="success">
+            "Signed in successfully. Redirecting..."
+          </Alert>,
+        );
+      })
+      .catch((e) => {
+        setSnackbar(
+          <Alert onClose={handleSnackbarClose} severity="warning">
+            {e.message}
+          </Alert>,
+        );
+      });
   };
 
   const handleTabChange = (event, newValue) => {
@@ -241,6 +264,13 @@ function AuthForm({ isLoginPage }) {
       <Helmet>
         <title>NUSMentors - {isCreateAccount ? "Register" : "Login"}</title>
       </Helmet>
+      <Snackbar
+        open={!!snackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        {snackbar}
+      </Snackbar>
       <Typography className={classes.title} variant="h5" component="h1">
         {isCreateAccount ? "Register" : "Sign In"}
       </Typography>
@@ -458,6 +488,13 @@ function DetailsForm() {
     return newDate;
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar(null);
+  };
+
   const onDetailsFormSubmit = (data) => {
     data.email = data.email ? data.email : fbEmail;
     data.nusEmail = data.nusEmail ? data.nusEmail : nusEmailFromFB;
@@ -497,12 +534,7 @@ function DetailsForm() {
     } catch {
       setIsUploading(false);
       setSnackbar(
-        <Alert
-          onClose={() => {
-            setSnackbar(null);
-          }}
-          severity="warning"
-        >
+        <Alert onClose={handleSnackbarClose} severity="warning">
           There were problems uploading your photo. Please try again.
         </Alert>,
       );
@@ -511,12 +543,7 @@ function DetailsForm() {
     setIsUploading(false);
 
     setSnackbar(
-      <Alert
-        onClose={() => {
-          setSnackbar(null);
-        }}
-        severity="success"
-      >
+      <Alert onClose={handleSnackbarClose} severity="success">
         Photo uploaded successfully.
       </Alert>,
     );
@@ -537,9 +564,7 @@ function DetailsForm() {
       <Snackbar
         open={!!snackbar}
         autoHideDuration={4000}
-        onClose={() => {
-          setSnackbar(null);
-        }}
+        onClose={handleSnackbarClose}
       >
         {snackbar}
       </Snackbar>
