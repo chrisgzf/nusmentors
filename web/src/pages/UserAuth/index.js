@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SwipeableViews from "react-swipeable-views";
 import { useHistory } from "react-router-dom";
 import { isEmpty, useFirebase } from "react-redux-firebase";
+import { Helmet } from "react-helmet";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -79,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function UserAuth() {
+function UserAuth({ isLoginPage = true }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -135,7 +136,7 @@ function UserAuth() {
           <LogoHorizontal scale="100%" />
         </div>
         {authStep === 0 && <CircularProgress />}
-        {authStep === 1 && <AuthForm />}
+        {authStep === 1 && <AuthForm isLoginPage={isLoginPage} />}
         {authStep === 2 && <DetailsForm />}
         {authStep === 3 && <VerifyEmailPage />}
       </Container>
@@ -143,11 +144,11 @@ function UserAuth() {
   );
 }
 
-function AuthForm() {
+function AuthForm({ isLoginPage }) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(isLoginPage ? 0 : 1);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -155,7 +156,8 @@ function AuthForm() {
   const [authError, setAuthError] = useState("");
   const [canSignIn, setCanSignIn] = useState(false);
   const [canRegister, setCanRegister] = useState(false);
-  const [isCreateAccount, setIsCreateAccount] = useState(false);
+  const [isCreateAccount, setIsCreateAccount] = useState(!isLoginPage);
+  const [snackbar, setSnackbar] = useState(null);
 
   const firebase = useFirebase();
 
@@ -171,8 +173,30 @@ function AuthForm() {
     }
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar(null);
+  };
+
   const handleSocial = async (provider) => {
-    return firebase.login({ provider, type: "popup" });
+    return firebase
+      .login({ provider, type: "popup" })
+      .then(() => {
+        setSnackbar(
+          <Alert onClose={handleSnackbarClose} severity="success">
+            "Signed in successfully. Redirecting..."
+          </Alert>,
+        );
+      })
+      .catch((e) => {
+        setSnackbar(
+          <Alert onClose={handleSnackbarClose} severity="warning">
+            {e.message}
+          </Alert>,
+        );
+      });
   };
 
   const handleTabChange = (event, newValue) => {
@@ -237,8 +261,18 @@ function AuthForm() {
 
   return (
     <>
+      <Helmet>
+        <title>NUSMentors - {isCreateAccount ? "Register" : "Login"}</title>
+      </Helmet>
+      <Snackbar
+        open={!!snackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        {snackbar}
+      </Snackbar>
       <Typography className={classes.title} variant="h5" component="h1">
-        Sign in/Register
+        {isCreateAccount ? "Register" : "Sign In"}
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={5}>
@@ -247,9 +281,9 @@ function AuthForm() {
               className={classes.socialLoginButtons}
               variant="contained"
               color="primary"
-              disabled
+              onClick={() => handleSocial("google")}
             >
-              Sign in with Google
+              {isCreateAccount ? "Register" : "Sign In"} with Google
             </Button>
             <Button
               className={classes.socialLoginButtons}
@@ -257,15 +291,15 @@ function AuthForm() {
               color="primary"
               onClick={() => handleSocial("github")}
             >
-              Sign in with GitHub
+              {isCreateAccount ? "Register" : "Sign In"} with Github
             </Button>
             <Button
               className={classes.socialLoginButtons}
               variant="contained"
               color="primary"
-              disabled
+              onClick={() => handleSocial("facebook")}
             >
-              Sign in with Facebook
+              {isCreateAccount ? "Register" : "Sign In"} with Facebook
             </Button>
           </Paper>
         </Grid>
@@ -454,6 +488,13 @@ function DetailsForm() {
     return newDate;
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar(null);
+  };
+
   const onDetailsFormSubmit = (data) => {
     data.email = data.email ? data.email : fbEmail;
     data.nusEmail = data.nusEmail ? data.nusEmail : nusEmailFromFB;
@@ -493,12 +534,7 @@ function DetailsForm() {
     } catch {
       setIsUploading(false);
       setSnackbar(
-        <Alert
-          onClose={() => {
-            setSnackbar(null);
-          }}
-          severity="warning"
-        >
+        <Alert onClose={handleSnackbarClose} severity="warning">
           There were problems uploading your photo. Please try again.
         </Alert>,
       );
@@ -507,12 +543,7 @@ function DetailsForm() {
     setIsUploading(false);
 
     setSnackbar(
-      <Alert
-        onClose={() => {
-          setSnackbar(null);
-        }}
-        severity="success"
-      >
+      <Alert onClose={handleSnackbarClose} severity="success">
         Photo uploaded successfully.
       </Alert>,
     );
@@ -527,12 +558,13 @@ function DetailsForm() {
       maxWidth="md"
       style={{ padding: "0", marginBottom: theme.spacing(2) }}
     >
+      <Helmet>
+        <title>NUSMentors - Update Profile</title>
+      </Helmet>
       <Snackbar
         open={!!snackbar}
         autoHideDuration={4000}
-        onClose={() => {
-          setSnackbar(null);
-        }}
+        onClose={handleSnackbarClose}
       >
         {snackbar}
       </Snackbar>
@@ -793,6 +825,9 @@ function VerifyEmailPage() {
       maxWidth="md"
       style={{ padding: "0", marginBottom: theme.spacing(2) }}
     >
+      <Helmet>
+        <title>NUSMentors - Verify Email</title>
+      </Helmet>
       <Typography className={classes.title} variant="h5" component="h1">
         Verify Email
       </Typography>

@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchMentors, getMentors, getMentorState } from "slices/mentorsSlice";
+import { Helmet } from "react-helmet";
 
 const Mentors = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,9 @@ const Mentors = () => {
 
   return (
     <Box>
+      <Helmet>
+        <title>NUSMentors - Mentors</title>
+      </Helmet>
       <Typography align="center" variant="h4">
         You have matched with these mentors
       </Typography>

@@ -8,6 +8,7 @@ import {
   getRequests,
   getRequestState,
 } from "slices/requestsSlice";
+import { Helmet } from "react-helmet";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,9 @@ const Requests = () => {
     <Box>Loading</Box>
   ) : (
     <Box>
+      <Helmet>
+        <title>NUSMentors - Offer Help</title>
+      </Helmet>
       <Typography align="center" variant="h4">
         These guys need help
       </Typography>

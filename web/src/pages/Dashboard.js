@@ -8,6 +8,7 @@ import {
   getNotificationState,
 } from "slices/notificationSlice";
 import { selectName } from "slices/userSlice";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -62,10 +63,15 @@ const Dashboard = () => {
   );
 
   return (
-    <Grid container spacing={2}>
-      {welcomeMessage}
-      {notificationArea}
-    </Grid>
+    <>
+      <Helmet>
+        <title>NUSMentors - Dashboard</title>
+      </Helmet>
+      <Grid container spacing={2}>
+        {welcomeMessage}
+        {notificationArea}
+      </Grid>
+    </>
   );
 };
 

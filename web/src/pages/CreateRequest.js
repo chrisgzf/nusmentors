@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Checkbox,
+  Chip,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -13,9 +14,11 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useDispatch } from "react-redux";
 import { addRequest } from "slices/requestsSlice";
 import { useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +45,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+///* TODO: get career types from bkend
+const careerOptions = [
+    { career_type: "webdev" },
+    { career_type: "data science" },
+]
+//*/
+
 function CreateRequest() {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -52,6 +62,7 @@ function CreateRequest() {
     resume: false,
     interview: false,
     general: false,
+    career_types: [],
   });
 
   const handleInputChange = (event) => {
@@ -60,6 +71,10 @@ function CreateRequest() {
     const name = target.name;
     const newData = { ...formData, [name]: value };
     setFormData(newData);
+  };
+
+  const handleAutocompleteChange = (event, value) => {
+    setFormData({ ...formData, career_types: value });
   };
 
   const handleSubmit = () => {
@@ -73,10 +88,14 @@ function CreateRequest() {
         return entry[1];
       })
       .map((entry) => entry[0]);
+    const flattened_careers = formData.career_types
+      .map( entry => entry.career_type );
+
     const requestData = {
       problem_types: selectedTypes,
       title: formData.title,
       description: formData.description,
+      career_type: flattened_careers,
     };
     // @ts-ignore
     dispatch(addRequest(requestData)).then(() => {
@@ -99,6 +118,9 @@ function CreateRequest() {
   ];
   return (
     <div>
+      <Helmet>
+        <title>NUSMentors - Create Request</title>
+      </Helmet>
       <Paper className={classes.paper}>
         <Typography align="center" variant="h5">
           What would you like to request help on?
@@ -146,6 +168,21 @@ function CreateRequest() {
             margin="dense"
             value={formData.description}
             onChange={handleInputChange}
+          />
+          <Autocomplete
+            multiple
+            id="tags-standard"
+            options={careerOptions} //TODO
+            getOptionLabel={(option) => option.career_type}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                label="Select career tags (optional)"
+                placeholder="Relevant careers"
+              />
+            )}
+            onChange={handleAutocompleteChange}
           />
           <Button
             className={classes.buttons}

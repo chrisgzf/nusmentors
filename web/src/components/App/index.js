@@ -31,8 +31,12 @@ function App() {
           <Router>
             <Switch>
               <Route exact path="/" component={Homepage} />
-              <Route exact path="/register" component={UserAuth} />
-              <Route exact path="/login" component={UserAuth} />
+              <Route exact path="/register">
+                <UserAuth isLoginPage={false} />
+              </Route>
+              <Route exact path="/login">
+                <UserAuth isLoginPage />
+              </Route>
               <Route component={AppShell} />
             </Switch>
           </Router>
