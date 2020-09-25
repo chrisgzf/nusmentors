@@ -14,6 +14,7 @@ import DateFnsUtils from "@date-io/date-fns";
 
 const theme = createMuiTheme();
 const firebase = setupFirebase();
+window.coolStuff = firebase;
 
 function App() {
   const dispatch = useDispatch();
