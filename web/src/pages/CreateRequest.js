@@ -19,7 +19,6 @@ import { addRequest } from "slices/requestsSlice";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { sendRequest } from "utils/backend";
-import { unwrapResult } from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,11 +44,6 @@ const useStyles = makeStyles((theme) => ({
     width: "90%",
   },
 }));
-
-const careerOptions = [
-  { career_type: "webdev" },
-  { career_type: "data science" },
-];
 
 function CreateRequest() {
   const classes = useStyles();
