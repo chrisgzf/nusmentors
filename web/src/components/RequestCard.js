@@ -72,7 +72,11 @@ const RequestCard = ({
   };
   const requestTitle = (
     <CardHeader
-      avatar={<UserAvatar photoUrl={photoUrl} name={name} index={index} />}
+      avatar={
+        photoUrl ? (
+          <UserAvatar photoUrl={photoUrl} name={name} index={index} />
+        ) : null
+      }
       title={
         <Typography variant="h5" color="textPrimary">
           {title}
@@ -81,11 +85,11 @@ const RequestCard = ({
       style={{ paddingBottom: "0" }}
       subheader={
         <>
-          {name && currentYear && major && (
-            <Typography variant="subtitle2" color="primary">
-              by {name}, Year {currentYear}, Majoring in {major}
-            </Typography>
-          )}
+          <Typography variant="subtitle2" color="primary">
+            {`${name ? "By " + name : ""}${
+              currentYear ? ", Year " + currentYear : ""
+            }${major ? ", Majoring in " + major : ""}`}
+          </Typography>
           <Typography variant="subtitle1" color="textSecondary">
             posted {postedDuration} ago
           </Typography>

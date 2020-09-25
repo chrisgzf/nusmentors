@@ -14,11 +14,11 @@ import {
   Typography,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addRequest } from "slices/requestsSlice";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { sendRequest } from "utils/backend";
+import { fetchCareers, getCareers, getCareerState } from "slices/careerSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,18 +58,16 @@ function CreateRequest() {
     career_types: [],
   });
 
-  const [careersLoading, setCareersLoading] = useState(true);
-  const [careerOptions, setCareerOptions] = useState([]);
   const [isSubmitting, setSubmitting] = useState(false);
 
+  const careers = useSelector(getCareers);
+  const careerStatus = useSelector(getCareerState);
+
   useEffect(() => {
-    if (careersLoading) {
-      dispatch(sendRequest("careers", "GET")).then((result) => {
-        setCareerOptions(result);
-        setCareersLoading(false);
-      });
+    if (careerStatus === "idle") {
+      dispatch(fetchCareers());
     }
-  }, [dispatch, careersLoading]);
+  }, [careerStatus, dispatch]);
 
   const handleInputChange = (event) => {
     const target = event.target;
@@ -182,8 +180,8 @@ function CreateRequest() {
           <Autocomplete
             multiple
             id="tags-standard"
-            loading={careersLoading}
-            options={careerOptions}
+            loading={careerStatus === "loading"}
+            options={careers}
             getOptionLabel={(option) => option.career_type}
             renderInput={(params) => (
               <TextField

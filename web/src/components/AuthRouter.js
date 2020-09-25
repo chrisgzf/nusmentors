@@ -20,6 +20,7 @@ const AuthRouter = () => {
       <Route exact path="/mentors" component={Mentors} />
       <Route exact path="/mentors/:id" component={MentorContact} />
       <Route exact path="/mentees/:id" component={MenteeContact} />
+      <Route exact path="/mentees/:id/match" component={MenteeContact} />
     </Switch>
   );
 };

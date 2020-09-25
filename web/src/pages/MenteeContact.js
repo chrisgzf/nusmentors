@@ -9,7 +9,7 @@ import {
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
   dropMentee,
@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
 const MenteeContact = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const locationArray = location.pathname.split("/");
+  const toShowActions = locationArray[locationArray.length - 1] !== "match";
+
   // @ts-ignore
   const { id } = useParams();
   const menteeContact = useSelector(getMentee(id));
@@ -106,7 +110,7 @@ const MenteeContact = () => {
           telegramHandle: menteeContact.mentee_tg,
           major: menteeContact.mentee_major,
         }}
-        action={action}
+        action={toShowActions ? action : null}
         problemTypes={menteeContact.problem_type}
         careerTypes={menteeContact.career_type}
       />

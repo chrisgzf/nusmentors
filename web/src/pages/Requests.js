@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   FormControl,
   Input,
   InputLabel,
@@ -20,7 +21,7 @@ import {
   getRequestState,
 } from "slices/requestsSlice";
 import { Helmet } from "react-helmet";
-import { sendRequest } from "utils/backend";
+import { fetchCareers, getCareers, getCareerState } from "slices/careerSlice";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -42,18 +43,18 @@ const Requests = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const [careerOptions, setCareerOptions] = useState([]);
-  const problemTypes = ["careers", "general", "interview"].concat(
-    careerOptions,
-  );
-  // @ts-ignore
-  const [filters, setFilters] = useState(problemTypes);
-  const [isCareersLoading, setCareersLoading] = useState(true);
   const requests = useSelector(getRequests)
     .filter((request) => request.should_display)
     .sort((a, b) => b.date_created.localeCompare(a.date_created));
   const requestStatus = useSelector(getRequestState);
+  const careers = useSelector(getCareers)
+    .slice()
+    .map((career) => career.career_type);
+  const careerStatus = useSelector(getCareerState);
 
+  const problemTypes = ["careers", "general", "interview"].concat(careers);
+  // @ts-ignore
+  const [filters, setFilters] = useState(problemTypes);
   const handleChange = (event) => {
     setFilters(event.target.value);
   };
@@ -72,16 +73,10 @@ const Requests = () => {
     if (requestStatus === "idle") {
       dispatch(fetchRequests());
     }
-    if (isCareersLoading) {
-      dispatch(sendRequest("careers", "GET")).then((result) => {
-        const careerOptions = result.map((result) => result.career_type);
-        setCareerOptions(careerOptions);
-        // @ts-ignore
-        setFilters([...new Set([...filters, ...careerOptions])]);
-        setCareersLoading(false);
-      });
+    if (careerStatus === "idle") {
+      dispatch(fetchCareers());
     }
-  }, [dispatch, filters, isCareersLoading, requestStatus]);
+  }, [careerStatus, dispatch, requestStatus]);
 
   const filterMenu = (
     <FormControl className={classes.formControl}>
@@ -115,8 +110,10 @@ const Requests = () => {
     </FormControl>
   );
 
-  return requestStatus === "loading" || isCareersLoading ? (
-    <Box>Loading</Box>
+  return requestStatus === "loading" || careerStatus === "loading" ? (
+    <Box display="flex" justifyContent="center">
+      <CircularProgress />
+    </Box>
   ) : (
     <Box>
       <Helmet>

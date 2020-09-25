@@ -69,11 +69,9 @@ const Mentors = () => {
   const makeMentorCard = (mentor, index) => (
     <RequestCard
       key={index}
-      name={mentor.name}
       title={mentor.title}
       description={mentor.description}
       matricDate={mentor.matric_date}
-      major={mentor.major}
       dateCreated={mentor.date_created}
       action={
         <Button

@@ -73,11 +73,12 @@ const Mentees = () => {
   const makeMenteeCard = (mentee, index) => (
     <RequestCard
       key={index}
-      name={mentee.name}
+      name={mentee.mentee_name}
       title={mentee.title}
       description={mentee.description}
       matricDate={mentee.matric_date}
-      major={mentee.major}
+      major={mentee.mentee_major}
+      photoUrl={mentee.mentee_photo}
       dateCreated={mentee.date_created}
       action={
         <Button

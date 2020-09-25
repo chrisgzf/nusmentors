@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { sendRequest } from "utils/backend";
-//TODO: switch back to fetching data
 const initialState = {
   items: [],
   status: "idle",

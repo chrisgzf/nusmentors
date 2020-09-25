@@ -32,7 +32,9 @@ const AcceptRequest = () => {
   const history = useHistory();
 
   const handleAcceptRequest = () => {
-    dispatch(acceptRequest(id)).then(() => history.push(`/mentees/${id}`));
+    dispatch(acceptRequest(id)).then(() =>
+      history.push(`/mentees/${id}/match`),
+    );
   };
 
   return (
