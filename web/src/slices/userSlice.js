@@ -75,7 +75,13 @@ export const postUserInfo = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    clearUserState: (state) => {
+      state.items = initialState.items;
+      state.error = null;
+      state.status = "";
+    },
+  },
   extraReducers: {
     [fetchUserInfo.pending]: (state, action) => {
       state.status = "loading";
@@ -99,6 +105,10 @@ const userSlice = createSlice({
     },
   },
 });
+
+// Actions
+
+export const { clearUserState } = userSlice.actions;
 
 // Selectors
 export const selectUser = (state) => state.user.items;
