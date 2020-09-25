@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     padding: theme.spacing(2),
-    margin: theme.spacing(1),
   },
   expand: {
     transform: "rotate(0deg)",
