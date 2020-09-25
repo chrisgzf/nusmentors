@@ -32,6 +32,7 @@ const persistConfig = {
   key: "root",
   storage,
   transforms: [SetTransform],
+  blacklist: ["ui", "firebase"],
 };
 
 const reducer = combineReducers({
