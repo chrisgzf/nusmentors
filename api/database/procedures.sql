@@ -66,7 +66,7 @@ CREATE OR REPLACE PROCEDURE
             WHERE req_id = _req_id::INTEGER);     
 
         UPDATE Mentorship SET date_completed = NOW() WHERE req_id = _req_id::INTEGER AND (mentor_id = _mentor_uid OR (_req_id::INTEGER, _mentor_uid) IN (SELECT req_id, mentee_id FROM Requests));
-        INSERT INTO Notifies(notif_type, req_id, date_created) VALUES('complete', _reqid::INTEGER, NOW());
+        INSERT INTO Notifies(notif_type, req_id, date_created) VALUES('complete', _req_id::INTEGER, NOW());
     END;
 $$ LANGUAGE plpgsql;
 
