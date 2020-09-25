@@ -61,7 +61,7 @@ function App() {
         }),
       );
     }
-  }, [appIsOnline, appWasOffline]);
+  }, [appIsOnline, appWasOffline, dispatch]);
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -72,7 +72,11 @@ function App() {
 
   const checkOnlineStatus = async () => {
     try {
-      const online = await fetch("/ping");
+      const online = await fetch("/ping?wow=" + Date.now(), {
+        headers: {
+          "cache-control": "no-cache",
+        },
+      });
       return online.status >= 200 && online.status < 300; // either true or false
     } catch (err) {
       return false; // definitely offline
@@ -88,7 +92,8 @@ function App() {
         dispatch(appOnline());
       }
     }, 3000);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // force this to run once only
 
   return (
     <ReactReduxFirebaseProvider {...rrfProps}>
