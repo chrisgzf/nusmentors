@@ -17,6 +17,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "slices/uiSlice";
 import { clearUserState } from "slices/userSlice";
+import LogoNav from "./LogoNav";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -65,7 +66,9 @@ const TopBar = () => {
           </IconButton>
         )}
         <Box flexGrow="1">
-          <Typography variant="h4">NUSMentors</Typography>
+          <div style={{ height: "40px" }}>
+            <LogoNav height="40px" />
+          </div>
         </Box>
         <Box flexGrow="1" textAlign="right">
           <Button
