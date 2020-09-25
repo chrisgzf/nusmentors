@@ -1,6 +1,15 @@
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  IconButton,
+  makeStyles,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import NotificationBox from "components/NotificationBox";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchNotifications,
@@ -9,6 +18,9 @@ import {
 } from "slices/notificationSlice";
 import { selectName } from "slices/userSlice";
 import { Helmet } from "react-helmet";
+import Collapse from "@kunukn/react-collapse";
+import clsx from "clsx";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -18,6 +30,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     margin: theme.spacing(1),
   },
+  expand: {
+    transform: "rotate(0deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
 }));
 
 const Dashboard = () => {
@@ -25,13 +47,15 @@ const Dashboard = () => {
   const displayName = useSelector(selectName);
   const notifications = useSelector(getNotifications);
   const notificationStatus = useSelector(getNotificationState);
-  console.log(notifications);
+  const [expanded, setExpanded] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     if (notificationStatus === "idle") {
       dispatch(fetchNotifications());
     }
   }, [dispatch, notificationStatus]);
+
+  const handleExpandClick = () => setExpanded(!expanded);
   const welcomeMessage = (
     <Grid item xs={12}>
       <Paper className={classes.paper}>
@@ -44,21 +68,41 @@ const Dashboard = () => {
   );
   const notificationArea = (
     <Grid item xs={12}>
-      <Paper className={classes.paper}>
-        {notifications.length > 0 ? (
-          <>
-            <Typography variant="h5">Notifications</Typography>
-            {notifications.map((notification) => (
-              <NotificationBox
-                key={notification.nid}
-                notification={notification}
-              />
-            ))}
-          </>
-        ) : (
-          <Typography variant="h5">No notifications so far!</Typography>
-        )}
-      </Paper>
+      <Card>
+        <CardHeader
+          title={<Typography variant="h5">Notifications</Typography>}
+          action={
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          }
+        />
+        <CardContent>
+          {notifications.length > 0 ? (
+            <Collapse
+              collapseHeight="400px"
+              isOpen={expanded}
+              transition={`height 300ms cubic-bezier(.4, 0, .2, 1)`}
+            >
+              {notifications.map((notification) => (
+                <NotificationBox
+                  key={notification.nid}
+                  notification={notification}
+                />
+              ))}
+            </Collapse>
+          ) : (
+            <Typography variant="h5">No notifications so far!</Typography>
+          )}
+        </CardContent>
+      </Card>
     </Grid>
   );
 

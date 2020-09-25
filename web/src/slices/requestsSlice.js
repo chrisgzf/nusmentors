@@ -19,7 +19,8 @@ export const acceptRequest = createAsyncThunk(
   "requests/acceptRequest",
   async (requestId, { dispatch }) => {
     await dispatch(sendRequest(`reqs/${requestId}/accept`, "PUT"));
-    await dispatch(fetchMentees);
+    await dispatch(fetchMentees());
+    await dispatch(fetchRequests());
     return requestId;
   },
 );
@@ -28,7 +29,7 @@ export const addRequest = createAsyncThunk(
   "requests/addRequest",
   async (data, { dispatch }) => {
     await dispatch(sendRequest("reqs", "POST", data));
-    await dispatch(fetchRequests);
+    await dispatch(fetchRequests());
   },
 );
 
@@ -50,15 +51,6 @@ const requestsSlice = createSlice({
     [fetchRequests.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
-    },
-    // @ts-ignore
-    [acceptRequest.fulfilled]: (state, action) => {
-      const request = state.items.find(
-        (item) => item.req_id === action.payload,
-      );
-      if (request) {
-        request.to_display = false;
-      }
     },
   },
 });
