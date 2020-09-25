@@ -3,7 +3,7 @@ const pool = require("../../db");
 const getnotifications = (req, res) => {
   const uid = req.body.uid;
   pool.query(
-    `SELECT U.name, N.nid, N.to_id , N.notif_type, N.date_created, N.is_from_mentor, N.is_read, R.title, R.req_id 
+    `SELECT DISTINCT U.name, N.nid, N.to_id , N.notif_type, N.date_created, N.is_from_mentor, N.is_read, R.title, R.req_id 
   FROM Notifies N, UsersInfo U, Requests R
   WHERE N.from_id = U.user_id
   AND N.to_id = R.mentee_id
