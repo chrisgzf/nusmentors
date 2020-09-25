@@ -16,6 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import { addRequest } from "slices/requestsSlice";
 import { useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,6 +100,9 @@ function CreateRequest() {
   ];
   return (
     <div>
+      <Helmet>
+        <title>NUSMentors - Create Request</title>
+      </Helmet>
       <Paper className={classes.paper}>
         <Typography align="center" variant="h5">
           What would you like to request help on?

@@ -4,6 +4,7 @@ import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import {
   dropMentee,
   completeMentee,
@@ -72,22 +73,27 @@ const MenteeContact = () => {
     );
 
   return (
-    <RequestCard
-      name={menteeContact.name}
-      title={menteeContact.title}
-      description={menteeContact.description}
-      matricDate={menteeContact.matric_date}
-      major={menteeContact.major}
-      dateCreated={menteeContact.date_created}
-      contact={{
-        title: "Contact your mentee here!",
-        name: menteeContact.mentee_name,
-        email: menteeContact.mentee_email,
-        telegramHandle: menteeContact.mentee_tg,
-        major: menteeContact.mentee_major,
-      }}
-      action={action}
-    />
+    <>
+      <Helmet>
+        <title>NUSMentors - Mentee Details</title>
+      </Helmet>
+      <RequestCard
+        name={menteeContact.name}
+        title={menteeContact.title}
+        description={menteeContact.description}
+        matricDate={menteeContact.matric_date}
+        major={menteeContact.major}
+        dateCreated={menteeContact.date_created}
+        contact={{
+          title: "Contact your mentee here!",
+          name: menteeContact.mentee_name,
+          email: menteeContact.mentee_email,
+          telegramHandle: menteeContact.mentee_tg,
+          major: menteeContact.mentee_major,
+        }}
+        action={action}
+      />
+    </>
   );
 };
 

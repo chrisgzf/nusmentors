@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchMentors, getMentor, getMentorState } from "slices/mentorsSlice";
+import { Helmet } from "react-helmet";
 
 const MentorContact = () => {
   const dispatch = useDispatch();
@@ -28,21 +29,26 @@ const MentorContact = () => {
   }
 
   return (
-    <RequestCard
-      name={mentorContact.name}
-      title={mentorContact.title}
-      description={mentorContact.description}
-      matricDate={mentorContact.matric_date}
-      major={mentorContact.major}
-      dateCreated={mentorContact.date_created}
-      contact={{
-        title: "Contact your mentor here!",
-        name: mentorContact.mentor_name,
-        email: mentorContact.mentor_email,
-        telegramHandle: mentorContact.mentor_tg,
-        major: mentorContact.mentor_major,
-      }}
-    />
+    <>
+      <Helmet>
+        <title>NUSMentors - Mentor Details</title>
+      </Helmet>
+      <RequestCard
+        name={mentorContact.name}
+        title={mentorContact.title}
+        description={mentorContact.description}
+        matricDate={mentorContact.matric_date}
+        major={mentorContact.major}
+        dateCreated={mentorContact.date_created}
+        contact={{
+          title: "Contact your mentor here!",
+          name: mentorContact.mentor_name,
+          email: mentorContact.mentor_email,
+          telegramHandle: mentorContact.mentor_tg,
+          major: mentorContact.mentor_major,
+        }}
+      />
+    </>
   );
 };
 

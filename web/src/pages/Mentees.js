@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchMentees, getMentees, getMenteeState } from "slices/menteesSlice";
+import { Helmet } from "react-helmet";
 
 const Mentees = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,9 @@ const Mentees = () => {
 
   return (
     <Box>
+      <Helmet>
+        <title>NUSMentors - Mentees</title>
+      </Helmet>
       <Typography align="center" variant="h4">
         You have matched with these mentees
       </Typography>

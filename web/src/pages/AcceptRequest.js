@@ -11,6 +11,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { acceptRequest } from "slices/requestsSlice";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,6 +37,9 @@ const AcceptRequest = () => {
 
   return (
     <Card className={classes.root}>
+      <Helmet>
+        <title>NUSMentors - Mentorship Terms</title>
+      </Helmet>
       <CardHeader
         title={<Typography variant="h4">Terms and Conditions</Typography>}
       />
