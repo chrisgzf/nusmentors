@@ -1,4 +1,10 @@
-import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 //TODO: FIX MENTORS PAGE
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
@@ -35,6 +41,13 @@ const MenteeContact = () => {
     }
   }, [dispatch, menteeStatus]);
 
+  if (menteeStatus === "loading") {
+    return (
+      <Box display="flex" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
+  }
   if (!menteeContact) {
     return (
       <Typography align="center" variant="h5">
@@ -53,7 +66,8 @@ const MenteeContact = () => {
           color="secondary"
           // @ts-ignore
           onClick={() =>
-            dispatch(dropMentee(id)).then(history.push("/mentees"))
+            // @ts-ignore
+            dispatch(dropMentee(id)).then(() => history.push("/mentees"))
           }
         >
           Drop Mentee
@@ -64,7 +78,8 @@ const MenteeContact = () => {
           color="primary"
           // @ts-ignore
           onClick={() =>
-            dispatch(completeMentee(id)).then(history.push("/mentees"))
+            // @ts-ignore
+            dispatch(completeMentee(id)).then(() => history.push("/mentees"))
           }
         >
           Complete Mentorship

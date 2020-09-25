@@ -16,14 +16,14 @@ export const dropMentee = createAsyncThunk(
   "mentees/dropMentee",
   async (requestId, { dispatch, getState }) => {
     await dispatch(sendRequest(`matches/${requestId}`, "DELETE"));
-    dispatch(fetchMentees);
+    await dispatch(fetchMentees());
   },
 );
 export const completeMentee = createAsyncThunk(
   "mentees/completeMentee",
   async (requestId, { dispatch }) => {
     await dispatch(sendRequest(`matches/${requestId}`, "PUT"));
-    dispatch(fetchMentees);
+    await dispatch(fetchMentees());
   },
 );
 
@@ -42,10 +42,6 @@ const menteesSlice = createSlice({
       state.items = action.payload;
     },
     // @ts-ignore
-    [fetchMentees.rejected]: (state, action) => {
-      state.status = "failed";
-      state.error = action.error.message;
-    },
     [fetchMentees.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;

@@ -107,10 +107,10 @@ function CreateRequest() {
     };
     // @ts-ignore
     dispatch(addRequest(requestData))
+      .then(() => setSubmitting(false))
       .then(() => {
         history.push("/requests");
-      })
-      .finally(() => setSubmitting(false));
+      });
   };
   const types = [
     {

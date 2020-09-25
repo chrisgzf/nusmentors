@@ -36,9 +36,9 @@ const Mentors = () => {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const dispatch = useDispatch();
-  const mentors = useSelector(getMentors).sort((a, b) =>
-    b.date_created.localeCompare(a.date_created),
-  );
+  const mentors = useSelector(getMentors)
+    .slice()
+    .sort((a, b) => b.date_created.localeCompare(a.date_created));
   const mentorStatus = useSelector(getMentorState);
   // runs once
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import { Box, CircularProgress, Typography } from "@material-ui/core";
 //TODO: FIX MENTORS PAGE
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
@@ -20,6 +20,13 @@ const MentorContact = () => {
     }
   }, [dispatch, mentorStatus]);
 
+  if (mentorStatus === "loading") {
+    return (
+      <Box display="flex" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
+  }
   if (!mentorContact) {
     return (
       <Typography align="center" variant="h5">

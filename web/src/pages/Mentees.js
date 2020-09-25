@@ -39,9 +39,9 @@ const Mentees = () => {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const dispatch = useDispatch();
-  const mentees = useSelector(getMentees).sort((a, b) =>
-    b.date_created.localeCompare(a.date_created),
-  );
+  const mentees = useSelector(getMentees)
+    .slice()
+    .sort((a, b) => b.date_created.localeCompare(a.date_created));
   const menteeStatus = useSelector(getMenteeState);
   // runs once
   useEffect(() => {
