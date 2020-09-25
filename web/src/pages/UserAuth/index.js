@@ -186,7 +186,7 @@ function AuthForm({ isLoginPage }) {
       .then(() => {
         setSnackbar(
           <Alert onClose={handleSnackbarClose} severity="success">
-            "Signed in successfully. Redirecting..."
+            Signed in successfully. Redirecting...
           </Alert>,
         );
       })
@@ -211,6 +211,26 @@ function AuthForm({ isLoginPage }) {
       setIsCreateAccount(true);
     }
     setAuthError("");
+  };
+
+  const handleForgotPassword = () => {
+    firebase
+      .resetPassword(email)
+      .then(() => {
+        setSnackbar(
+          <Alert onClose={handleSnackbarClose} severity="success">
+            Successfully sent password reset email to {email}. Please check your
+            inbox.
+          </Alert>,
+        );
+      })
+      .catch((e) => {
+        setSnackbar(
+          <Alert onClose={handleSnackbarClose} severity="warning">
+            {e.message}
+          </Alert>,
+        );
+      });
   };
 
   // login form validation
@@ -355,7 +375,7 @@ function AuthForm({ isLoginPage }) {
                   className={classes.buttons}
                   variant="contained"
                   color="default"
-                  disabled
+                  onClick={handleForgotPassword}
                 >
                   Forgot Password
                 </Button>
@@ -363,7 +383,6 @@ function AuthForm({ isLoginPage }) {
                   className={classes.buttons}
                   variant="contained"
                   color="primary"
-                  disabled={!canSignIn}
                   onClick={handleSubmit}
                 >
                   Sign in
