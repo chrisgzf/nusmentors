@@ -38,7 +38,7 @@ export default function UserAvatar({
 }) {
   const classes = useStyles({ index: index % numColours });
   return (
-    <Avatar src={photoUrl} className={classes.avatar}>
+    <Avatar src={photoUrl} className={classes.avatar} {...otherProps}>
       {getUppercaseOfWords(name)}
     </Avatar>
   );

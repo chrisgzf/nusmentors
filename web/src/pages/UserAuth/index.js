@@ -33,7 +33,6 @@ import { Controller, useForm } from "react-hook-form";
 import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
 import useIsMobile from "utils/useIsMobile";
 import { useOnlineStorage } from "utils/onlineStorage";
-import { deepOrange } from "@material-ui/core/colors";
 import Alert from "components/Alert";
 import { getUppercaseOfWords } from "utils/text";
 
@@ -68,10 +67,6 @@ const useStyles = makeStyles((theme) => ({
   form: {
     margin: `${theme.spacing(1)}px auto`,
     width: "90%",
-  },
-  avatarOrange: {
-    color: theme.palette.getContrastText(deepOrange[500]),
-    backgroundColor: deepOrange[500],
   },
 }));
 
@@ -533,14 +528,15 @@ function DetailsForm() {
         >
           <Avatar
             src={watchPhotoUrl}
-            className={classes.avatarOrange}
             style={{
               height: isMobile ? "150px" : "200px",
               width: isMobile ? "150px" : "200px",
               margin: "0 auto",
             }}
           >
-            {watchName && getUppercaseOfWords(watchName)}
+            <span style={{ fontSize: isMobile ? "2rem" : "4rem" }}>
+              {watchName && getUppercaseOfWords(watchName)}
+            </span>
           </Avatar>
           {/* dummy input to accept a file */}
           <input
