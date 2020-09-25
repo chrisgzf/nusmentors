@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   problemChip: {
     marginRight: theme.spacing(1),
   },
+  cardHeader: { paddingBottom: "0" },
 }));
 
 const RequestCard = ({
@@ -82,7 +83,7 @@ const RequestCard = ({
           {title}
         </Typography>
       }
-      style={{ paddingBottom: "0" }}
+      className={classes.cardHeader}
       subheader={
         <>
           <Typography variant="subtitle2" color="primary">
