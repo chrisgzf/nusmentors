@@ -14,6 +14,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import {
   appOffline,
   appOnline,
+  appRestored,
   clearSnackbar,
   selectAppIsOnline,
   selectAppWasOffline,
@@ -60,6 +61,7 @@ function App() {
             "Internet connectivity is restored. You may continue normal operation.",
         }),
       );
+      dispatch(appRestored());
     }
   }, [appIsOnline, appWasOffline, dispatch]);
 

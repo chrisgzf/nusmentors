@@ -40,6 +40,9 @@ const uiSlice = createSlice({
       state.app.isOnline = false;
       state.app.wasOffline = true;
     },
+    appRestored(state) {
+      state.app.wasOffline = false;
+    },
   },
 });
 
@@ -50,6 +53,7 @@ export const {
   clearSnackbar,
   appOffline,
   appOnline,
+  appRestored,
 } = uiSlice.actions;
 
 // Selectors
