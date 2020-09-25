@@ -117,7 +117,7 @@ const Requests = () => {
   ) : (
     <Box>
       <Helmet>
-        <title>NUSMentors - Offer Help</title>
+        <title>NUSMentors - Be a Mentor</title>
       </Helmet>
       {filterMenu}
       {requests
