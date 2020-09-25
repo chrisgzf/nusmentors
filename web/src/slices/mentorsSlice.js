@@ -40,7 +40,7 @@ const mentorsSlice = createSlice({
 // Selectors
 export const getMentors = (state) => state.mentors.items;
 export const getMentor = (id) => (state) =>
-  state.mentors.items.find((item) => item.req_id === id);
+  state.mentors.items.find((item) => item.req_id === +id);
 export const getMentorState = (state) => state.mentors.status;
 const mentorsReducer = mentorsSlice.reducer;
 export default mentorsReducer;

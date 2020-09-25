@@ -107,6 +107,8 @@ const MenteeContact = () => {
           major: menteeContact.mentee_major,
         }}
         action={action}
+        problemTypes={menteeContact.problem_type}
+        careerTypes={menteeContact.career_type}
       />
     </>
   );
