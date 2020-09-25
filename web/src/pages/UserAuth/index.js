@@ -251,7 +251,7 @@ function AuthForm({ isLoginPage }) {
               className={classes.socialLoginButtons}
               variant="contained"
               color="primary"
-              disabled
+              onClick={() => handleSocial("google")}
             >
               {isCreateAccount ? "Register" : "Sign In"} with Google
             </Button>
@@ -267,7 +267,7 @@ function AuthForm({ isLoginPage }) {
               className={classes.socialLoginButtons}
               variant="contained"
               color="primary"
-              disabled
+              onClick={() => handleSocial("facebook")}
             >
               {isCreateAccount ? "Register" : "Sign In"} with Facebook
             </Button>
