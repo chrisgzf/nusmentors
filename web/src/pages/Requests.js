@@ -39,6 +39,8 @@ const Requests = () => {
           matricDate={request.matric_date}
           major={request.major}
           dateCreated={request.date_created}
+          index={index}
+          photoUrl={request.photo_url}
           action={
             <Button
               component={Link}

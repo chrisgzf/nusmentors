@@ -13,6 +13,7 @@ import Collapse from "@kunukn/react-collapse";
 import clsx from "clsx";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { timeSince } from "utils/time";
+import UserAvatar from "components/UserAvatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,8 @@ const RequestCard = ({
   matricDate = "",
   major = "",
   dateCreated,
+  photoUrl = "",
+  index = 0,
   contact = undefined,
   action = null,
 }) => {
@@ -63,6 +66,7 @@ const RequestCard = ({
   };
   const requestTitle = (
     <CardHeader
+      avatar={<UserAvatar photoUrl={photoUrl} name={name} index={index} />}
       title={
         <Typography variant="h5" color="textPrimary">
           {title}

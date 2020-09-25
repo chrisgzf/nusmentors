@@ -35,6 +35,7 @@ import useIsMobile from "utils/useIsMobile";
 import { useOnlineStorage } from "utils/onlineStorage";
 import { deepOrange } from "@material-ui/core/colors";
 import Alert from "components/Alert";
+import { getUppercaseOfWords } from "utils/text";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -539,11 +540,7 @@ function DetailsForm() {
               margin: "0 auto",
             }}
           >
-            {watchName &&
-              watchName
-                .split(/\s/)
-                .reduce((response, word) => (response += word.slice(0, 1)), "")
-                .toUpperCase()}
+            {watchName && getUppercaseOfWords(watchName)}
           </Avatar>
           {/* dummy input to accept a file */}
           <input
