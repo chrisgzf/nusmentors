@@ -69,7 +69,7 @@ const Dashboard = () => {
     <Grid item xs={12}>
       <Card>
         <CardHeader
-          title={<Typography variant="h5">Notifications</Typography>}
+          title={<Typography variant="h6">Notifications</Typography>}
           action={
             <IconButton
               className={clsx(classes.expand, {
@@ -98,7 +98,7 @@ const Dashboard = () => {
               ))}
             </Collapse>
           ) : (
-            <Typography variant="h5">No notifications so far!</Typography>
+            <Typography variant="body1">No notifications for now.</Typography>
           )}
         </CardContent>
       </Card>

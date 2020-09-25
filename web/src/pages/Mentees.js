@@ -154,7 +154,11 @@ const Mentees = () => {
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
           {pastMentees.length === 0 ? (
-            <Typography align="center" variant="h4">
+            <Typography
+              align="center"
+              variant="h6"
+              style={{ margin: theme.spacing(2) }}
+            >
               No past mentees
             </Typography>
           ) : (
