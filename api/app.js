@@ -95,6 +95,10 @@ const whitelist = [
   "https://nusmentors.vercel.app/",
   "https://nusmentors.com/",
 ];
+
+const relaxedCorsOptions = {
+  origin: '*',
+}
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -105,7 +109,7 @@ const corsOptions = {
   },
 };
 app.use(helmet());
-app.use(cors(corsOptions));
+app.use(cors(relaxedCorsOptions));
 app.use(bodyParser.json());
 app.use(morgan("combined")); // use 'tiny' or 'combined'
 
