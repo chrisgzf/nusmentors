@@ -25,8 +25,7 @@ import { fetchCareers, getCareers, getCareerState } from "slices/careerSlice";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-    maxWidth: 300,
+    paddingRight: theme.spacing(2),
   },
 
   chips: {
@@ -79,11 +78,29 @@ const Requests = () => {
   }, [careerStatus, dispatch, requestStatus]);
 
   const filterMenu = (
-    <FormControl className={classes.formControl}>
-      <InputLabel>Filters</InputLabel>
+    <FormControl className={classes.formControl} fullWidth>
+      <InputLabel
+        style={{
+          marginBottom: theme.spacing(0.5),
+          position: "relative",
+          display: "block",
+        }}
+      >
+        <span
+          style={{
+            fontSize: "1.4rem",
+            fontWeight: "bold",
+            color: "#000",
+          }}
+        >
+          Showing requests that contain:
+        </span>
+      </InputLabel>
       <Select
         multiple
         value={filters}
+        style={{ marginTop: "0" }}
+        fullWidth
         onChange={handleChange}
         input={<Input id="select-multiple-chip" />}
         renderValue={(selected) => (
