@@ -35,19 +35,19 @@ const routeItems = [
   },
   {
     path: "/requests",
-    label: "Mentor People",
+    label: "Be a Mentor",
   },
   {
     path: "/requests/create",
-    label: "Look for a mentor",
+    label: "Look for a Mentor",
   },
   {
     path: "/mentees",
-    label: "My mentees",
+    label: "My Mentees",
   },
   {
     path: "/mentors",
-    label: "My mentors",
+    label: "My Mentors",
   },
 ];
 
