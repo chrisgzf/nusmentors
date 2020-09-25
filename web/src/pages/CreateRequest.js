@@ -58,18 +58,18 @@ function CreateRequest() {
     career_types: [],
   });
 
-  const [hasCareersLoaded, setCareersLoaded] = useState(false);
+  const [careersLoading, setCareersLoading] = useState(true);
   const [careerOptions, setCareerOptions] = useState([]);
   const [isSubmitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!hasCareersLoaded) {
+    if (careersLoading) {
       dispatch(sendRequest("careers", "GET")).then((result) => {
         setCareerOptions(result);
-        setCareersLoaded(false);
+        setCareersLoading(false);
       });
     }
-  }, [dispatch, hasCareersLoaded]);
+  }, [dispatch, careersLoading]);
 
   const handleInputChange = (event) => {
     const target = event.target;
@@ -100,7 +100,7 @@ function CreateRequest() {
     );
 
     const requestData = {
-      problem_types: selectedTypes,
+      problem_type: selectedTypes,
       title: formData.title,
       description: formData.description,
       career_type: flattened_careers,
@@ -182,7 +182,8 @@ function CreateRequest() {
           <Autocomplete
             multiple
             id="tags-standard"
-            options={careerOptions} //TODO
+            loading={careersLoading}
+            options={careerOptions}
             getOptionLabel={(option) => option.career_type}
             renderInput={(params) => (
               <TextField

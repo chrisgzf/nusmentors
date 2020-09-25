@@ -66,52 +66,35 @@ const Mentors = () => {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
-
+  const makeMentorCard = (mentor, index) => (
+    <RequestCard
+      key={index}
+      name={mentor.name}
+      title={mentor.title}
+      description={mentor.description}
+      matricDate={mentor.matric_date}
+      major={mentor.major}
+      dateCreated={mentor.date_created}
+      action={
+        <Button
+          component={Link}
+          variant="contained"
+          to={`/mentors/${mentor.req_id}`}
+        >
+          Details
+        </Button>
+      }
+      problemTypes={mentor.problem_type}
+      careerTypes={mentor.career_type}
+    />
+  );
   const currentMentors = mentors
     .filter((mentor) => mentor.status === "current")
-    .map((mentor, index) => (
-      <RequestCard
-        key={index}
-        name={mentor.name}
-        title={mentor.title}
-        description={mentor.description}
-        matricDate={mentor.matric_date}
-        major={mentor.major}
-        dateCreated={mentor.date_created}
-        action={
-          <Button
-            component={Link}
-            variant="contained"
-            to={`/mentors/${mentor.req_id}`}
-          >
-            Details
-          </Button>
-        }
-      />
-    ));
+    .map(makeMentorCard);
 
   const pastMentors = mentors
     .filter((mentor) => mentor.status !== "current")
-    .map((mentor, index) => (
-      <RequestCard
-        key={index}
-        name={mentor.name}
-        title={mentor.title}
-        description={mentor.description}
-        matricDate={mentor.matric_date}
-        major={mentor.major}
-        dateCreated={mentor.date_created}
-        action={
-          <Button
-            component={Link}
-            variant="contained"
-            to={`/mentors/${mentor.req_id}`}
-          >
-            Details
-          </Button>
-        }
-      />
-    ));
+    .map(makeMentorCard);
 
   return wrapper(
     <Box width="100%" className={classes.tabs}>

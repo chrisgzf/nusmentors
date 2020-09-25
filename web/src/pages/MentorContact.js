@@ -54,6 +54,8 @@ const MentorContact = () => {
           telegramHandle: mentorContact.mentor_tg,
           major: mentorContact.mentor_major,
         }}
+        problemTypes={mentorContact.problem_type}
+        careerTypes={mentorContact.career_type}
       />
     </>
   );

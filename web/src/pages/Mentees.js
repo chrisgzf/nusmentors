@@ -70,51 +70,36 @@ const Mentees = () => {
     setValue(index);
   };
 
+  const makeMenteeCard = (mentee, index) => (
+    <RequestCard
+      key={index}
+      name={mentee.name}
+      title={mentee.title}
+      description={mentee.description}
+      matricDate={mentee.matric_date}
+      major={mentee.major}
+      dateCreated={mentee.date_created}
+      action={
+        <Button
+          component={Link}
+          variant="contained"
+          to={`/mentees/${mentee.req_id}`}
+        >
+          Details
+        </Button>
+      }
+      problemTypes={mentee.problem_type}
+      careerTypes={mentee.career_type}
+    />
+  );
+
   const currentMentees = mentees
     .filter((mentee) => mentee.status === "current")
-    .map((mentee, index) => (
-      <RequestCard
-        key={index}
-        name={mentee.name}
-        title={mentee.title}
-        description={mentee.description}
-        matricDate={mentee.matric_date}
-        major={mentee.major}
-        dateCreated={mentee.date_created}
-        action={
-          <Button
-            component={Link}
-            variant="contained"
-            to={`/mentees/${mentee.req_id}`}
-          >
-            Details
-          </Button>
-        }
-      />
-    ));
+    .map(makeMenteeCard);
 
   const pastMentees = mentees
     .filter((mentee) => mentee.status !== "current")
-    .map((mentee, index) => (
-      <RequestCard
-        key={index}
-        name={mentee.name}
-        title={mentee.title}
-        description={mentee.description}
-        matricDate={mentee.matric_date}
-        major={mentee.major}
-        dateCreated={mentee.date_created}
-        action={
-          <Button
-            component={Link}
-            variant="contained"
-            to={`/mentees/${mentee.req_id}`}
-          >
-            Details
-          </Button>
-        }
-      />
-    ));
+    .map(makeMenteeCard);
 
   return wrapper(
     <Box width="100%" className={classes.tabs}>

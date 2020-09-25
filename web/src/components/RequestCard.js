@@ -8,6 +8,7 @@ import {
   Typography,
   IconButton,
   Box,
+  Chip,
 } from "@material-ui/core";
 import Collapse from "@kunukn/react-collapse";
 import clsx from "clsx";
@@ -36,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
   actions: {
     justifyContent: "flex-end",
   },
+  problemChip: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const RequestCard = ({
@@ -47,6 +51,8 @@ const RequestCard = ({
   dateCreated,
   photoUrl = "",
   index = 0,
+  problemTypes = [],
+  careerTypes = [],
   contact = undefined,
   action = null,
 }) => {
@@ -82,6 +88,22 @@ const RequestCard = ({
           <Typography variant="subtitle1" color="textSecondary">
             posted {postedDuration} ago
           </Typography>
+          {problemTypes?.map((problem, index) => (
+            <Chip
+              color="secondary"
+              className={classes.problemChip}
+              label={problem}
+              key={index}
+            />
+          ))}
+          {careerTypes?.map((problem, index) => (
+            <Chip
+              color="primary"
+              className={classes.problemChip}
+              label={problem}
+              key={index}
+            />
+          ))}
         </>
       }
       action={
