@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import TopBar from "./TopBar";
 import AppDrawer from "./AppDrawer";
 import AuthRouter from "./AuthRouter";
-import { fetchUserInfo, selectName, selectUserError } from "slices/userSlice";
+import { fetchUserInfo, selectName } from "slices/userSlice";
 import { isEmpty } from "react-redux-firebase";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,7 +32,6 @@ const AppShell = () => {
   const isFBLoaded = useSelector(selectIsFBLoaded);
   const fbLoggedIn = !isEmpty(useSelector(selectAuth));
   const fbEmailVerified = useSelector(selectFBEmailVerified);
-  const userError = useSelector(selectUserError);
   const userName = useSelector(selectName);
 
   // Fetch user data when logged in
@@ -44,10 +43,10 @@ const AppShell = () => {
   // If user has insufficient details, kick them to login page
   useEffect(() => {
     if (!isFBLoaded || !fbLoggedIn) return;
-    if (userError) {
+    if (!userName) {
       history.push("/login");
     }
-  }, [dispatch, history, userError, isFBLoaded, fbLoggedIn]);
+  }, [dispatch, history, isFBLoaded, fbLoggedIn, userName]);
 
   // Kick users out of app if they are not logged in or email not verified
   useEffect(() => {
