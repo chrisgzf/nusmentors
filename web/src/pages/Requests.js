@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
   },
   chip: {
-    margin: 2,
+    margin: theme.spacing(0.5),
   },
 }));
 

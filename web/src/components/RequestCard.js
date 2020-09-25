@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
   },
   problemChip: {
+    marginTop: theme.spacing(0.5),
     marginRight: theme.spacing(1),
   },
   cardHeader: { paddingBottom: "0" },
