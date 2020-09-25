@@ -81,7 +81,7 @@ const Requests = () => {
         setCareersLoading(false);
       });
     }
-  }, [dispatch, isCareersLoading, requestStatus]);
+  }, [dispatch, filters, isCareersLoading, requestStatus]);
 
   const filterMenu = (
     <FormControl className={classes.formControl}>
