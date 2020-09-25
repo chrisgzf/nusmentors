@@ -77,7 +77,8 @@ const Requests = () => {
       dispatch(sendRequest("careers", "GET")).then((result) => {
         const careerOptions = result.map((result) => result.career_type);
         setCareerOptions(careerOptions);
-        setFilters([...filters, ...careerOptions]);
+        // @ts-ignore
+        setFilters([...new Set([...filters, ...careerOptions])]);
         setCareersLoading(false);
       });
     }
@@ -102,7 +103,12 @@ const Requests = () => {
         )}
       >
         {problemTypes.map((name) => (
-          <MenuItem key={name} value={name} style={getStyles(name)}>
+          <MenuItem
+            key={name}
+            selected={filters.includes(name)}
+            value={name}
+            style={getStyles(name)}
+          >
             {name}
           </MenuItem>
         ))}
