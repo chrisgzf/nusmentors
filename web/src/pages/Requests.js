@@ -8,7 +8,6 @@ import {
   makeStyles,
   MenuItem,
   Select,
-  Typography,
   useTheme,
 } from "@material-ui/core";
 import RequestCard from "components/RequestCard";
@@ -123,9 +122,6 @@ const Requests = () => {
       <Helmet>
         <title>NUSMentors - Offer Help</title>
       </Helmet>
-      <Typography align="center" variant="h4">
-        These guys need help
-      </Typography>
       {filterMenu}
       {requests
         .filter((request) =>

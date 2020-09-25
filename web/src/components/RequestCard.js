@@ -18,7 +18,7 @@ import UserAvatar from "components/UserAvatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(2),
+    margin: `${theme.spacing(2)}px 0`,
   },
   expand: {
     transform: "rotate(0deg)",
