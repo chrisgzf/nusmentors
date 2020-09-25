@@ -8,7 +8,7 @@ import { firebaseReducer } from "react-redux-firebase";
 import uiReducer from "../slices/uiSlice";
 import requestsReducer from "../slices/requestsSlice";
 import userReducer from "../slices/userSlice";
-import logger from "redux-logger";
+import { createLogger } from "redux-logger";
 import mentorsReducer from "slices/mentorsSlice";
 import menteesReducer from "slices/menteesSlice";
 import notificationsReducer from "slices/notificationSlice";
@@ -34,6 +34,10 @@ const persistConfig = {
   transforms: [SetTransform],
   blacklist: ["ui", "firebase"],
 };
+
+const logger = createLogger({
+  collapsed: (getState, action, logEntry) => !logEntry.error,
+});
 
 const reducer = combineReducers({
   counter: counterReducer,
