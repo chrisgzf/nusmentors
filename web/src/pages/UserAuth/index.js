@@ -389,6 +389,7 @@ function DetailsForm() {
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
   const [snackbar, setSnackbar] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [nusEmailFromFB, setNusEmailFromFB] = useState("");
 
   const watchName = watch("name");
@@ -465,10 +466,12 @@ function DetailsForm() {
   const uploadUserProfilePic = async (event) => {
     const file = event.target.files[0];
     let url;
+    setIsUploading(true);
     try {
       const uploadedFile = await uploadUserFile(uid, file);
       url = await uploadedFile.uploadTaskSnapshot.ref.getDownloadURL();
     } catch {
+      setIsUploading(false);
       setSnackbar(
         <Alert
           onClose={() => {
@@ -481,6 +484,7 @@ function DetailsForm() {
       );
     }
     setValue("photoUrl", url);
+    setIsUploading(false);
 
     setSnackbar(
       <Alert
@@ -554,10 +558,11 @@ function DetailsForm() {
               variant="contained"
               color="primary"
               component="span"
+              disabled={isUploading}
               size="small"
               style={{ margin: `${theme.spacing(2)}px 0` }}
             >
-              Upload Photo
+              {isUploading ? "Uploading..." : "Upload Photo"}
             </Button>
           </label>
 
