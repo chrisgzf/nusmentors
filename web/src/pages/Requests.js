@@ -146,6 +146,7 @@ const Requests = () => {
               <Button
                 component={Link}
                 variant="contained"
+                style={{ margin: `4px` }}
                 color="primary"
                 to={`/accept-request/${request.req_id}`}
               >

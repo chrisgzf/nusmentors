@@ -78,6 +78,7 @@ const RequestCard = ({
           {title}
         </Typography>
       }
+      style={{ paddingBottom: "0" }}
       subheader={
         <>
           {name && currentYear && major && (
@@ -124,7 +125,7 @@ const RequestCard = ({
   );
 
   const contactDetails = contact ? (
-    <CardContent>
+    <CardContent style={{ paddingBottom: "0" }}>
       <Typography variant="h6">
         <Box px={1}>{contact.title}</Box>
       </Typography>
@@ -144,7 +145,7 @@ const RequestCard = ({
           </Box>
           {contact.telegramHandle && (
             <Box className={classes.info} px={1}>
-              telegram: <b>@{contact.telegramHandle}</b>
+              Telegram: <b>@{contact.telegramHandle}</b>
             </Box>
           )}
           <Box className={classes.info} px={1}>
@@ -156,7 +157,7 @@ const RequestCard = ({
   ) : null;
 
   const requestBody = (
-    <CardContent>
+    <CardContent style={{ paddingBottom: "0" }}>
       {toExpandDescription ? (
         <Collapse
           collapseHeight="20px"
