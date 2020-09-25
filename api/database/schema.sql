@@ -43,12 +43,18 @@ CREATE TABLE Mentorship (
 	CHECK ((date_completed IS NOT NULL AND date_dropped IS NULL) OR date_completed IS NULL)
 );
 
+/* NOTE: only mentors notify mentees. */
 CREATE TABLE Notifies (
 	nid 			SERIAL PRIMARY KEY,
 	notif_type 		TEXT NOT NULL,
-	from_id 			TEXT REFERENCES UsersInfo(user_id),
+        req_id                  INTEGER REFERENCES Mentorship,
+	/*
+        from_id 			TEXT REFERENCES UsersInfo(user_id),
 	to_id 				TEXT REFERENCES UsersInfo(user_id),
-	date_created	TIMESTAMP,
-	is_read			BOOLEAN DEFAULT FALSE,
-	is_from_mentor		BOOLEAN 
+	*/
+        date_created	TIMESTAMP,
+	is_read			BOOLEAN DEFAULT FALSE --,
+	/*
+        is_from_mentor		BOOLEAN 
+        */
 );
