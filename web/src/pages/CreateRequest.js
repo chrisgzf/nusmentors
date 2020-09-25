@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Checkbox,
-  Chip,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -19,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { addRequest } from "slices/requestsSlice";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { sendRequest } from "utils/backend";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,13 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-///* TODO: get career types from bkend
-const careerOptions = [
-    { career_type: "webdev" },
-    { career_type: "data science" },
-]
-//*/
-
 function CreateRequest() {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -64,6 +57,19 @@ function CreateRequest() {
     general: false,
     career_types: [],
   });
+
+  const [hasCareersLoaded, setCareersLoaded] = useState(false);
+  const [careerOptions, setCareerOptions] = useState([]);
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!hasCareersLoaded) {
+      dispatch(sendRequest("careers", "GET")).then((result) => {
+        setCareerOptions(result);
+        setCareersLoaded(false);
+      });
+    }
+  }, [dispatch, hasCareersLoaded]);
 
   const handleInputChange = (event) => {
     const target = event.target;
@@ -78,6 +84,7 @@ function CreateRequest() {
   };
 
   const handleSubmit = () => {
+    setSubmitting(true);
     const selectedTypes = Object.entries({
       resume: formData.resume,
       interview: formData.interview,
@@ -88,8 +95,9 @@ function CreateRequest() {
         return entry[1];
       })
       .map((entry) => entry[0]);
-    const flattened_careers = formData.career_types
-      .map( entry => entry.career_type );
+    const flattened_careers = formData.career_types.map(
+      (entry) => entry.career_type,
+    );
 
     const requestData = {
       problem_types: selectedTypes,
@@ -98,9 +106,11 @@ function CreateRequest() {
       career_type: flattened_careers,
     };
     // @ts-ignore
-    dispatch(addRequest(requestData)).then(() => {
-      history.push("/requests");
-    });
+    dispatch(addRequest(requestData))
+      .then(() => {
+        history.push("/requests");
+      })
+      .finally(() => setSubmitting(false));
   };
   const types = [
     {
@@ -187,6 +197,7 @@ function CreateRequest() {
           <Button
             className={classes.buttons}
             disabled={
+              isSubmitting ||
               formData.title === "" ||
               formData.description === "" ||
               (!formData.interview && !formData.resume && !formData.general)
