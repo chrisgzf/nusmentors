@@ -31,6 +31,7 @@ import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
 import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
 import useIsMobile from "utils/useIsMobile";
+import { useOnlineStorage } from "utils/onlineStorage";
 import { deepOrange } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
@@ -381,13 +382,17 @@ function DetailsForm() {
   } = useForm();
   const isMobile = useIsMobile();
 
+  const { uploadUserFile } = useOnlineStorage();
+
   const [matricDate, setMatricDate] = useState(new Date());
   const [gradDate, setGradDate] = useState(new Date());
   const [nusEmailFromFB, setNusEmailFromFB] = useState("");
 
   const watchName = watch("name");
+  const watchPhotoUrl = watch("photoUrl");
 
   const {
+    uid,
     email: fbEmail,
     displayName: fbDisplayName,
     photoURL: fbPhotoUrl,
@@ -412,7 +417,12 @@ function DetailsForm() {
         invalidDate: (date) => date > matricDate,
       },
     });
+    register("photoUrl");
   }, [register, gradDate, matricDate]);
+
+  useEffect(() => {
+    setValue("photoUrl", fbPhotoUrl);
+  }, [fbPhotoUrl, setValue]);
 
   const stripDateDay = (date) => {
     let newDate = date.toISOString().split("T")[0];
@@ -449,6 +459,13 @@ function DetailsForm() {
     dispatch(postUserInfo(payload));
   };
 
+  const uploadUserProfilePic = async (event) => {
+    const file = event.target.files[0];
+    const uploadedFile = await uploadUserFile(uid, file);
+    const url = await uploadedFile.uploadTaskSnapshot.ref.getDownloadURL();
+    setValue("photoUrl", url);
+  };
+
   const fieldRequired = (
     <span style={{ color: "red" }}>This field is required</span>
   );
@@ -473,7 +490,7 @@ function DetailsForm() {
           onSubmit={handleSubmit(onDetailsFormSubmit)}
         >
           <Avatar
-            src={fbPhotoUrl}
+            src={watchPhotoUrl}
             className={classes.avatarOrange}
             style={{
               height: isMobile ? "150px" : "200px",
@@ -491,8 +508,9 @@ function DetailsForm() {
           <input
             id="pic-upload"
             accept="image/*"
-            style={{ display: "none" }}
+            hidden
             type="file"
+            onChange={uploadUserProfilePic}
           />
           <label htmlFor="pic-upload">
             <Button
@@ -671,14 +689,6 @@ function DetailsForm() {
               {errors.major ? fieldRequired : null}
             </FormHelperText>
           </FormControl>
-          <TextField
-            label="Photo URL (todo replace this)"
-            fullWidth
-            defaultValue={fbPhotoUrl}
-            margin="dense"
-            name="photoUrl"
-            inputRef={register}
-          />
           <TextField
             label="Telegram Handle (optional)"
             fullWidth
