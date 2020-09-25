@@ -5,13 +5,12 @@ import {
   ListItemText,
   makeStyles,
   Toolbar,
-  useMediaQuery,
-  useTheme,
 } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { closeDrawer } from "slices/uiSlice";
+import useIsMobile from "utils/useIsMobile";
 
 const width = 200;
 
@@ -64,8 +63,7 @@ const AppDrawer = () => {
     dispatch(closeDrawer());
   };
 
-  const theme = useTheme();
-  const isDesktopView = useMediaQuery(theme.breakpoints.up("md"));
+  const isMobile = useIsMobile();
 
   const list = (
     <List className={classes.list}>
@@ -92,7 +90,11 @@ const AppDrawer = () => {
     </List>
   );
 
-  return isDesktopView ? (
+  return isMobile ? (
+    <Drawer open={isDrawerOpen} onClose={handleClick} variant="temporary">
+      {list}
+    </Drawer>
+  ) : (
     <Drawer
       className={classes.permanent}
       open
@@ -100,10 +102,6 @@ const AppDrawer = () => {
       variant="permanent"
     >
       <Toolbar />
-      {list}
-    </Drawer>
-  ) : (
-    <Drawer open={isDrawerOpen} onClose={handleClick} variant="temporary">
       {list}
     </Drawer>
   );

@@ -19,6 +19,8 @@ import { addRequest } from "slices/requestsSlice";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { fetchCareers, getCareers, getCareerState } from "slices/careerSlice";
+import { selectAppIsOnline } from "slices/uiSlice";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +64,7 @@ function CreateRequest() {
 
   const careers = useSelector(getCareers);
   const careerStatus = useSelector(getCareerState);
+  const appIsOnline = useSelector(selectAppIsOnline);
 
   useEffect(() => {
     if (careerStatus === "idle") {
@@ -129,6 +132,11 @@ function CreateRequest() {
         <title>NUSMentors - Create Request</title>
       </Helmet>
       <Paper className={classes.paper}>
+        {appIsOnline ? null : (
+          <Alert severity="warning">
+            NUSMentors is currently offline! You cannot create a request!
+          </Alert>
+        )}
         <Typography align="center" variant="h5">
           What would you like to request help on?
         </Typography>
@@ -195,6 +203,7 @@ function CreateRequest() {
           <Button
             className={classes.buttons}
             disabled={
+              !appIsOnline ||
               isSubmitting ||
               formData.title === "" ||
               formData.description === "" ||

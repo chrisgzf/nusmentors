@@ -5,7 +5,6 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-//TODO: FIX MENTORS PAGE
 import RequestCard from "components/RequestCard";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +17,7 @@ import {
   getMentee,
   getMenteeState,
 } from "slices/menteesSlice";
+import { selectAppIsOnline } from "slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -37,6 +37,7 @@ const MenteeContact = () => {
   const { id } = useParams();
   const menteeContact = useSelector(getMentee(id));
   const menteeStatus = useSelector(getMenteeState);
+  const appIsOnline = useSelector(selectAppIsOnline);
   const history = useHistory();
   // runs once
   useEffect(() => {
@@ -110,7 +111,7 @@ const MenteeContact = () => {
           telegramHandle: menteeContact.mentee_tg,
           major: menteeContact.mentee_major,
         }}
-        action={toShowActions ? action : null}
+        action={toShowActions && appIsOnline ? action : null}
         problemTypes={menteeContact.problem_type}
         careerTypes={menteeContact.career_type}
       />

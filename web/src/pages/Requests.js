@@ -22,6 +22,7 @@ import {
 } from "slices/requestsSlice";
 import { Helmet } from "react-helmet";
 import { fetchCareers, getCareers, getCareerState } from "slices/careerSlice";
+import { selectAppIsOnline } from "slices/uiSlice";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -46,12 +47,13 @@ const Requests = () => {
     .filter((request) => request.should_display)
     .sort((a, b) => b.date_created.localeCompare(a.date_created));
   const requestStatus = useSelector(getRequestState);
+  const appIsOnline = useSelector(selectAppIsOnline);
   const careers = useSelector(getCareers)
     .slice()
     .map((career) => career.career_type);
   const careerStatus = useSelector(getCareerState);
 
-  const problemTypes = ["careers", "general", "interview"].concat(careers);
+  const problemTypes = ["general", "interviews", "resume"].concat(careers);
   // @ts-ignore
   const [filters, setFilters] = useState(problemTypes);
   const handleChange = (event) => {
@@ -66,6 +68,7 @@ const Requests = () => {
           : theme.typography.fontWeightMedium,
     };
   }
+  console.log(filters);
 
   // runs once
   useEffect(() => {
@@ -157,15 +160,17 @@ const Requests = () => {
             index={index}
             photoUrl={request.photo_url}
             action={
-              <Button
-                component={Link}
-                variant="contained"
-                style={{ margin: `4px` }}
-                color="primary"
-                to={`/accept-request/${request.req_id}`}
-              >
-                Match
-              </Button>
+              appIsOnline ? (
+                <Button
+                  component={Link}
+                  variant="contained"
+                  style={{ margin: `4px` }}
+                  color="primary"
+                  to={`/accept-request/${request.req_id}`}
+                >
+                  Match
+                </Button>
+              ) : null
             }
             problemTypes={request.problem_type}
             careerTypes={request.career_type}
