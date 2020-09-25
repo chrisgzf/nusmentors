@@ -3,11 +3,10 @@ const pool = require("../../db");
 const getnotifications = (req, res) => {
   const uid = req.body.uid;
   pool.query(
-    `SELECT DISTINCT U.name, N.nid, N.to_id , N.notif_type, N.date_created, N.is_from_mentor, N.is_read, R.title, R.req_id 
-  FROM Notifies N, UsersInfo U, Requests R
-  WHERE N.from_id = U.user_id
-  AND N.to_id = R.mentee_id
-  AND N.to_id = $1`,
+    `SELECT DISTINCT U.name, N.nid, R.mentee_id , N.notif_type, N.date_created, N.is_read, R.title, R.req_id 
+  FROM UsersInfo U, (Notifies N NATURAL JOIN Mentorship M) JOIN Requests R USING (req_id)
+  WHERE M.mentor_id = U.user_id
+  AND R.mentee_id = $1`,
   [uid],
     (q_err, q_res) => {
       if (q_err) {
