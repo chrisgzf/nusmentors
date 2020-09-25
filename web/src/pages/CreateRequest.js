@@ -85,11 +85,10 @@ function CreateRequest() {
     setSubmitting(true);
     const selectedTypes = Object.entries({
       resume: formData.resume,
-      interview: formData.interview,
+      interviews: formData.interview,
       general: formData.general,
     })
       .filter((entry) => {
-        console.log(entry);
         return entry[1];
       })
       .map((entry) => entry[0]);
