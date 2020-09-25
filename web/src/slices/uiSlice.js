@@ -7,6 +7,10 @@ const initialState = {
     type: "",
     message: "",
   },
+  app: {
+    isOnline: true,
+    wasOffline: false,
+  },
 };
 
 const uiSlice = createSlice({
@@ -29,6 +33,13 @@ const uiSlice = createSlice({
       state.snackbar.type = "";
       state.snackbar.message = "";
     },
+    appOnline(state) {
+      state.app.isOnline = true;
+    },
+    appOffline(state) {
+      state.app.isOnline = false;
+      state.app.wasOffline = true;
+    },
   },
 });
 
@@ -37,9 +48,13 @@ export const {
   openDrawer,
   showSnackbar,
   clearSnackbar,
+  appOffline,
+  appOnline,
 } = uiSlice.actions;
 
 // Selectors
 export const selectSnackbar = (state) => state.ui.snackbar;
+export const selectAppIsOnline = (state) => state.ui.app.isOnline;
+export const selectAppWasOffline = (state) => state.ui.app.wasOffline;
 
 export default uiSlice.reducer;
