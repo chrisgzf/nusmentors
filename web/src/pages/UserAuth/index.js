@@ -27,10 +27,19 @@ import {
 } from "@material-ui/core";
 
 import LogoHorizontal from "components/LogoHorizontal";
-import fbInstance, { selectAuth, selectFBEmailVerified } from "utils/firebase";
+import fbInstance, {
+  selectAuth,
+  selectFBEmailVerified,
+  selectIsFBLoaded,
+} from "utils/firebase";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import { Controller, useForm } from "react-hook-form";
-import { fetchUserInfo, postUserInfo, selectName } from "slices/userSlice";
+import {
+  fetchUserInfo,
+  postUserInfo,
+  selectFetchUserStatus,
+  selectName,
+} from "slices/userSlice";
 import useIsMobile from "utils/useIsMobile";
 import { useOnlineStorage } from "utils/onlineStorage";
 import Alert from "components/Alert";
@@ -82,6 +91,8 @@ function UserAuth() {
   const [authStep, setAuthStep] = useState(0);
   const fbLoggedIn = !isEmpty(useSelector(selectAuth));
   const fbEmailVerified = useSelector(selectFBEmailVerified);
+  const isFbLoaded = useSelector(selectIsFBLoaded);
+  const fetchUserStatus = useSelector(selectFetchUserStatus);
   const userName = useSelector(selectName);
 
   useEffect(() => {
@@ -89,6 +100,12 @@ function UserAuth() {
   }, [dispatch, fbLoggedIn]);
 
   useEffect(() => {
+    if (!fetchUserStatus || fetchUserStatus === "loading" || !isFbLoaded) {
+      // wait for user fetching API call to either succeed or fail
+      // wait for Firebase to load
+      setAuthStep(0);
+      return;
+    }
     if (!fbLoggedIn) {
       setAuthStep(1);
       return;
@@ -102,7 +119,14 @@ function UserAuth() {
       return;
     }
     history.push("/dashboard");
-  }, [fbLoggedIn, fbEmailVerified, userName, history]);
+  }, [
+    fbLoggedIn,
+    fbEmailVerified,
+    userName,
+    history,
+    fetchUserStatus,
+    isFbLoaded,
+  ]);
 
   return (
     <div className={classes.root}>

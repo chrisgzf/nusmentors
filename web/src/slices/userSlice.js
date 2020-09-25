@@ -17,7 +17,7 @@ const initialState = {
 };
 
 export const fetchUserInfo = createAsyncThunk(
-  "user/getUserInfo",
+  "user/fetchUserInfo",
   async (_, { dispatch }) => {
     const userInfo = await dispatch(sendRequest("auth/info", "GET"));
     const {
@@ -120,5 +120,6 @@ export const selectGradDate = (state) => state.user.items.gradDate;
 export const selectMajor = (state) => state.user.items.major;
 export const selectTelegram = (state) => state.user.items.telegram;
 export const selectUserError = (state) => state.user.error;
+export const selectFetchUserStatus = (state) => state.user.status;
 
 export default userSlice.reducer;
