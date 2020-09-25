@@ -48,11 +48,10 @@ const Dashboard = () => {
   const notificationStatus = useSelector(getNotificationState);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    if (notificationStatus === "idle") {
-      dispatch(fetchNotifications());
-    }
-  }, [dispatch, notificationStatus]);
+    dispatch(fetchNotifications());
+  }, [dispatch]);
 
   const handleExpandClick = () => setExpanded(!expanded);
   const welcomeMessage = (
@@ -83,7 +82,7 @@ const Dashboard = () => {
             </IconButton>
           }
         />
-        <CardContent>
+        <CardContent style={{ paddingTop: 0 }}>
           {notifications.length > 0 ? (
             <Collapse
               collapseHeight="400px"

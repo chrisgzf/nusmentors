@@ -104,6 +104,7 @@ const Mentees = () => {
         <Button
           component={Link}
           variant="contained"
+          style={{ margin: theme.spacing(2) }}
           to={`/mentees/${mentee.req_id}`}
         >
           Details
@@ -145,7 +146,11 @@ const Mentees = () => {
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
           {currentMentees.length === 0 ? (
-            <Typography align="center" variant="h4">
+            <Typography
+              align="center"
+              variant="h6"
+              style={{ margin: theme.spacing(2) }}
+            >
               No current mentees
             </Typography>
           ) : (
